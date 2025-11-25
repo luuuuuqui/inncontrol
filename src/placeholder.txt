@@ -1,0 +1,2 @@
+isso é um arquivo placeholder.
+se não existir um arquivo dentro das pastas, há chance do git não salvar a estrutura.
