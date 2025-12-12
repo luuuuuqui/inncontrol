@@ -9,39 +9,28 @@ class ConsumoAdicional:
         self.set_data_consumo(data_consumo)
 
     # Setters:
-    @staticmethod
     def set_id_consumo(self, id_consumo: int) -> None: self._id_consumo = id_consumo
 
-    @staticmethod
     def set_id_reserva(self, id_reserva: int) -> None: self._id_reserva = id_reserva
 
-    @staticmethod
     def set_id_adicional(self, id_adicional: int) -> None: self._id_adicional = id_adicional
 
-    @staticmethod
     def set_quantidade(self, quantidade: int) -> None: self._quantidade = quantidade
 
-    @staticmethod
     def set_data_consumo(self, data_consumo: datetime) -> None: self._data_consumo = data_consumo
 
     # Getters:
-    @staticmethod
     def get_id_consumo(self) -> int: return self._id_consumo
 
-    @staticmethod
     def get_id_reserva(self) -> int: return self._id_reserva
 
-    @staticmethod
     def get_id_adicional(self) -> int: return self._id_adicional
 
-    @staticmethod
     def get_quantidade(self) -> int: return self._quantidade
 
-    @staticmethod
     def get_data_consumo(self) -> datetime: return self._data_consumo
 
     # Métodos:
-    @staticmethod
     def to_dict(self) -> dict:
         return {
             "id_consumo": self.get_id_consumo(),
@@ -52,5 +41,5 @@ class ConsumoAdicional:
         }
     
     @staticmethod
-    def from_row() -> None:
-        pass
+    def from_row(row) -> 'ConsumoAdicional':
+        raise NotImplementedError("Método from_row ainda não implementado")
