@@ -1,11 +1,18 @@
+from templates.mantertesteUI import ManterTesteUI
 import streamlit as st
 
 class IndexUI:
     @staticmethod
+    def menu_admin():            
+        ManterTesteUI.main()
+
+    @staticmethod
+    def sidebar():
+        IndexUI.menu_admin()
+
+    @staticmethod
     def main():
-        st.title("Hello, Streamlit!")
+        IndexUI.sidebar()
 
 if __name__ == "__main__":
-    IndexUI.main()
-else:
-    exit('Esse arquivo deve ser executado diretamente pelo Streamlit.')
+    ManterTesteUI.main()
