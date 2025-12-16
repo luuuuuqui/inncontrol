@@ -7,5 +7,5 @@ class IndexUI:
 
 if __name__ == "__main__":
     IndexUI.main()
-else: 
+else:
     exit('Esse arquivo deve ser executado diretamente pelo Streamlit.')
