@@ -2,7 +2,7 @@ class Usuario:
     def __init__(self, id_usuario: int, nome: str, telefone: str, email: str, senha: str, perfil: str) -> None:
         self.set_id_usuario(id_usuario)
         self.set_nome(nome)
-        self.set_telefone(telefone)
+        self.set_fone(fone)
         self.set_email(email)
         self.set_senha(senha)
         self.set_perfil(perfil)
@@ -21,17 +21,22 @@ class Usuario:
     def set_perfil(self, perfil: str) -> None: self._perfil = perfil
 
     # Getters:
-    def get_id_usuario(self) -> int: return self._id_usuario
-
-    def get_nome(self) -> str: return self._nome
-
-    def get_telefone(self) -> str: return self._telefone
-
-    def get_email(self) -> str: return self._email
-
-    def get_senha(self) -> str: return self._senha
-
-    def get_perfil(self) -> str: return self._perfil
+    def get_id_usuario(self, id): self.__id = id
+    def get_nome(self, nome):
+        if nome == "": raise ValueError("Adicione o nome do usuário!")
+        self.__nome = nome
+    def get_fone(self, fone):
+        if fone < 1: raise ValueError("Adicione o número correto!")
+        self.__fone = fone
+    def get_email(self, email): 
+        if email == "": raise ValueError("Adicione o e-mail!")
+        self.__email = email
+    def get_senha(self, senha):
+        if senha == "": raise ValueError("Adicione a senha!")
+        self.__senha = senha
+    def get_perfil(self, perfil):
+        if perfil == "": raise ValueError("Adicione o nome do usuário")
+        self.__nome = nome
 
     # Métodos:
     def to_dict(self) -> dict:
