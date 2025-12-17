@@ -1,8 +1,6 @@
-import json
-import os
+import sqlite3
 
 from .dao import DAO
-
 
 class Teste:
     def __init__(self, id: int = None, name: str = ""):
@@ -33,26 +31,28 @@ class Teste:
 
 
 class TesteDAO(DAO):
-    _arquivo = "teste.json"
+    _db_file = "database/teste.db"
     _objetos = []
 
     @classmethod
     def abrir(cls):
         cls._objetos = []
-        if not os.path.exists(cls._arquivo):
-            return
-        try:
-            with open(cls._arquivo, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (json.JSONDecodeError, FileNotFoundError):
-            data = []
-
-        for item in data:
-            t = Teste.from_json(item)
+        conn = sqlite3.connect(cls._db_file)
+        conn.execute('''CREATE TABLE IF NOT EXISTS teste (
+                            id INTEGER PRIMARY KEY,
+                            name TEXT NOT NULL
+                        )''')
+        cursor = conn.execute('SELECT id, name FROM teste')
+        for row in cursor:
+            t = Teste(id=row[0], name=row[1])
             cls._objetos.append(t)
+        conn.close()
 
     @classmethod
     def salvar(cls):
-        data = [obj.to_json() for obj in cls._objetos]
-        with open(cls._arquivo, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        conn = sqlite3.connect(cls._db_file)
+        conn.execute('DELETE FROM teste')
+        for obj in cls._objetos:
+            conn.execute('INSERT INTO teste (id, name) VALUES (?, ?)', (obj.id, obj.name))
+        conn.commit()
+        conn.close()
