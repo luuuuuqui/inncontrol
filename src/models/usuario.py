@@ -1,24 +1,31 @@
 class Usuario:
-    def __init__(self, id_usuario: int, nome: str, telefone: str, email: str, senha: str, perfil: str) -> None:
+    def __init__(self, id_usuario: int, nome: str, fone: str, email: str, senha: str, perfil: str) -> None:
         self.set_id_usuario(id_usuario)
         self.set_nome(nome)
         self.set_fone(fone)
         self.set_email(email)
         self.set_senha(senha)
-        self.set_perfil(perfil)
 
     # Setters:
-    def set_id_usuario(self, id_usuario: int) -> None: self._id_usuario = id_usuario
+    def set_id_usuario(self, id_usuario: int) -> None: 
+        if id_usuario <= 0: raise ValueError("ID do usuário deve ser um inteiro positivo.")
+        self._id_usuario = id_usuario
 
-    def set_nome(self, nome: str) -> None: self._nome = nome
+    def set_nome(self, nome: str) -> None: 
+        if nome == "": raise ValueError("Nome do usuário não pode ser vazio.")
+        self._nome = nome
 
-    def set_telefone(self, telefone: str) -> None: self._telefone = telefone
+    def set_fone(self, fone: str) -> None: 
+        if fone == "": raise ValueError("Telefone do usuário não pode ser vazio.")
+        self._fone = fone
 
-    def set_email(self, email: str) -> None: self._email = email
+    def set_email(self, email: str) -> None: 
+        if email == "": raise ValueError("E-mail do usuário não pode ser vazio.")
+        self._email = email
 
-    def set_senha(self, senha: str) -> None: self._senha = senha
-
-    def set_perfil(self, perfil: str) -> None: self._perfil = perfil
+    def set_senha(self, senha: str) -> None: 
+        if senha == "": raise ValueError("Senha do usuário não pode ser vazia.")
+        self._senha = senha
 
     # Getters:
     def get_id_usuario(self, id): self.__id = id
@@ -43,7 +50,7 @@ class Usuario:
         return {
             "id_usuario": self.get_id_usuario(),
             "nome": self.get_nome(),
-            "telefone": self.get_telefone(),
+            "fone": self.get_fone(),
             "email": self.get_email(),
             "senha": self.get_senha(),
             "perfil": self.get_perfil()

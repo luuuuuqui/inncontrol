@@ -4,9 +4,13 @@ class Hospede:
         self.set_endereco(endereco)
     
     # Setters:
-    def set_id_usuario(self, id_usuario: int) -> None: self._id_usuario = id_usuario
+    def set_id_usuario(self, id_usuario: int) -> None: 
+        if id_usuario <= 0: raise ValueError("ID do usuário deve ser um inteiro positivo.")
+        self._id_usuario = id_usuario
 
-    def set_endereco(self, endereco: str) -> None: self._endereco = endereco
+    def set_endereco(self, endereco: str) -> None: 
+        if endereco == "": raise ValueError("Endereço do hóspede não pode ser vazio.")
+        self._endereco = endereco
 
     # Getters:
     def get_id_usuario(self) -> int: return self._id_usuario

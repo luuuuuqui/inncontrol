@@ -9,15 +9,25 @@ class TipoQuarto:
         self.set_valor_diaria(valor_diaria)
 
     # Setters:
-    def set_id_tipo(self, id_tipo: int) -> None: self._id_tipo = id_tipo
+    def set_id_tipo(self, id_tipo: int) -> None: 
+        if id_tipo <= 0: raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
+        self._id_tipo = id_tipo
 
-    def set_nome(self, nome: str) -> None: self._nome = nome
+    def set_nome(self, nome: str) -> None: 
+        if nome == "": raise ValueError("Nome do tipo de quarto não pode ser vazio.")
+        self._nome = nome
 
-    def set_descricao(self, descricao: str) -> None: self._descricao = descricao
+    def set_descricao(self, descricao: str) -> None: 
+        if descricao == "": raise ValueError("Descrição do tipo de quarto não pode ser vazia.")
+        self._descricao = descricao
 
-    def set_capacidade(self, capacidade: int) -> None: self._capacidade = capacidade
+    def set_capacidade(self, capacidade: int) -> None: 
+        if capacidade <= 0: raise ValueError("Capacidade do tipo de quarto deve ser um inteiro positivo.")
+        self._capacidade = capacidade
 
-    def set_valor_diaria(self, valor_diaria: decimal) -> None: self._valor_diaria = valor_diaria
+    def set_valor_diaria(self, valor_diaria: decimal) -> None: 
+        if valor_diaria < 0: raise ValueError("Valor da diária não pode ser negativo.")
+        self._valor_diaria = valor_diaria
 
     # Getters:
     def get_id_tipo(self) -> int: return self._id_tipo

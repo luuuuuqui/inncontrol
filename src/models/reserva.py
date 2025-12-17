@@ -11,17 +11,29 @@ class Reserva:
         self.set_status(status)
 
     # Setters:
-    def set_id_reserva(self, id_reserva: int) -> None: self._id_reserva = id_reserva
+    def set_id_reserva(self, id_reserva: int) -> None: 
+        if id_reserva <= 0: raise ValueError("ID da reserva deve ser um inteiro positivo.")
+        self._id_reserva = id_reserva
 
-    def set_id_hospede(self, id_hospede: int) -> None: self._id_hospede = id_hospede
+    def set_id_hospede(self, id_hospede: int) -> None: 
+        if id_hospede <= 0: raise ValueError("ID do hóspede deve ser um inteiro positivo.")
+        self._id_hospede = id_hospede
 
-    def set_id_quarto(self, id_quarto: int) -> None: self._id_quarto = id_quarto
+    def set_id_quarto(self, id_quarto: int) -> None: 
+        if id_quarto <= 0: raise ValueError("ID do quarto deve ser um inteiro positivo.")
+        self._id_quarto = id_quarto
 
-    def set_data_reserva(self, data_reserva: date) -> None: self._data_reserva = data_reserva
+    def set_data_reserva(self, data_reserva: date) -> None: 
+        if data_reserva < date.today(): raise ValueError("Data da reserva não pode ser no passado.")
+        self._data_reserva = data_reserva
 
-    def set_qtd_dias(self, qtd_dias: int) -> None: self._qtd_dias = qtd_dias
+    def set_qtd_dias(self, qtd_dias: int) -> None: 
+        if qtd_dias <= 0: raise ValueError("Quantidade de dias deve ser um inteiro positivo.")
+        self._qtd_dias = qtd_dias
 
-    def set_status(self, status: str) -> None: self._status = status
+    def set_status(self, status: str) -> None: 
+        if status == "": raise ValueError("Status da reserva não pode ser vazio.")
+        self._status = status
 
     # Getters:
     def get_id_reserva(self) -> int: return self._id_reserva
