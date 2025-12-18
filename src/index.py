@@ -15,7 +15,7 @@ class IndexUI:
 
     @staticmethod
     def main():
-        # Garantir que as tabelas existam antes de usar
+        # garantir que as tabelas existam
         Database.abrir()
         Database.criar_tabelas()
         Database.fechar()
@@ -23,4 +23,4 @@ class IndexUI:
         IndexUI.sidebar()
 
 if __name__ == "__main__":
-    IndexUI.menu_admin()
+    IndexUI.main()

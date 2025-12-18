@@ -21,55 +21,6 @@ class Database:
 
     @classmethod
     def criar_tabelas(cls):
-        # --------------------- Tabela Cliente ---------------------
-        cls.execute("""
-            CREATE TABLE IF NOT EXISTS cliente (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                email TEXT NOT NULL,
-                fone TEXT,
-                senha TEXT NOT NULL
-            );
-        """)
-
-        # --------------------- Tabela Profissional ---------------------
-        cls.execute("""
-            CREATE TABLE IF NOT EXISTS profissional (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                especialidade TEXT NOT NULL,
-                conselho TEXT,
-                email TEXT NOT NULL,
-                senha TEXT NOT NULL
-            );
-        """)
-
-        # --------------------- Tabela Servico ---------------------
-        cls.execute("""
-            CREATE TABLE IF NOT EXISTS servico (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                descricao TEXT NOT NULL,
-                valor REAL NOT NULL
-            );
-        """)
-
-        # --------------------- Tabela Horario ---------------------
-        cls.execute("""
-            CREATE TABLE IF NOT EXISTS horario (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                data TEXT NOT NULL,
-                confirmado INTEGER DEFAULT 0,
-                id_cliente INTEGER,
-                id_servico INTEGER,
-                id_profissional INTEGER,
-
-                FOREIGN KEY (id_cliente) REFERENCES cliente(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_servico) REFERENCES servico(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_profissional) REFERENCES profissional(id) ON DELETE CASCADE
-            );
-        """)
-
-        # --------------------- Tabela Teste ---------------------
         cls.execute("""
             CREATE TABLE IF NOT EXISTS teste (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
