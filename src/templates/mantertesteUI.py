@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
-from controller.controller import Controller
+from views import View
 import time
 
 class ManterTesteUI:
     @staticmethod
     def main():
-        st.header("Cadastro de Itens")
+        st.header("Cadastro de Testes")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1: ManterTesteUI.listar()
         with tab2: ManterTesteUI.inserir()
@@ -15,48 +15,46 @@ class ManterTesteUI:
 
     @staticmethod
     def listar():
-        itens = Controller.teste_listar()
-        if len(itens) == 0: st.write("Nenhum teste cadastrado")
+        testes = View.teste_listar()
+        if len(testes) == 0: st.write("Nenhum teste cadastrado")
         else:
             list_dic = []
-            for obj in itens: list_dic.append(obj.to_json())
-            df = pd.DataFrame(list_dic, columns=["id", "name"])
-            df = df.sort_values(by="id")
+            for obj in testes: list_dic.append(obj.to_json())
+            df = pd.DataFrame(list_dic)
             st.dataframe(df, hide_index=True)
 
     @staticmethod
     def inserir():
-        nome = st.text_input("nome:")
+        nome = st.text_input("Informe o nome")
         if st.button("Inserir"):
-            Controller.teste_inserir(nome)
+            View.teste_inserir(nome)
             st.success("Teste inserido com sucesso")
-            time.sleep(1)
+            time.sleep(2)
             st.rerun()
 
     @staticmethod
     def atualizar():
-        itens = Controller.teste_listar()
-        if len(itens) == 0: st.write("Nenhum teste cadastrado")
+        testes = View.teste_listar()
+        if len(testes) == 0: st.write("Nenhum teste cadastrado")
         else:
-            op = st.selectbox("Atualização de Itens", itens, format_func=lambda x: f'{x.get_id()} - {x.get_name()}')
-            if op is not None:
-                nome = st.text_input("Informe o novo nome:", op.get_name())
-                if st.button("Atualizar"):
-                    id = op.id
-                    Controller.teste_atualizar(id, nome)
-                    st.success("Teste atualizado com sucesso")
-                    time.sleep(1)
-                    st.rerun()
+            op = st.selectbox("Atualização de Testes", testes)
+            nome = st.text_input("Informe o novo nome", op.get_name())
+            if st.button("Atualizar"):
+                id = op.get_id()
+                View.teste_atualizar(id, nome)
+                st.success("Teste atualizado com sucesso")
+                time.sleep(2)
+                st.rerun()
 
     @staticmethod
     def excluir():
-        itens = Controller.teste_listar()
-        if len(itens) == 0: st.write("Nenhum teste cadastrado")
+        testes = View.teste_listar()
+        if len(testes) == 0: st.write("Nenhum teste cadastrado")
         else:
-            op = st.selectbox("Exclusão de Itens", itens, format_func=lambda x: f'{x.get_id()} - {x.get_name()}')
-            if op is not None and st.button("Excluir"):
-                id = op.id
-                Controller.teste_excluir(id)
+            op = st.selectbox("Exclusão de Testes", testes)
+            if st.button("Excluir"):
+                id = op.get_id()
+                View.teste_excluir(id)
                 st.success("Teste excluído com sucesso")
-                time.sleep(1)
+                time.sleep(2)
                 st.rerun()
