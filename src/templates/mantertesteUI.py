@@ -6,7 +6,7 @@ import time
 class ManterTesteUI:
     @staticmethod
     def main():
-        st.header("Cadastro de Testes")
+        st.header("Teste de CRUD")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1: ManterTesteUI.listar()
         with tab2: ManterTesteUI.inserir()
@@ -16,7 +16,7 @@ class ManterTesteUI:
     @staticmethod
     def listar():
         testes = View.teste_listar()
-        if len(testes) == 0: st.write("Nenhum teste cadastrado")
+        if len(testes) == 0: st.write("Nenhum teste encontrado.")
         else:
             list_dic = []
             for obj in testes: list_dic.append(obj.to_json())
@@ -35,7 +35,7 @@ class ManterTesteUI:
     @staticmethod
     def atualizar():
         testes = View.teste_listar()
-        if len(testes) == 0: st.write("Nenhum teste cadastrado")
+        if len(testes) == 0: st.write("Nenhum teste encontrado.")
         else:
             op = st.selectbox("Atualização de Testes", testes)
             nome = st.text_input("Informe o novo nome", op.get_name())
@@ -49,7 +49,7 @@ class ManterTesteUI:
     @staticmethod
     def excluir():
         testes = View.teste_listar()
-        if len(testes) == 0: st.write("Nenhum teste cadastrado")
+        if len(testes) == 0: st.write("Nenhum teste encontrado.")
         else:
             op = st.selectbox("Exclusão de Testes", testes)
             if st.button("Excluir"):
