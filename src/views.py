@@ -1,6 +1,7 @@
-from models.teste import Teste, TesteDAO
+from dao.testedao import TesteDAO
+from models.teste import Teste
 
-class Controller:
+class View:
     # Itens 
     @staticmethod
     def teste_inserir(nome):
@@ -9,7 +10,9 @@ class Controller:
 
     @staticmethod
     def teste_listar():
-        return TesteDAO.listar()
+        r = TesteDAO.listar()
+        r.sort(key = lambda obj : obj.get_name())            
+        return r
 
     @staticmethod
     def teste_listar_id(id):
@@ -21,5 +24,6 @@ class Controller:
         TesteDAO.atualizar(teste)
 
     @staticmethod
-    def teste_excluir(id):
-        TesteDAO.excluir(id)
+    def teste_excluir(id: int):
+        teste = Teste(id, "")
+        TesteDAO.excluir(teste)

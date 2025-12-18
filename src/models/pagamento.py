@@ -11,17 +11,29 @@ class Pagamento:
         self.set_status(status)
 
     # Setters:
-    def set_id_pagamento(self, id_pagamento: int) -> None: self._id_pagamento = id_pagamento
+    def set_id_pagamento(self, id_pagamento: int) -> None: 
+        if id_pagamento <= 0: raise ValueError("ID do pagamento deve ser um inteiro positivo.")
+        self._id_pagamento = id_pagamento
 
-    def set_id_reserva(self, id_reserva: int) -> None: self._id_reserva = id_reserva
+    def set_id_reserva(self, id_reserva: int) -> None: 
+        if id_reserva <= 0: raise ValueError("ID da reserva deve ser um inteiro positivo.")
+        self._id_reserva = id_reserva
 
-    def set_data_pagamento(self, data_pagamento: date) -> None: self._data_pagamento = data_pagamento
+    def set_data_pagamento(self, data_pagamento: date) -> None: 
+        if data_pagamento > date.today(): raise ValueError("Data do pagamento não pode ser no futuro.")
+        self._data_pagamento = data_pagamento
 
-    def set_valor_total(self, valor_total: decimal) -> None: self._valor_total = valor_total
+    def set_valor_total(self, valor_total: decimal) -> None: 
+        if valor_total < 0: raise ValueError("Valor total do pagamento não pode ser negativo.")
+        self._valor_total = valor_total
 
-    def set_forma_pagamento(self, forma_pagamento: str) -> None: self._forma_pagamento = forma_pagamento
+    def set_forma_pagamento(self, forma_pagamento: str) -> None: 
+        if forma_pagamento == "": raise ValueError("Forma de pagamento não pode ser vazia.")
+        self._forma_pagamento = forma_pagamento
 
-    def set_status(self, status: str) -> None: self._status = status
+    def set_status(self, status: str) -> None: 
+        if status == "": raise ValueError("Status do pagamento não pode ser vazio.")
+        self._status = status
 
     # Getters:
     def get_id_pagamento(self) -> int: return self._id_pagamento
@@ -52,7 +64,6 @@ class Pagamento:
         raise NotImplementedError("Método from_row ainda não implementado")
 
     def processar_pagamento(self) -> bool:
-        # Lógica para processar o pagamento
         if self.get_status() == "Pendente":
             self.set_status("Concluído")
             return True

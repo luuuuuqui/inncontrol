@@ -6,13 +6,21 @@ class Quarto:
         self.set_numero(numero)
 
     # Setters:
-    def set_id_quarto(self, id_quarto: int) -> None: self._id_quarto = id_quarto
+    def set_id_quarto(self, id_quarto: int) -> None: 
+        if id_quarto <= 0: raise ValueError("ID do quarto deve ser um inteiro positivo.")
+        self._id_quarto = id_quarto
     
-    def set_id_tipo(self, id_tipo: int) -> None: self._id_tipo = id_tipo
+    def set_id_tipo(self, id_tipo: int) -> None: 
+        if id_tipo <= 0: raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
+        self._id_tipo = id_tipo
     
-    def set_bloco(self, bloco: str) -> None: self._bloco = bloco
+    def set_bloco(self, bloco: str) -> None: 
+        if bloco == "": raise ValueError("Bloco do quarto não pode ser vazio.")
+        self._bloco = bloco
 
-    def set_numero(self, numero: int) -> None: self._numero = numero
+    def set_numero(self, numero: int) -> None: 
+        if numero <= 0: raise ValueError("Número do quarto deve ser um inteiro positivo.")
+        self._numero = numero
 
     # Getters:
     def get_id_quarto(self) -> int: return self._id_quarto
