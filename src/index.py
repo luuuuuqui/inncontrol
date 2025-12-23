@@ -1,13 +1,13 @@
-from templates.mantertesteUI import ManterTesteUI
+from templates.manterusuarioUI import ManterUsuarioUI
 from dao.database import Database
 import streamlit as st
 
 class IndexUI:
     @staticmethod
     def menu_admin():
-        op = st.sidebar.selectbox("Menu", ["Teste"])
-        if op == "Teste":
-            ManterTesteUI.main()
+        op = st.sidebar.selectbox("Menu", ["Usuário"])
+        if op == "Usuário":
+            ManterUsuarioUI.main()
 
     @staticmethod
     def sidebar():

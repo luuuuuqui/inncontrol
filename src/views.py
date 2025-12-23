@@ -1,29 +1,29 @@
-from dao.testedao import TesteDAO
-from models.teste import Teste
+from dao.usuariodao import UsuarioDAO
+from models.usuario import Usuario
 
 class View:
     # Itens 
     @staticmethod
-    def teste_inserir(nome):
-        teste = Teste(0, nome)
-        TesteDAO.inserir(teste)
+    def usuario_inserir(nome, fone, email, senha, tipoperfil, idperfil):
+        usuario = Usuario(0, nome, fone, email, senha, tipoperfil, idperfil)
+        UsuarioDAO.inserir(usuario)
 
     @staticmethod
-    def teste_listar():
-        r = TesteDAO.listar()
-        r.sort(key = lambda obj : obj.get_name())            
+    def usuario_listar():
+        r = UsuarioDAO.listar()
+        # r.sort(key = lambda obj : obj.get_nome())
         return r
 
     @staticmethod
-    def teste_listar_id(id):
-        return TesteDAO.listar_id(id)
+    def usuario_listar_id(id):
+        return UsuarioDAO.listar_id(id)
 
     @staticmethod
-    def teste_atualizar(id, nome):
-        teste = Teste(id, nome)
-        TesteDAO.atualizar(teste)
+    def usuario_atualizar(id, nome, fone, email, senha, tipoperfil, idperfil):
+        usuario = Usuario(id, nome, fone, email, senha, tipoperfil, idperfil)
+        UsuarioDAO.atualizar(usuario)
 
     @staticmethod
-    def teste_excluir(id: int):
-        teste = Teste(id, "")
-        TesteDAO.excluir(teste)
+    def usuario_excluir(id: int):
+        usuario = Usuario(id, "a", "a", "a", "a", "a", 0)
+        UsuarioDAO.excluir(usuario)
