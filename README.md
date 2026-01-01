@@ -87,8 +87,8 @@ inncontrol/
 
 Toda a documentação técnica e diagramas UML estão disponíveis na pasta [`docs/`](docs/):
 
-- [Documento de Visão](docs/visao-do-produto/visao.md)
-- [Casos de Uso](docs/casos_de_uso/)
+- [Documento de Visão](docs/visao-do-produto/visao.pdf)
+- [Casos de Uso](docs/casos-de-uso/)
 - [Diagramas UML](docs/diagrama-de-classes/)
 
 ## Licença
