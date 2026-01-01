@@ -93,6 +93,6 @@ Toda a documentação técnica e diagramas UML estão disponíveis na pasta [`do
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está licenciado sob a Licença MIT.
 
 Desenvolvido para fins educacionais como parte do curso Técnico em Informática para Internet do IFRN.
