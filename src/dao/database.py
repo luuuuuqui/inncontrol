@@ -13,10 +13,12 @@ class Database:
  
     @classmethod
     def fechar(cls):
-        cls.conn.close()
+        if cls.conn: cls.conn.close()
+        else: raise Exception("Conexão não estabelecida.")
 
     @classmethod
     def execute(cls, sql, params = None):
+        if not cls.conn: raise Exception("Conexão não estabelecida.")
         cursor = cls.conn.cursor()
         cursor.execute(sql, params or [])
         cls.conn.commit()
@@ -37,8 +39,12 @@ class Database:
         );
         """)
 
-""" if __name__ == "__main__":
-    Database.abrir()
-    Database.criar_tabelas()
-    Database.fechar()
- """
+        # criar a tabela hóspede
+        cls.execute("""
+        CREATE TABLE IF NOT EXISTS hospede (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_usuario INTEGER NOT NULL,
+            endereco TEXT NOT NULL,
+            FOREIGN KEY (id_usuario) REFERENCES usuario (id)
+        );
+        """)

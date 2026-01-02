@@ -1,13 +1,16 @@
-from templates.manterusuarioUI import ManterUsuarioUI
+from templates.manterusuarioUI import ManterUsuarioUI as UsuarioUI
+from templates.manterhospedeUI import ManterHospedeUI as HospedeUI
 from dao.database import Database
 import streamlit as st
 
 class IndexUI:
     @staticmethod
     def menu_admin():
-        op = st.sidebar.selectbox("Menu", ["Usuário"])
-        if op == "Usuário":
-            ManterUsuarioUI.main()
+        op = st.sidebar.selectbox("Menu", ["Usuário", "Hóspede"])
+        match op:
+            case "Usuário": UsuarioUI.main()
+            case "Hóspede": HospedeUI.main()
+            case _: st.error("Opção inválida.")
 
     @staticmethod
     def sidebar():

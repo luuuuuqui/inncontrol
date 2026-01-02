@@ -1,5 +1,7 @@
 from dao.usuariodao import UsuarioDAO
 from models.usuario import Usuario
+from models.hospede import Hospede
+from dao.hospededao import HospedeDAO
 
 class View:
     # Itens 
@@ -27,3 +29,27 @@ class View:
     def usuario_excluir(id: int):
         usuario = Usuario(id, "a", "a", "a", "a", "a", 0)
         UsuarioDAO.excluir(usuario)
+    
+    # Hospede
+    @staticmethod
+    def hospede_inserir(id_usuario, endereco):
+        hospede = Hospede(0, id_usuario, endereco)
+        HospedeDAO.inserir(hospede)
+
+    @staticmethod
+    def hospede_listar():
+        return HospedeDAO.listar()
+
+    @staticmethod
+    def hospede_listar_id(id):
+        return HospedeDAO.listar_id(id)
+
+    @staticmethod
+    def hospede_atualizar(id_hospede, id_usuario, endereco):
+        hospede = Hospede(id_hospede, id_usuario, endereco)
+        HospedeDAO.atualizar(hospede)
+
+    @staticmethod
+    def hospede_excluir(id_hospede):
+        hospede = Hospede(id_hospede, 0, "")
+        HospedeDAO.excluir(hospede)

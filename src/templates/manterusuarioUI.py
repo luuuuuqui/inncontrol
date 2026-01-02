@@ -1,5 +1,7 @@
-import streamlit as st
-import pandas as pd
+from models.usuario import Usuario
+from dao.usuariodao import UsuarioDAO
+import streamlit as st  # pyright: ignore[reportMissingImports]
+import pandas as pd  # pyright: ignore[reportMissingImports]
 from views import View
 import time
 

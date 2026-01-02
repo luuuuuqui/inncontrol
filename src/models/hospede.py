@@ -6,7 +6,7 @@ class Hospede:
     
     # Setters:
     def set_id_hospede(self, id_hospede: int) -> None: 
-        if id_hospede <= 0: raise ValueError("ID do hóspede deve ser um inteiro positivo.")
+        if id_hospede < 0: raise ValueError("ID do hóspede deve ser um inteiro positivo.")
         self._id_hospede = id_hospede
 
     def set_id_usuario(self, id_usuario: int) -> None: 
