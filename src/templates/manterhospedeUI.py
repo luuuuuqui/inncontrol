@@ -34,7 +34,7 @@ class ManterHospedeUI:
                         {
                             "id_usuario": usuario.get_id_usuario(),
                             "nome": usuario.get_nome(),
-                            "telefone": usuario.get_fone(),
+                            "fone": usuario.get_fone(),
                             "email": usuario.get_email(),
                         }
                     )
@@ -43,24 +43,25 @@ class ManterHospedeUI:
                         {
                             "id_usuario": hd.get("id_usuario"),
                             "nome": None,
-                            "telefone": None,
+                            "fone": None,
                             "email": None,
                         }
                     )
                 dic_hospedes.append(hd)
-
+            
             df = pd.DataFrame(dic_hospedes)
 
+
             df = df.rename(columns={
-                "id_usuario": "ID",
+                "id_usuario": "ID (Usuário)",
                 "nome": "Nome",
                 "email": "Email",
-                "telefone": "Telefone",
+                "fone": "Telefone",
                 "endereco": "Endereço",
                 "id_hospede": "ID (Hóspede)",
             })
-
-            df = df.reindex(columns=["ID", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
+            
+            df = df.reindex(columns=[f"ID (Usuário)", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
 
             st.dataframe(df, hide_index=True)
 
