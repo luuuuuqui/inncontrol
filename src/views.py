@@ -27,7 +27,7 @@ class View:
     
     @staticmethod
     def usuario_atualizar_senha(id, senha):
-        usuario = Usuario(id, "", "", "", senha, "", 0)
+        usuario = Usuario(id, "a", "a", "a", senha, "a", 0)
         UsuarioDAO.atualizar_senha(usuario)
 
     @staticmethod

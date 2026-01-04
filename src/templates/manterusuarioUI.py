@@ -1,3 +1,4 @@
+from gc import disable
 from models.usuario import Usuario
 from dao.usuariodao import UsuarioDAO
 import streamlit as st  # pyright: ignore[reportMissingImports]
@@ -9,11 +10,12 @@ class ManterUsuarioUI:
     @staticmethod
     def main():
         st.header("Teste de CRUD de Usuário")
-        tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["Listar", "Inserir", "Atualizar", "Atualizar Senha", "Excluir"])
         with tab1: ManterUsuarioUI.listar()
         with tab2: ManterUsuarioUI.inserir()
         with tab3: ManterUsuarioUI.atualizar()
-        with tab4: ManterUsuarioUI.excluir()
+        with tab4: ManterUsuarioUI.atualizar_senha()
+        with tab5: ManterUsuarioUI.excluir()
 
     @staticmethod
     def listar():
@@ -64,7 +66,7 @@ class ManterUsuarioUI:
         if len(usuarios) == 0:
             st.write("Nenhum usuario encontrado.")
         else:
-            op = st.selectbox("Escolha o usuário a atualizar", usuarios, format_func=lambda x: x.__str__())
+            op = st.selectbox("Escolha o usuário a atualizar", usuarios, format_func=lambda x: x.__str__(), key="selectboxatualizar")
             
             if "ultimo_id_selecionado" not in st.session_state:
                 st.session_state.ultimo_id_selecionado = None
@@ -75,14 +77,12 @@ class ManterUsuarioUI:
                 st.session_state.atualizarnome = op.get_nome()
                 st.session_state.atualizarfone = op.get_fone()
                 st.session_state.atualizaremail = op.get_email()
-                st.session_state.atualizarsenha = op.get_senha()
                 st.session_state.atualizartipoperfil = op.get_tipo_perfil()
                 st.session_state.atualizaridperfil = op.get_id_perfil()
             
             nome = st.text_input("Informe o novo nome", key='atualizarnome')
             fone = st.text_input("Informe o novo telefone:", key='atualizarfone', placeholder="Usuário sem telefone.")
             email = st.text_input("Informe o novo email:", key='atualizaremail')
-            # senha = st.text_input("Informe a nova senha:", type="password", key='atualizarsenha')
             
             tipoperfil = st.selectbox(
                 "Informe o tipo do perfil:",
@@ -96,10 +96,36 @@ class ManterUsuarioUI:
                 key='atualizaridperfil'
             )
             
-            if st.button("Atualizar"):
+            if st.button("Atualizar usuário"):
                 id = op.get_id_usuario()
                 View.usuario_atualizar(id, nome, fone, email, tipoperfil, idperfil)
                 st.success("Usuario atualizado com sucesso")
+                time.sleep(2)
+                st.rerun()
+    
+    @staticmethod
+    def atualizar_senha():
+        usuarios = View.usuario_listar()
+        if len(usuarios) == 0:
+            st.write("Nenhum usuario encontrado.")
+        else:
+            op = st.selectbox("Escolha o usuário a atualizar", usuarios, format_func=lambda x: x.__str__(), key="sb_atualizar_senha")
+
+            # Inicializa a variável de controle se não existir
+            if 'ultimo_usuario' not in st.session_state:
+                st.session_state.ultimo_usuario = op.get_id_usuario()
+
+            # Compara o usuário atual com o último armazenado
+            if st.session_state.ultimo_usuario != op.get_id_usuario():
+                st.session_state.atualizarsenha = "" # Limpa o campo de senha
+                st.session_state.ultimo_usuario = op.get_id_usuario() # Atualiza o controle
+
+            senha = st.text_input("Informe a nova senha:", type="password", key='atualizarsenha')
+
+            if st.button("Atualizar senha", key="btn_atualizar_senha"):
+                id = op.get_id_usuario()
+                View.usuario_atualizar_senha(id, senha)
+                st.success("Senha atualizada com sucesso!")
                 time.sleep(2)
                 st.rerun()
 
