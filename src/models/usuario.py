@@ -17,8 +17,7 @@ class Usuario:
         if nome.strip() == "": raise ValueError("Nome do usuário não pode ser vazio.")
         self.__nome = nome
 
-    def set_fone(self, fone: str) -> None: 
-        if fone.strip() == "": raise ValueError("Telefone do usuário não pode ser vazio.")
+    def set_fone(self, fone: str) -> None:
         self.__fone = fone
 
     def set_email(self, email: str) -> None: 

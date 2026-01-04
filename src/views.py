@@ -21,9 +21,14 @@ class View:
         return UsuarioDAO.listar_id(id)
 
     @staticmethod
-    def usuario_atualizar(id, nome, fone, email, senha, tipoperfil, idperfil):
-        usuario = Usuario(id, nome, fone, email, senha, tipoperfil, idperfil)
+    def usuario_atualizar(id, nome, fone, email, tipoperfil, idperfil):
+        usuario = Usuario(id, nome, fone, email, "********", tipoperfil, idperfil)
         UsuarioDAO.atualizar(usuario)
+    
+    @staticmethod
+    def usuario_atualizar_senha(id, senha):
+        usuario = Usuario(id, "", "", "", senha, "", 0)
+        UsuarioDAO.atualizar_senha(usuario)
 
     @staticmethod
     def usuario_excluir(id: int):

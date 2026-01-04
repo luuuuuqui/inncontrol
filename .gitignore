@@ -11,3 +11,6 @@
 __pycache__/
 **/__pycache__/
 *.pyc
+
+# Arquivos de teste
+testing.py

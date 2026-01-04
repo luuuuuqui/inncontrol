@@ -40,16 +40,28 @@ class UsuarioDAO(DAO):
         cls.abrir()
         sql = """
             UPDATE usuario
-            SET nome=?, fone=?, email=?, senha=?, perfil_tipo=?, perfil_id=?
+            SET nome=?, fone=?, email=?, perfil_tipo=?, perfil_id=?
             WHERE id=?
         """
         cls.execute(sql, (
             obj.get_nome(),
             obj.get_fone(),
             obj.get_email(),
-            obj.get_senha(),
             obj.get_tipo_perfil(),
             obj.get_id_perfil(),
+            obj.get_id_usuario()
+        ))
+    
+    @classmethod
+    def atualizar_senha(cls, obj):
+        cls.abrir()
+        sql = """
+            UPDATE usuario
+            SET senha=?
+            WHERE id=?
+        """
+        cls.execute(sql, (
+            obj.get_senha(),
             obj.get_id_usuario()
         ))
 
