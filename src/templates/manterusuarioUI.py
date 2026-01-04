@@ -54,14 +54,14 @@ class ManterUsuarioUI:
         else:
             op = st.selectbox("Atualização de Usuarios", usuarios)
 
-            nome = st.text_input("Informe o novo nome", op.get_nome())
-            fone = st.text_input("Informe o telefone:", op.get_fone())
-            email = st.text_input("Informe o email:", op.get_email())
-            senha = st.text_input("Informe a senha:", type="password", value=op.get_senha())
+            nome = st.text_input("Informe o novo nome", op.get_nome(), key='atualizarnome')
+            fone = st.text_input("Informe o novo telefone:", op.get_fone(), key='atualizarfone')
+            email = st.text_input("Informe o novo email:", op.get_email(), key='atualizaremail')
+            senha = st.text_input("Informe a nova senha:", type="password", value=op.get_senha(), key='atualizarsenha')
             tipoperfil = st.selectbox(
                 "Informe o tipo do perfil:",
                 ("Administrador", "Recepcionista", "Hóspede"), key='atualizartipoperfil')
-            idperfil = st.number_input(f"Informe o id do {tipoperfil.lower()}:", step=1, min_value=0, value=op.get_id_perfil())
+            idperfil = st.number_input(f"Informe o id do {tipoperfil.lower()}:", step=1, min_value=0, value=op.get_id_perfil(), key='atualizaridperfil')
             if st.button("Atualizar"):
                 id = op.get_id_usuario()
                 View.usuario_atualizar(id, nome, fone, email, senha, tipoperfil, idperfil)
