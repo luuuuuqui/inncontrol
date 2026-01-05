@@ -1,4 +1,3 @@
-from shutil import ExecError
 import sqlite3
 import os
 
