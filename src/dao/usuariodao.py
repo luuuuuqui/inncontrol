@@ -1,6 +1,7 @@
 from dao.dao import DAO
 from models.usuario import Usuario
 
+
 class UsuarioDAO(DAO):
     @classmethod
     def inserir(cls, obj):
@@ -9,7 +10,17 @@ class UsuarioDAO(DAO):
             INSERT INTO usuario (nome, fone, email, senha, perfil_tipo, perfil_id)
             VALUES (?, ?, ?, ?, ?, ?)
         """
-        cls.execute(sql, (obj.get_nome(), obj.get_fone(), obj.get_email(), obj.get_senha(), obj.get_tipo_perfil(), obj.get_id_perfil()))
+        cls.execute(
+            sql,
+            (
+                obj.get_nome(),
+                obj.get_fone(),
+                obj.get_email(),
+                obj.get_senha(),
+                obj.get_tipo_perfil(),
+                obj.get_id_perfil(),
+            ),
+        )
         cls.fechar()
 
     @classmethod
@@ -22,7 +33,7 @@ class UsuarioDAO(DAO):
             Usuario(idusuario, nome, fone, email, senha, tipoperfil, idperfil)
             for (idusuario, nome, fone, email, senha, tipoperfil, idperfil) in rows
         ]
-        
+
         return objs
 
     @classmethod
@@ -43,15 +54,17 @@ class UsuarioDAO(DAO):
             SET nome=?, fone=?, email=?, perfil_tipo=?, perfil_id=?
             WHERE id=?
         """
-        cls.execute(sql, (
-            obj.get_nome(),
-            obj.get_fone(),
-            obj.get_email(),
-            obj.get_tipo_perfil(),
-            obj.get_id_perfil(),
-            obj.get_id_usuario()
-        ))
-    
+        cls.execute(
+            sql, (
+                obj.get_nome(),
+                obj.get_fone(),
+                obj.get_email(),
+                obj.get_tipo_perfil(),
+                obj.get_id_perfil(),
+                obj.get_id_usuario(),
+            ),
+        )
+
     @classmethod
     def atualizar_senha(cls, obj):
         cls.abrir()
@@ -60,10 +73,7 @@ class UsuarioDAO(DAO):
             SET senha=?
             WHERE id=?
         """
-        cls.execute(sql, (
-            obj.get_senha(),
-            obj.get_id_usuario()
-        ))
+        cls.execute(sql, (obj.get_senha(), obj.get_id_usuario()))
 
     @classmethod
     def excluir(cls, obj):

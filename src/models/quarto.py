@@ -6,30 +6,38 @@ class Quarto:
         self.set_numero(numero)
 
     # Setters:
-    def set_id(self, id: int) -> None: 
-        if id <= 0: raise ValueError("ID do quarto deve ser um inteiro positivo.")
+    def set_id(self, id: int) -> None:
+        if id <= 0:
+            raise ValueError("ID do quarto deve ser um inteiro positivo.")
         self._id = id
-    
-    def set_id_tipo(self, id_tipo: int) -> None: 
-        if id_tipo <= 0: raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
+
+    def set_id_tipo(self, id_tipo: int) -> None:
+        if id_tipo <= 0:
+            raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
         self._id_tipo = id_tipo
-    
-    def set_bloco(self, bloco: str) -> None: 
-        if bloco == "": raise ValueError("Bloco do quarto não pode ser vazio.")
+
+    def set_bloco(self, bloco: str) -> None:
+        if bloco == "":
+            raise ValueError("Bloco do quarto não pode ser vazio.")
         self._bloco = bloco
 
-    def set_numero(self, numero: int) -> None: 
-        if numero <= 0: raise ValueError("Número do quarto deve ser um inteiro positivo.")
+    def set_numero(self, numero: int) -> None:
+        if numero <= 0:
+            raise ValueError("Número do quarto deve ser um inteiro positivo.")
         self._numero = numero
 
     # Getters:
-    def get_id(self) -> int: return self._id
+    def get_id(self) -> int:
+        return self._id
 
-    def get_id_tipo(self) -> int: return self._id_tipo
+    def get_id_tipo(self) -> int:
+        return self._id_tipo
 
-    def get_bloco(self) -> str: return self._bloco
-    
-    def get_numero(self) -> int: return self._numero
+    def get_bloco(self) -> str:
+        return self._bloco
+
+    def get_numero(self) -> int:
+        return self._numero
 
     # Métodos:
     def to_dict(self) -> dict:
@@ -37,16 +45,5 @@ class Quarto:
             "id": self.get_id(),
             "id_tipo": self.get_id_tipo(),
             "bloco": self.get_bloco(),
-            "numero": self.get_numero()
+            "numero": self.get_numero(),
         }
-    
-    @staticmethod
-    def from_row(row) -> 'Quarto':
-        raise NotImplementedError("Método from_row ainda não implementado")
-
-    def verificar_disponibilidade(self) -> bool:
-        pass
-
-
-
-        

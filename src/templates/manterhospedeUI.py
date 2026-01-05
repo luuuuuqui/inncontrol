@@ -61,7 +61,7 @@ class ManterHospedeUI:
                 "id_hospede": "ID (Hóspede)",
             })
             
-            df = df.reindex(columns=[f"ID (Usuário)", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
+            df = df.reindex(columns=["ID (Usuário)", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
 
             st.dataframe(df, hide_index=True)
 

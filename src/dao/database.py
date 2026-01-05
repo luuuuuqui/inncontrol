@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+
 class Database:
     conn = None
     basedirectory = os.path.dirname(os.path.abspath(__file__))
@@ -10,15 +11,18 @@ class Database:
     def abrir(cls):
         cls.conn = sqlite3.connect(cls.pathdb, check_same_thread=False)
         cls.conn.execute("PRAGMA foreign_keys = ON")
- 
-    @classmethod
-    def fechar(cls):
-        if cls.conn: cls.conn.close()
-        else: raise Exception("Conexão não estabelecida.")
 
     @classmethod
-    def execute(cls, sql, params = None):
-        if not cls.conn: raise Exception("Conexão não estabelecida.")
+    def fechar(cls):
+        if cls.conn:
+            cls.conn.close()
+        else:
+            raise Exception("Conexão não estabelecida.")
+
+    @classmethod
+    def execute(cls, sql, params=None):
+        if not cls.conn:
+            raise Exception("Conexão não estabelecida.")
         cursor = cls.conn.cursor()
         cursor.execute(sql, params or [])
         cls.conn.commit()

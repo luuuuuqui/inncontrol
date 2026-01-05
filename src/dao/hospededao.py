@@ -1,6 +1,7 @@
 from dao.dao import DAO
 from models.hospede import Hospede
 
+
 class HospedeDAO(DAO):
     @classmethod
     def inserir(cls, obj):
@@ -22,7 +23,7 @@ class HospedeDAO(DAO):
             Hospede(id_hospede, id_usuario, endereco)
             for (id_hospede, id_usuario, endereco) in rows
         ]
-        
+
         return objs
 
     @classmethod
@@ -43,15 +44,13 @@ class HospedeDAO(DAO):
             SET id_usuario=?, endereco=?
             WHERE id=?
         """
-        cls.execute(sql, (
-            obj.get_id_usuario(),
-            obj.get_endereco(),
-            obj.get_id_hospede()
-        ))
+        cls.execute(
+            sql, (obj.get_id_usuario(), obj.get_endereco(), obj.get_id_hospede())
+        )
 
     @classmethod
     def excluir(cls, obj):
-        cls.abrir()      
+        cls.abrir()
         sql = "DELETE FROM hospede WHERE id=?"
         cls.execute(sql, (obj.get_id_hospede(),))
         cls.fechar()

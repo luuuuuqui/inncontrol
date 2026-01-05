@@ -1,16 +1,20 @@
 from templates.manterusuarioUI import ManterUsuarioUI as UsuarioUI
 from templates.manterhospedeUI import ManterHospedeUI as HospedeUI
 from dao.database import Database
-import streamlit as st
+import streamlit as st  # pyright: ignore[reportMissingImports]
+
 
 class IndexUI:
     @staticmethod
     def menu_admin():
         op = st.sidebar.selectbox("Menu", ["Usuário", "Hóspede"])
         match op:
-            case "Usuário": UsuarioUI.main()
-            case "Hóspede": HospedeUI.main()
-            case _: st.error("Opção inválida.")
+            case "Usuário":
+                UsuarioUI.main()
+            case "Hóspede":
+                HospedeUI.main()
+            case _:
+                st.error("Opção inválida.")
 
     @staticmethod
     def sidebar():
@@ -22,8 +26,9 @@ class IndexUI:
         Database.abrir()
         Database.criar_tabelas()
         Database.fechar()
-        
+
         IndexUI.sidebar()
+
 
 if __name__ == "__main__":
     IndexUI.main()

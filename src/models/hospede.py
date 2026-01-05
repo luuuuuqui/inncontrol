@@ -40,7 +40,3 @@ class Hospede:
 
     def __str__(self) -> str:
         return f"{self.get_id_hospede()} - {self.get_id_usuario()}"
-
-    @staticmethod
-    def from_row(row) -> "Hospede":
-        raise NotImplementedError("Método from_row ainda não implementado")
