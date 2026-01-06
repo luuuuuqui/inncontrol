@@ -52,3 +52,16 @@ class Database:
             FOREIGN KEY (id_usuario) REFERENCES usuario (id)
         );
         """)
+
+        # criar a tabela tipo de quarto
+        cls.execute(
+            """
+        CREATE TABLE IF NOT EXISTS tipo_quarto (
+            id_tipo_quarto INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL UNIQUE,
+            descricao TEXT NOT NULL,
+            capacidade INTEGER NOT NULL,
+            valor_diaria DECIMAL NOT NULL
+        );
+        """
+        )
