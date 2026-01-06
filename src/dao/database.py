@@ -56,7 +56,7 @@ class Database:
         # criar a tabela tipo de quarto
         cls.execute(
             """
-        CREATE TABLE IF NOT EXISTS tipo_quarto (
+        CREATE TABLE IF NOT EXISTS tipoquarto (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL UNIQUE,
             descricao TEXT NOT NULL,

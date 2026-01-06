@@ -19,7 +19,7 @@ class View:
     @staticmethod
     def usuario_listar():
         u = UsuarioDAO.listar()
-        u.sort(key=lambda obj: obj.get_nome())
+        u.sort(key=lambda obj: obj.get_id_usuario())
         return u
 
     @staticmethod
@@ -50,7 +50,7 @@ class View:
     @staticmethod
     def hospede_listar():
         h = HospedeDAO.listar()
-        h.sort(key=lambda obj: obj.get_endereco())
+        h.sort(key=lambda obj: obj.get_id_hospede())
         return h
 
     @staticmethod
@@ -75,8 +75,8 @@ class View:
 
     @staticmethod
     def tipoquarto_listar():
-        tq = TipoQuartoDAO.listar()
-        tq.sort(key=lambda obj: obj.get_nome())
+        tq = TipoQuartoDAO.listar() # retorna uma lista de objetos TipoQuarto
+        tq.sort(key=lambda obj: obj.get_id_tipoquarto())
         return tq
 
     @staticmethod

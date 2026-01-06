@@ -1,21 +1,6 @@
 from dao.dao import DAO
 from models.tipoquarto import TipoQuarto
 
-"""
-TipoQuarto(
-    id_tipo: int,
-    nome: str,
-    descricao: str,
-    capacidade: int,
-    valor_diaria: decimal,
-)
-"""
-"""
-TipoQuarto(
-    
-)
-"""
-
 
 class TipoQuartoDAO(DAO):
     @classmethod
