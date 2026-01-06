@@ -4,23 +4,23 @@ from decimal import Decimal as decimal
 class TipoQuarto:
     def __init__(
         self,
-        id_tipo: int,
+        id_tipo_quarto: int,
         nome: str,
         descricao: str,
         capacidade: int,
         valor_diaria: decimal,
     ) -> None:
-        self.set_id_tipo(id_tipo)
+        self.set_id_tipo_quarto(id_tipo_quarto)
         self.set_nome(nome)
         self.set_descricao(descricao)
         self.set_capacidade(capacidade)
         self.set_valor_diaria(valor_diaria)
 
     # Setters:
-    def set_id_tipo(self, id_tipo: int) -> None:
-        if id_tipo <= 0:
+    def set_id_tipo_quarto(self, id_tipo_quarto: int) -> None:
+        if id_tipo_quarto <= 0:
             raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
-        self.__id_tipo = id_tipo
+        self.__id_tipo_quarto = id_tipo_quarto
 
     def set_nome(self, nome: str) -> None:
         if nome == "":
@@ -45,8 +45,8 @@ class TipoQuarto:
         self.__valor_diaria = valor_diaria
 
     # Getters:
-    def get_id_tipo(self) -> int:
-        return self.__id_tipo
+    def get_id_tipo_quarto(self) -> int:
+        return self.__id_tipo_quarto
 
     def get_nome(self) -> str:
         return self.__nome
@@ -63,7 +63,7 @@ class TipoQuarto:
     # Métodos:
     def to_dict(self) -> dict:
         return {
-            "id_tipo": self.get_id_tipo(),
+            "id_tipo_quarto": self.get_id_tipo_quarto(),
             "nome": self.get_nome(),
             "descricao": self.get_descricao(),
             "capacidade": self.get_capacidade(),
