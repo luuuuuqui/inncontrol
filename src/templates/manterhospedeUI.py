@@ -51,16 +51,27 @@ class ManterHospedeUI:
 
             df = pd.DataFrame(dic_hospedes)
 
-            df = df.rename(columns={
-                "id_usuario": "ID (Usuário)",
-                "nome": "Nome",
-                "email": "Email",
-                "fone": "Telefone",
-                "endereco": "Endereço",
-                "id_hospede": "ID (Hóspede)",
-            })
+            df = df.rename(
+                columns={
+                    "id_usuario": "ID (Usuário)",
+                    "nome": "Nome",
+                    "email": "Email",
+                    "fone": "Telefone",
+                    "endereco": "Endereço",
+                    "id_hospede": "ID (Hóspede)",
+                }
+            )
 
-            df = df.reindex(columns=["ID (Usuário)", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
+            df = df.reindex(
+                columns=[
+                    "ID (Usuário)",
+                    "Nome",
+                    "Email",
+                    "Telefone",
+                    "Endereço",
+                    "ID (Hóspede)",
+                ]
+            )
 
             st.dataframe(df, hide_index=True)
 
@@ -98,7 +109,7 @@ class ManterHospedeUI:
             op = st.selectbox(
                 "Atualização de Hóspedes",
                 hospedes,
-                format_func=lambda h: f"{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome() if View.usuario_listar_id(h.get_id_usuario()) else 'Usuário não encontrado'} - {h.get_endereco()}", # pyright: ignore[reportOptionalMemberAccess]
+                format_func=lambda h: f"{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome() if View.usuario_listar_id(h.get_id_usuario()) else 'Usuário não encontrado'} - {h.get_endereco()}",  # pyright: ignore[reportOptionalMemberAccess]
             )
             usuarios_hospede = [
                 u
