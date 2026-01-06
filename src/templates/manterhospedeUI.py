@@ -48,9 +48,8 @@ class ManterHospedeUI:
                         }
                     )
                 dic_hospedes.append(hd)
-            
-            df = pd.DataFrame(dic_hospedes)
 
+            df = pd.DataFrame(dic_hospedes)
 
             df = df.rename(columns={
                 "id_usuario": "ID (Usuário)",
@@ -60,11 +59,10 @@ class ManterHospedeUI:
                 "endereco": "Endereço",
                 "id_hospede": "ID (Hóspede)",
             })
-            
+
             df = df.reindex(columns=["ID (Usuário)", "Nome", "Email", "Telefone", "Endereço", "ID (Hóspede)"])
 
             st.dataframe(df, hide_index=True)
-
 
     @staticmethod
     def inserir():
@@ -130,7 +128,12 @@ class ManterHospedeUI:
         if len(hospedes) == 0:
             st.write("Nenhum hóspede encontrado.")
         else:
-            op = st.selectbox("Exclusão de Hóspedes", hospedes)
+            # Adicionado format_func para exibir: id_hospede - id_usuario - nome
+            op = st.selectbox(
+                "Exclusão de Hóspedes",
+                hospedes,
+                format_func=lambda h: f"{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome() if View.usuario_listar_id(h.get_id_usuario()) else 'Usuário não encontrado'} - {h.get_id_usuario()}",
+            )
             if st.button("Excluir"):
                 id = op.get_id_hospede()
                 View.hospede_excluir(id)
