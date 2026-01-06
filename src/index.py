@@ -10,13 +10,13 @@ from dao.database import Database
 class IndexUI:
     @staticmethod
     def menu_admin():
-        op = st.sidebar.selectbox("Menu", ["Usuário", "Hóspede", "Tipo Quarto"])
+        op = st.sidebar.selectbox("Menu", ["Usuário", "Hóspede", "Tipo de Quarto"])
         match op:
             case "Usuário":
                 UsuarioUI.main()
             case "Hóspede":
                 HospedeUI.main()
-            case "Tipo Quarto":
+            case "Tipo de Quarto":
                 TipoQuartoUI.main()
             case _:
                 st.error("Opção inválida.")

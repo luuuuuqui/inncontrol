@@ -63,7 +63,7 @@ class TipoQuarto:
     # Métodos:
     def to_dict(self) -> dict:
         return {
-            "id": self.get_id_tipoquarto(),
+            "id_tipoquarto": self.get_id_tipoquarto(),
             "nome": self.get_nome(),
             "descricao": self.get_descricao(),
             "capacidade": self.get_capacidade(),
