@@ -42,8 +42,8 @@ class Quarto:
     # Métodos:
     def to_dict(self) -> dict:
         return {
-            "id": self.get_id_quarto(),
-            "id_tipo": self.get_id_quarto_tipo(),
+            "id_quarto": self.get_id_quarto(),
+            "id_quarto_tipo": self.get_id_quarto_tipo(),
             "bloco": self.get_bloco(),
             "numero": self.get_numero(),
         }
