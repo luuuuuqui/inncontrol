@@ -48,7 +48,12 @@ class QuartoDAO(DAO):
         """
         cls.execute(
             sql,
-            (obj.get_id_quarto_tipo(), obj.get_bloco(), obj.get_numero(), obj.get_id_quarto()),
+            (
+                obj.get_id_quarto_tipo(),
+                obj.get_bloco(),
+                obj.get_numero(),
+                obj.get_id_quarto(),
+            ),
         )
 
     @classmethod

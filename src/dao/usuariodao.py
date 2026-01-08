@@ -55,7 +55,8 @@ class UsuarioDAO(DAO):
             WHERE id=?
         """
         cls.execute(
-            sql, (
+            sql,
+            (
                 obj.get_nome(),
                 obj.get_fone(),
                 obj.get_email(),

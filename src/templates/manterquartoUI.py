@@ -100,7 +100,7 @@ class ManterQuartoUI:
                     i
                     for i, t in enumerate(View.tipoquarto_listar())
                     if t.get_id_tipoquarto() == op.get_id_quarto_tipo()
-                ][0]
+                ][0],
             ).get_id_tipoquarto()
 
             bloco = st.text_input("Informe o bloco:", value=op.get_bloco())

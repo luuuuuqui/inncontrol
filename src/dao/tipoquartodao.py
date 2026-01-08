@@ -16,7 +16,7 @@ class TipoQuartoDAO(DAO):
                 obj.get_nome(),
                 obj.get_descricao(),
                 obj.get_capacidade(),
-                obj.get_valor_diaria()
+                obj.get_valor_diaria(),
             ),
         )
         cls.fechar()
@@ -53,7 +53,8 @@ class TipoQuartoDAO(DAO):
             WHERE id=?
         """
         cls.execute(
-            sql, (
+            sql,
+            (
                 obj.get_nome(),
                 obj.get_descricao(),
                 obj.get_capacidade(),

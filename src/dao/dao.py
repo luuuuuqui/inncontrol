@@ -16,7 +16,6 @@ class DAO:
     @classmethod
     def fechar(cls):
         cls.conn.close()  # pyright: ignore[reportOptionalMemberAccess]
-        
 
     @classmethod
     def execute(cls, sql, params=None):
