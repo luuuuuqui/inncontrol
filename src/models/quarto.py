@@ -1,20 +1,20 @@
 class Quarto:
     def __init__(self, id: int, id_tipo: int, bloco: str, numero: int) -> None:
-        self.set_id(id)
-        self.set_id_tipo(id_tipo)
+        self.set_id_quarto(id)
+        self.set_id_quarto_tipo(id_tipo)
         self.set_bloco(bloco)
         self.set_numero(numero)
 
     # Setters:
-    def set_id(self, id: int) -> None:
+    def set_id_quarto(self, id: int) -> None:
         if id <= 0:
             raise ValueError("ID do quarto deve ser um inteiro positivo.")
-        self._id = id
+        self._id_quarto = id
 
-    def set_id_tipo(self, id_tipo: int) -> None:
+    def set_id_quarto_tipo(self, id_tipo: int) -> None:
         if id_tipo <= 0:
             raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
-        self._id_tipo = id_tipo
+        self._id_quarto_tipo = id_tipo
 
     def set_bloco(self, bloco: str) -> None:
         if bloco == "":
@@ -27,11 +27,11 @@ class Quarto:
         self._numero = numero
 
     # Getters:
-    def get_id(self) -> int:
-        return self._id
+    def get_id_quarto(self) -> int:
+        return self._id_quarto
 
-    def get_id_tipo(self) -> int:
-        return self._id_tipo
+    def get_id_quarto_tipo(self) -> int:
+        return self._id_quarto_tipo
 
     def get_bloco(self) -> str:
         return self._bloco
@@ -42,12 +42,11 @@ class Quarto:
     # Métodos:
     def to_dict(self) -> dict:
         return {
-            "id": self.get_id(),
-            "id_tipo": self.get_id_tipo(),
+            "id": self.get_id_quarto(),
+            "id_tipo": self.get_id_quarto_tipo(),
             "bloco": self.get_bloco(),
             "numero": self.get_numero(),
         }
-    
+
     def __str__(self) -> str:
-        return f"{self.get_id()} - {self.get_id_tipo()} - {self.get_bloco()} - {self.get_numero()}"
-        
+        return f"{self.get_id_quarto()} - {self.get_id_quarto_tipo()} - {self.get_bloco()} - {self.get_numero()}"
