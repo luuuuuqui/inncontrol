@@ -31,7 +31,8 @@ class Database:
     @classmethod
     def criar_tabelas(cls):
         # criar a tabela usuário
-        cls.execute("""
+        cls.execute(
+            """
         CREATE TABLE IF NOT EXISTS usuario (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
@@ -41,17 +42,33 @@ class Database:
             perfil_tipo TEXT NOT NULL,
             perfil_id INTEGER NOT NULL
         );
-        """)
+        """
+        )
 
         # criar a tabela hóspede
-        cls.execute("""
+        cls.execute(
+            """
         CREATE TABLE IF NOT EXISTS hospede (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             id_usuario INTEGER NOT NULL,
             endereco TEXT NOT NULL,
             FOREIGN KEY (id_usuario) REFERENCES usuario (id)
         );
-        """)
+        """
+        )
+
+        # criar a tabela quarto
+        cls.execute(
+            """
+        CREATE TABLE IF NOT EXISTS quarto (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_tipo INTEGER NOT NULL,
+            bloco TEXT NOT NULL,
+            numero INTEGER NOT NULL,
+            FOREIGN KEY (id_tipo) REFERENCES tipoquarto (id)
+        );
+        """
+        )
 
         # criar a tabela tipo de quarto
         cls.execute(
