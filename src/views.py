@@ -2,12 +2,16 @@ from decimal import Decimal
 
 from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
+from dao.quartodao import QuartoDAO
 from dao.tipoquartodao import TipoQuartoDAO
 
 from models.usuario import Usuario
 from models.hospede import Hospede
+from models.quarto import Quarto
 from models.tipoquarto import TipoQuarto
 
+# todo: adicionar verifiação de usuarios com mesmas credenciais
+# exemplo: mesmo email para usuario, mesmo numero de quarto no mesmo bloco, etc.
 
 class View:
     # Usuário
@@ -92,3 +96,29 @@ class View:
     def tipoquarto_excluir(id_tipoquarto):
         tq = TipoQuarto(id_tipoquarto, "a", "a", 1, Decimal(0.01))
         TipoQuartoDAO.excluir(tq)
+    
+    # Quarto
+    @staticmethod
+    def quarto_inserir(id_tipo, bloco, numero):
+        q = Quarto(0, id_tipo, bloco, numero)
+        QuartoDAO.inserir(q)
+    
+    @staticmethod
+    def quarto_listar():
+        q = QuartoDAO.listar()
+        q.sort(key=lambda obj: obj.get_id_quarto())
+        return q
+    
+    @staticmethod
+    def quarto_listar_id(id):
+        return QuartoDAO.listar_id(id)
+    
+    @staticmethod
+    def quarto_atualizar(id_quarto, id_tipo, bloco, numero):
+        q = Quarto(id_quarto, id_tipo, bloco, numero)
+        QuartoDAO.atualizar(q)
+        
+    @staticmethod
+    def quarto_excluir(id_quarto):
+        q = Quarto(id_quarto, 0, "a", 0)
+        QuartoDAO.excluir(q)
