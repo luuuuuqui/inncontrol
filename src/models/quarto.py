@@ -47,3 +47,7 @@ class Quarto:
             "bloco": self.get_bloco(),
             "numero": self.get_numero(),
         }
+    
+    def __str__(self) -> str:
+        return f"{self.get_id()} - {self.get_id_tipo()} - {self.get_bloco()} - {self.get_numero()}"
+        
