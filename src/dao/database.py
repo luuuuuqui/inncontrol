@@ -82,3 +82,16 @@ class Database:
         );
         """
         )
+        
+        # criar a tabela adicional
+        cls.execute(
+            """
+        CREATE TABLE IF NOT EXISTS adicional (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            descricao TEXT NOT NULL,
+            valor TEXT NOT NULL
+        );
+        """
+        )
+        
+        
