@@ -4,11 +4,13 @@ from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
 from dao.quartodao import QuartoDAO
 from dao.tipoquartodao import TipoQuartoDAO
+from dao.adicionaldao import AdicionalDAO
 
 from models.usuario import Usuario
 from models.hospede import Hospede
 from models.quarto import Quarto
 from models.tipoquarto import TipoQuarto
+from models.adicional import Adicional
 
 # todo: adicionar verifiação de usuarios com mesmas credenciais
 # exemplo: mesmo email para usuario, mesmo numero de quarto no mesmo bloco, etc.
@@ -123,3 +125,29 @@ class View:
     def quarto_excluir(id_quarto):
         q = Quarto(id_quarto, 0, "a", 0)
         QuartoDAO.excluir(q)
+        
+    # Adicional
+    @staticmethod
+    def adicional_inserir(descricao, valor):
+        a = Adicional(0, descricao, valor)
+        AdicionalDAO.inserir(a)
+        
+    @staticmethod
+    def adicional_listar():
+        a = AdicionalDAO.listar()
+        a.sort(key=lambda obj: obj.get_id_adicional())
+        return a
+    
+    @staticmethod
+    def adicional_listar_id(id):
+        return AdicionalDAO.listar_id(id)
+    
+    @staticmethod
+    def adicional_atualizar(id_adicional, descricao, valor):
+        a = Adicional(id_adicional, descricao, valor)
+        AdicionalDAO.atualizar(a)
+        
+    @staticmethod
+    def adicional_excluir(id_adicional):
+        a = Adicional(id_adicional, "a", 0.01)
+        AdicionalDAO.excluir(a)
