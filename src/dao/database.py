@@ -78,11 +78,11 @@ class Database:
             nome TEXT NOT NULL UNIQUE,
             descricao TEXT NOT NULL,
             capacidade INTEGER NOT NULL,
-            valor_diaria DECIMAL NOT NULL
+            valor_diaria TEXT NOT NULL
         );
         """
         )
-        
+
         # criar a tabela adicional
         cls.execute(
             """
@@ -93,5 +93,3 @@ class Database:
         );
         """
         )
-        
-        
