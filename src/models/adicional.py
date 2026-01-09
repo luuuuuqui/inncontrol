@@ -21,13 +21,27 @@ class Adicional:
         self.__descricao = descricao
 
     def set_valor(self, valor: Decimal | str | float) -> None:
-        if not isinstance(valor, Decimal):
-            # Converter float para string antes de Decimal evita imprecisão flutuante
-            valor = Decimal(str(valor))
+        # PASSO 1: Se for float, converte para string imediatamente.
+        # Isso resolve o erro 'float object has no attribute strip'
+        if isinstance(valor, float):
+            valor = str(valor)
 
+        # PASSO 2: Se for string (agora seguro), limpamos espaços e trocamos vírgula
+        if isinstance(valor, str):
+            valor = valor.strip()        # Remove espaços extras: " 10.50 " -> "10.50"
+            valor = valor.replace(',', '.') # Garante que "10,50" vire "10.50"
+        
+        # PASSO 3: Converte para Decimal se ainda não for
+        if not isinstance(valor, Decimal):
+            try:
+                valor = Decimal(valor)
+            except Exception:
+                raise ValueError(f"Valor inválido: {valor}")
+
+        # PASSO 4: Validação e Arredondamento
         if valor < 0:
             raise ValueError("Valor do adicional não pode ser negativo.")
-
+        
         self.__valor = valor.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
     # Getters:
@@ -35,20 +49,20 @@ class Adicional:
         return self.__id_adicional
 
     def get_descricao(self) -> str:
-        return self._descricao
+        return self.__descricao
 
     def get_valor(self) -> Decimal:
-        return self._valor
+        return str(self.__valor)
 
     # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_adicional": self.get_id_adicional(),
             "descricao": self.get_descricao(),
-            "valor": self.get_valor(),
+            "valor": str(self.get_valor()), 
         }
 
     def __str__(self) -> str:
         return (
-            f"{self.get_id_adicional()} - {self.get_descricao()} - {self.get_valor():.2f}"
+            f"{self.get_id_adicional()} - {self.get_descricao()} - {self.get_valor()}"
         )
