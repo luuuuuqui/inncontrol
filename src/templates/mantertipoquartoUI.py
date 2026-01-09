@@ -24,9 +24,24 @@ class ManterTipoQuartoUI:
     def listar():
         tiposquarto = View.tipoquarto_listar()
         if len(tiposquarto) == 0:
-            st.write("Nenhum tipoquarto encontrado.")
+            st.write("Nenhum tipo de quarto encontrado.")
         else:
-            df = pd.DataFrame([u.to_dict() for u in tiposquarto])
+            # Cria uma lista de dicionários personalizada para formatar valor e capacidade
+            dic_tipos = []
+            for t in tiposquarto:
+                td = t.to_dict()
+
+                capacidade = t.get_capacidade()
+                sufixo = "" if capacidade == 1 else "s"
+                td["capacidade"] = f"{capacidade} pessoa{sufixo}"
+
+                # Formata o valor Decimal para string moeda (ex: R$ 150,00)
+                td["valor_diaria"] = f"R$ {t.get_valor_diaria()}".replace(".", ",")
+
+                dic_tipos.append(td)
+
+            df = pd.DataFrame(dic_tipos)
+
             df = df.rename(
                 columns={
                     "id_tipoquarto": "ID",
@@ -36,19 +51,14 @@ class ManterTipoQuartoUI:
                     "valor_diaria": "Valor da Diária",
                 }
             )
+
+            # Garante a ordem das colunas
             df = df.reindex(
                 columns=["ID", "Nome", "Descrição", "Capacidade", "Valor da Diária"]
             )
 
-            st.dataframe(
-                df,
-                hide_index=True,
-                column_config={
-                    "Valor da Diária": st.column_config.NumberColumn(
-                        "Valor da Diária", format="R$ %.2f"
-                    )
-                },
-            )
+            # Exibe sem precisar de column_config complexa
+            st.dataframe(df, hide_index=True)
 
     @staticmethod
     def inserir():
@@ -77,7 +87,7 @@ class ManterTipoQuartoUI:
     def atualizar():
         tipoquartos = View.tipoquarto_listar()
         if len(tipoquartos) == 0:
-            st.write("Nenhum tipoquarto encontrado.")
+            st.write("Nenhum tipo de quarto encontrado.")
         else:
             op = st.selectbox(
                 "Escolha o tipo de quarto a atualizar",
