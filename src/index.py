@@ -4,6 +4,7 @@ from templates.manterusuarioUI import ManterUsuarioUI as UsuarioUI
 from templates.manterhospedeUI import ManterHospedeUI as HospedeUI
 from templates.manterquartoUI import ManterQuartoUI as QuartoUI
 from templates.mantertipoquartoUI import ManterTipoQuartoUI as TipoQuartoUI
+from templates.manteradicionalUI import ManterAdicionalUI as AdicionalUI
 
 from dao.database import Database
 
@@ -12,7 +13,7 @@ class IndexUI:
     @staticmethod
     def menu_admin():
         op = st.sidebar.selectbox(
-            "Menu", ["Usuário", "Hóspede", "Quarto", "Tipo de Quarto"]
+            "Menu", ["Usuário", "Hóspede", "Quarto", "Tipo de Quarto", "Adicional"]
         )
         match op:
             case "Usuário":
@@ -23,6 +24,8 @@ class IndexUI:
                 QuartoUI.main()
             case "Tipo de Quarto":
                 TipoQuartoUI.main()
+            case "Adicional":
+                AdicionalUI.main()
             case _:
                 st.error("Opção inválida.")
 
