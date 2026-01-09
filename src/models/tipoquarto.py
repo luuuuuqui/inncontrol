@@ -1,4 +1,4 @@
-from decimal import Decimal as decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 
 class TipoQuarto:
@@ -8,7 +8,7 @@ class TipoQuarto:
         nome: str,
         descricao: str,
         capacidade: int,
-        valor_diaria: decimal,
+        valor_diaria: Decimal,
     ) -> None:
         self.set_id_tipoquarto(id_tipoquarto)
         self.set_nome(nome)
@@ -39,7 +39,7 @@ class TipoQuarto:
             )
         self.__capacidade = capacidade
 
-    def set_valor_diaria(self, valor_diaria: decimal) -> None:
+    def set_valor_diaria(self, valor_diaria: Decimal) -> None:
 
         if isinstance(valor_diaria, float):
             valor_diaria = str(valor_diaria)
