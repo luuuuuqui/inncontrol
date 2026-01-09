@@ -10,7 +10,7 @@ class ManterAdicionalUI:
         st.header("Teste de CRUD de Adicional")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1:
-            ManterAdicionalU,,,I.listar()
+            ManterAdicionalUI.listar()
         with tab2:
             ManterAdicionalUI.inserir()
         with tab3:
