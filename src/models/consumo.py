@@ -8,7 +8,7 @@ class Consumo:
         id_reserva: int,
         id_adicional: int,
         quantidade: int,
-        data_consumo: datetime,
+        data_consumo: datetime | str,
     ) -> None:
         self.set_id_consumo(id_consumo)
         self.set_id_reserva(id_reserva)
