@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-class ConsumoAdicional:
+class Consumo:
     def __init__(
         self,
         id_consumo: int,
