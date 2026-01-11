@@ -83,6 +83,21 @@ class Database:
         """
         )
         
+        # criar a tabela reserva
+        cls.execute(
+            """
+        CREATE TABLE IF NOT EXISTS reserva (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_hospede INTEGER NOT NULL,
+            id_quarto INTEGER NOT NULL,
+            data_reserva TEXT NOT NULL,
+            qtd_dias INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            FOREIGN KEY (id_hospede) REFERENCES hospede (id),
+            FOREIGN KEY (id_quarto) REFERENCES quarto (id)
+        );
+        """
+        )
 
         # criar a tabela consumo
         cls.execute(
@@ -94,6 +109,7 @@ class Database:
             quantidade INTEGER NOT NULL,
             data_consumo TEXT NOT NULL,
             FOREIGN KEY (id_adicional) REFERENCES adicional (id)
+            FOREIGN KEY (id_reserva) REFERENCES reserva (id)
         );
         """
         )
