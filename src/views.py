@@ -4,12 +4,14 @@ from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
 from dao.quartodao import QuartoDAO
 from dao.tipoquartodao import TipoQuartoDAO
+from dao.consumodao import ConsumoDAO
 from dao.adicionaldao import AdicionalDAO
 
 from models.usuario import Usuario
 from models.hospede import Hospede
 from models.quarto import Quarto
 from models.tipoquarto import TipoQuarto
+from models.consumo import Consumo
 from models.adicional import Adicional
 
 # todo: adicionar verifiação de usuarios com mesmas credenciais
@@ -125,7 +127,33 @@ class View:
     def quarto_excluir(id_quarto):
         q = Quarto(id_quarto, 0, "a", 0)
         QuartoDAO.excluir(q)
+    
+    # Consumo
+    @staticmethod
+    def consumo_inserir(id_reserva, id_adicional, quantidade, data_consumo):
+        c = Consumo(0, id_reserva, id_adicional, quantidade, data_consumo)
+        ConsumoDAO.inserir(c)
         
+    @staticmethod
+    def consumo_listar():
+        c = ConsumoDAO.listar()
+        c.sort(key=lambda obj: obj.get_id_consumo())
+        return c
+    
+    @staticmethod
+    def consumo_listar_id(id):
+        return ConsumoDAO.listar_id(id)
+    
+    @staticmethod
+    def consumo_atualizar(id_consumo, id_reserva, id_adicional, quantidade, data_consumo):
+        c = Consumo(id_consumo, id_reserva, id_adicional, quantidade, data_consumo)
+        ConsumoDAO.atualizar(c)
+        
+    @staticmethod
+    def consumo_excluir(id_consumo):
+        c = Consumo(id_consumo, 0, 0, 0, "2000-01-01 00:00:00")
+        ConsumoDAO.excluir(c)
+    
     # Adicional
     @staticmethod
     def adicional_inserir(descricao, valor):
