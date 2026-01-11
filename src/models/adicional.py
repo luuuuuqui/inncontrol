@@ -52,7 +52,7 @@ class Adicional:
         return self.__descricao
 
     def get_valor(self) -> Decimal:
-        return str(self.__valor)
+        return str(self.__valor)  # pyright: ignore[reportReturnType]
 
     # Métodos:
     def to_dict(self) -> dict:
