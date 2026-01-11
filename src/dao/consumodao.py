@@ -37,6 +37,20 @@ class ConsumoDAO(DAO):
         return obj
 
     @classmethod
+    def listar_por_reserva(cls, id_reserva):
+        cls.abrir()
+        sql = "SELECT * FROM consumo WHERE id_reserva = ?"
+        cursor = cls.execute(sql, (id_reserva,))
+        rows = cursor.fetchall()
+        # Importante: certifique-se de importar o model Consumo no topo do arquivo
+        objs = [
+            Consumo(id_consumo, id_reserva, id_adicional, quantidade, data_consumo)
+            for (id_consumo, id_reserva, id_adicional, quantidade, data_consumo) in rows
+        ]
+        cls.fechar()
+        return objs
+
+    @classmethod
     def atualizar(cls, obj):
         cls.abrir()
         sql = """
