@@ -8,27 +8,27 @@ class Hospede:
     def set_id_hospede(self, id_hospede: int) -> None:
         if id_hospede < 0:
             raise ValueError("ID do hóspede deve ser um inteiro positivo.")
-        self._id_hospede = id_hospede
+        self.__id_hospede = id_hospede
 
     def set_id_usuario(self, id_usuario: int) -> None:
         if id_usuario <= 0:
             raise ValueError("ID do usuário deve ser um inteiro positivo.")
-        self._id_usuario = id_usuario
+        self.__id_usuario = id_usuario
 
     def set_endereco(self, endereco: str) -> None:
         if endereco == "":
             raise ValueError("Endereço do hóspede não pode ser vazio.")
-        self._endereco = endereco
+        self.__endereco = endereco
 
     # Getters:
     def get_id_hospede(self) -> int:
-        return self._id_hospede
+        return self.__id_hospede
 
     def get_id_usuario(self) -> int:
-        return self._id_usuario
+        return self.__id_usuario
 
     def get_endereco(self) -> str:
-        return self._endereco
+        return self.__endereco
 
     # Métodos:
     def to_dict(self) -> dict:

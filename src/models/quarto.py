@@ -9,35 +9,35 @@ class Quarto:
     def set_id_quarto(self, id: int) -> None:
         if id < 0:
             raise ValueError("ID do quarto deve ser um inteiro positivo.")
-        self._id_quarto = id
+        self.__id_quarto = id
 
     def set_id_quarto_tipo(self, id_tipo: int) -> None:
         if id_tipo < 0:
             raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
-        self._id_quarto_tipo = id_tipo
+        self.__id_quarto_tipo = id_tipo
 
     def set_bloco(self, bloco: str) -> None:
         if bloco == "".strip():
             raise ValueError("Bloco do quarto não pode ser vazio.")
-        self._bloco = bloco
+        self.__bloco = bloco
 
     def set_numero(self, numero: int) -> None:
         if numero < 0:
             raise ValueError("Número do quarto deve ser um inteiro positivo.")
-        self._numero = numero
+        self.__numero = numero
 
     # Getters:
     def get_id_quarto(self) -> int:
-        return self._id_quarto
+        return self.__id_quarto
 
     def get_id_quarto_tipo(self) -> int:
-        return self._id_quarto_tipo
+        return self.__id_quarto_tipo
 
     def get_bloco(self) -> str:
-        return self._bloco
+        return self.__bloco
 
     def get_numero(self) -> int:
-        return self._numero
+        return self.__numero
 
     # Métodos:
     def to_dict(self) -> dict:

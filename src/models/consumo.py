@@ -22,28 +22,28 @@ class Consumo:
             raise TypeError("ID do consumo deve ser um inteiro.")
         elif id_consumo < 0:
             raise ValueError("ID do consumo deve ser um inteiro positivo.")
-        self._id_consumo = id_consumo
+        self.__id_consumo = id_consumo
 
     def set_id_reserva(self, id_reserva: int) -> None:
         if not isinstance(id_reserva, int):
             raise TypeError("ID da reserva deve ser um inteiro.")
         elif id_reserva < 0:
             raise ValueError("ID da reserva deve ser um inteiro positivo.")
-        self._id_reserva = id_reserva
+        self.__id_reserva = id_reserva
 
     def set_id_adicional(self, id_adicional: int) -> None:
         if not isinstance(id_adicional, int):
             raise TypeError("ID do adicional deve ser um inteiro.")
         elif id_adicional < 0:
             raise ValueError("ID do adicional deve ser um inteiro positivo.")
-        self._id_adicional = id_adicional
+        self.__id_adicional = id_adicional
 
     def set_quantidade(self, quantidade: int) -> None:
         if not isinstance(quantidade, int):
             raise TypeError("Quantidade do consumo deve ser um inteiro.")
         elif quantidade < 0:
             raise ValueError("Quantidade do consumo não pode ser negativa.")
-        self._quantidade = quantidade
+        self.__quantidade = quantidade
 
     def set_data_consumo(self, data_consumo: datetime | str) -> None:
         if isinstance(data_consumo, str):
@@ -59,23 +59,23 @@ class Consumo:
             )
         if data_consumo > datetime.now():
             raise ValueError("Data do consumo não pode ser no futuro.")
-        self._data_consumo = data_consumo
+        self.__data_consumo = data_consumo
 
     # Getters:
     def get_id_consumo(self) -> int:
-        return self._id_consumo
+        return self.__id_consumo
 
     def get_id_reserva(self) -> int:
-        return self._id_reserva
+        return self.__id_reserva
 
     def get_id_adicional(self) -> int:
-        return self._id_adicional
+        return self.__id_adicional
 
     def get_quantidade(self) -> int:
-        return self._quantidade
+        return self.__quantidade
 
     def get_data_consumo(self) -> str:
-        return self._data_consumo.strftime("%Y-%m-%d %H:%M:%S")
+        return self.__data_consumo.strftime("%Y-%m-%d %H:%M:%S")
 
     # Métodos:
     def to_dict(self) -> dict:
