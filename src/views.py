@@ -166,12 +166,8 @@ class View:
             raise ValueError("Reserva não encontrada.")
 
         quarto = QuartoDAO.listar_id(reserva.get_id_quarto())
-        tipo_quarto = TipoQuartoDAO.listar_id(
-            quarto.get_id_quarto_tipo()
-        )  # pyright: ignore[reportOptionalMemberAccess]
-        valor_diaria = Decimal(
-            tipo_quarto.get_valor_diaria()
-        )  # pyright: ignore[reportOptionalMemberAccess]
+        tipo_quarto = TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo())  # pyright: ignore[reportOptionalMemberAccess]
+        valor_diaria = Decimal(tipo_quarto.get_valor_diaria())  # pyright: ignore[reportOptionalMemberAccess]
 
         dias = reserva.get_qtd_dias()
 
@@ -188,9 +184,7 @@ class View:
 
         for consumo in lista_consumos:
             adicional = AdicionalDAO.listar_id(consumo.get_id_adicional())
-            valor_item = Decimal(
-                adicional.get_valor()
-            )  # pyright: ignore[reportOptionalMemberAccess]
+            valor_item = Decimal(adicional.get_valor())  # pyright: ignore[reportOptionalMemberAccess]
             subtotal_item = valor_item * consumo.get_quantidade()
 
             total_consumo += subtotal_item
