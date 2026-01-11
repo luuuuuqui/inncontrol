@@ -133,10 +133,8 @@ class View:
 
     # Reserva
     @staticmethod
-    def reserva_inserir(
-        id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status
-    ):
-        r = Reserva(id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status)
+    def reserva_inserir(id_hospede, id_quarto, data_reserva, qtd_dias, status):
+        r = Reserva(0, id_hospede, id_quarto, data_reserva, qtd_dias, status)
         ReservaDAO.inserir(r)
 
     @staticmethod
