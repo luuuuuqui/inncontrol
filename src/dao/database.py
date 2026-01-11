@@ -82,6 +82,7 @@ class Database:
         );
         """
         )
+        
 
         # criar a tabela consumo
         cls.execute(
@@ -92,7 +93,6 @@ class Database:
             id_adicional INTEGER NOT NULL,
             quantidade INTEGER NOT NULL,
             data_consumo TEXT NOT NULL,
-            FOREIGN KEY (id_reserva) REFERENCES reserva (id),
             FOREIGN KEY (id_adicional) REFERENCES adicional (id)
         );
         """
