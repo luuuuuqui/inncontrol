@@ -1,5 +1,5 @@
 from datetime import date
-from decimal import Decimal as decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 
 class Pagamento:
@@ -8,7 +8,7 @@ class Pagamento:
         id_pagamento: int,
         id_reserva: int,
         data_pagamento: date,
-        valor_total: decimal,
+        valor_total: Decimal | str | float,
         forma_pagamento: str,
         status: str,
     ) -> None:
@@ -35,8 +35,21 @@ class Pagamento:
             raise ValueError("Data do pagamento não pode ser no futuro.")
         self._data_pagamento = data_pagamento
 
-    def set_valor_total(self, valor_total: decimal) -> None:
-        if valor_total < 0:
+    def set_valor_total(self, valor_total: Decimal | str | float) -> None:
+        if isinstance(valor_total, str):
+            try:
+                valor_total = Decimal(valor_total)
+            except (ValueError, TypeError):
+                raise ValueError("Valor total do pagamento inválido.")
+        elif isinstance(valor_total, float):
+            try:
+                valor_total = Decimal(str(valor_total)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            except (ValueError, TypeError):
+                raise ValueError("Valor total do pagamento inválido.")
+        elif not isinstance(valor_total, Decimal):
+            raise ValueError("Valor total do pagamento deve ser Decimal, str ou float.")
+        
+        if valor_total < 0: # pyright: ignore[reportOperatorIssue]
             raise ValueError("Valor total do pagamento não pode ser negativo.")
         self._valor_total = valor_total
 
@@ -60,7 +73,7 @@ class Pagamento:
     def get_data_pagamento(self) -> date:
         return self._data_pagamento
 
-    def get_valor_total(self) -> decimal:
+    def get_valor_total(self) -> Decimal:
         return self._valor_total
 
     def get_forma_pagamento(self) -> str:
@@ -79,3 +92,8 @@ class Pagamento:
             "forma_pagamento": self.get_forma_pagamento(),
             "status": self.get_status(),
         }
+    
+    def __str__(self) -> str:
+        return (
+            f"{self.get_id_pagamento()} - {self.get_id_reserva()} - {self.get_data_pagamento()} - {self.get_valor_total()} - {self.get_forma_pagamento()} - {self.get_status()}"
+        )
