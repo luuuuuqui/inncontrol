@@ -3,8 +3,6 @@ import pandas as pd  # pyright: ignore[reportMissingImports]
 from views import View
 import time
 
-from models.tipoquarto import TipoQuarto
-
 
 class ManterTipoQuartoUI:
     @staticmethod
