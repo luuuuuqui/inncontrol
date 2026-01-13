@@ -1,5 +1,4 @@
 from decimal import Decimal
-from datetime import date, timedelta
 
 from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
