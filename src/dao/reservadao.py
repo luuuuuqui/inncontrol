@@ -8,9 +8,18 @@ class ReservaDAO(DAO):
         cls.abrir()
         sql = """
             INSERT INTO reserva (id_hospede, id_quarto, data_reserva, qtd_dias, status)
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
         """
-        cls.execute(sql, (obj.get))
+        cls.execute(
+            sql,
+            (
+                obj.get_id_hospede(),
+                obj.get_id_quarto(),
+                obj.get_data_reserva(),
+                obj.get_qtd_dias(),
+                obj.get_status(),
+            ),
+        )
         cls.fechar()
 
     @classmethod
