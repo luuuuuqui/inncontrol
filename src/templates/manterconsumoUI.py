@@ -114,8 +114,6 @@ class ManterConsumoUI:
         if data_consumo and hora_consumo:
             data_hora_consumo = datetime.combine(data_consumo, hora_consumo)
 
-        st.code(data_hora_consumo, language="python")
-
         bloquear = not (reserva and adicional and quantidade and data_hora_consumo)
 
         if st.button("Inserir", disabled=bloquear):
