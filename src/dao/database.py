@@ -82,7 +82,7 @@ class Database:
         );
         """
         )
-        
+
         # criar a tabela reserva
         cls.execute(
             """
@@ -90,8 +90,8 @@ class Database:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             id_hospede INTEGER NOT NULL,
             id_quarto INTEGER NOT NULL,
-            data_reserva TEXT NOT NULL,
-            qtd_dias INTEGER NOT NULL,
+            data_checkin TEXT NOT NULL,
+            data_checkout TEXT NOT NULL,
             status TEXT NOT NULL,
             FOREIGN KEY (id_hospede) REFERENCES hospede (id),
             FOREIGN KEY (id_quarto) REFERENCES quarto (id)
