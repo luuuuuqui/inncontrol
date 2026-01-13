@@ -7,7 +7,7 @@ class ReservaDAO(DAO):
     def inserir(cls, obj):
         cls.abrir()
         sql = """
-            INSERT INTO reserva (id_hospede, id_quarto, data_reserva, qtd_dias, status)
+            INSERT INTO reserva (id_hospede, id_quarto, data_checkin, data_checkout, status)
             VALUES (?, ?, ?, ?, ?)
         """
         cls.execute(
@@ -15,8 +15,8 @@ class ReservaDAO(DAO):
             (
                 obj.get_id_hospede(),
                 obj.get_id_quarto(),
-                obj.get_data_reserva(),
-                obj.get_qtd_dias(),
+                obj.get_data_checkin(),
+                obj.get_data_checkout(),
                 obj.get_status(),
             ),
         )
@@ -29,13 +29,15 @@ class ReservaDAO(DAO):
         cursor = cls.execute(sql)
         rows = cursor.fetchall()
         objs = [
-            Reserva(id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status)
+            Reserva(
+                id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status
+            )
             for (
                 id_reserva,
                 id_hospede,
                 id_quarto,
-                data_reserva,
-                qtd_dias,
+                data_checkin,
+                data_checkout,
                 status,
             ) in rows
         ]
@@ -53,32 +55,11 @@ class ReservaDAO(DAO):
         return obj
 
     @classmethod
-    def listar_por_reserva(cls, id_reserva):
-        cls.abrir()
-        sql = "SELECT * FROM reserva WHERE id_reserva = ?"
-        cursor = cls.execute(sql, (id_reserva,))
-        rows = cursor.fetchall()
-        # Importante: certifique-se de importar o model Reserva no topo do arquivo
-        objs = [
-            Reserva(id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status)
-            for (
-                id_reserva,
-                id_hospede,
-                id_quarto,
-                data_reserva,
-                qtd_dias,
-                status,
-            ) in rows
-        ]
-        cls.fechar()
-        return objs
-
-    @classmethod
     def atualizar(cls, obj):
         cls.abrir()
         sql = """
             UPDATE reserva
-            SET id_hospede=?, id_quarto=?, data_reserva=?, qtd_dias=?, status=?
+            SET id_hospede=?, id_quarto=?, data_checkin=?, data_checkout=?, status=?
             WHERE id=?
         """
         cls.execute(
@@ -86,8 +67,8 @@ class ReservaDAO(DAO):
             (
                 obj.get_id_hospede(),
                 obj.get_id_quarto(),
-                obj.get_data_reserva(),
-                obj.get_qtd_dias(),
+                obj.get_data_checkin(),
+                obj.get_data_checkot(),
                 obj.get_status(),
                 obj.get_id_reserva(),
             ),
