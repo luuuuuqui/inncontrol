@@ -43,6 +43,11 @@ class Reserva:
 
         if data_checkin < datetime.strptime("2026-01-01", "%Y-%m-%d"):
             raise ValueError("Data de Check-In não pode ser antes de 2026.")
+
+        if hasattr(self, '_Reserva__data_checkout') and self.__data_checkout:
+            if data_checkin >= self.__data_checkout:
+                raise ValueError("A data de check-in não pode ser posterior à data de check-out.")
+                
         self.__data_checkin = data_checkin
 
     def set_data_checkout(self, data_checkout: datetime | str) -> None:
