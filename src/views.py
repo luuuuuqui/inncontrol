@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime as dt
 
 from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
@@ -132,8 +133,8 @@ class View:
 
     # Reserva
     @staticmethod
-    def reserva_inserir(id_hospede, id_quarto, data_reserva, qtd_dias, status):
-        r = Reserva(0, id_hospede, id_quarto, data_reserva, qtd_dias, status)
+    def reserva_inserir(id_hospede, id_quarto, data_checkin, data_checkout, status):
+        r = Reserva(0, id_hospede, id_quarto, data_checkin, data_checkout, status)
         ReservaDAO.inserir(r)
 
     @staticmethod
@@ -148,9 +149,11 @@ class View:
 
     @staticmethod
     def reserva_atualizar(
-        id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status
+        id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status
     ):
-        r = Reserva(id_reserva, id_hospede, id_quarto, data_reserva, qtd_dias, status)
+        r = Reserva(
+            id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status
+        )
         ReservaDAO.atualizar(r)
 
     @staticmethod
@@ -168,7 +171,10 @@ class View:
         tipo_quarto = TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo())  # pyright: ignore[reportOptionalMemberAccess]
         valor_diaria = Decimal(tipo_quarto.get_valor_diaria())  # pyright: ignore[reportOptionalMemberAccess]
 
-        dias = reserva.get_qtd_dias()
+        checkin = dt.strptime(reserva.get_data_checkin(), "%Y-%m-%d")
+        checkout = dt.strptime(reserva.get_data_checkout(), "%Y-%m-%d")
+
+        dias = Decimal(abs((checkin - checkout).days))
 
         if dias == 0:
             dias = 1  # Cobrança mínima de 1 diária
@@ -194,7 +200,7 @@ class View:
 
     @staticmethod
     def reserva_excluir(id_reserva):
-        r = Reserva(id_reserva, 0, 0, "2000-01-01", 0, "a")
+        r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "a")
         ReservaDAO.excluir(r)
 
     # Pagamento
