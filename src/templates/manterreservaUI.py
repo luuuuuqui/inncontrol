@@ -113,7 +113,7 @@ class ManterReservaUI:
         # Seleção de Data
         estadia = st.date_input(
             "Período de Estadia:",
-            value=(),
+            value=[],  
             min_value=dt.datetime.now(),
             format="DD/MM/YYYY",
             help="Selecione a data inicial e final no calendário.",
