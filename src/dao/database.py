@@ -99,6 +99,21 @@ class Database:
         """
         )
 
+        # criar a tabela pagamento
+        cls.execute(
+            """
+        CREATE TABLE IF NOT EXISTS pagamento (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_reserva INTEGER NOT NULL,
+            data_pagamento TEXT NOT NULL,
+            valor_total TEXT NOT NULL,
+            forma_pagamento TEXT NOT NULL,
+            status TEXT NOT NULL,
+            FOREIGN KEY (id_reserva) REFERENCES reserva (id)
+        );
+        """
+        )
+
         # criar a tabela consumo
         cls.execute(
             """
