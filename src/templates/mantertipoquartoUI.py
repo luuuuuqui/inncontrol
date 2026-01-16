@@ -1,13 +1,12 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
-import pandas as pd  # pyright: ignore[reportMissingImports]
+import streamlit as st
+import pandas as pd
 from views import View
 import time
-
 
 class ManterTipoQuartoUI:
     @staticmethod
     def main():
-        st.header("Teste de CRUD de Tipo Quarto")
+        st.header("Gerenciar Tipos de Quarto")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1:
             ManterTipoQuartoUI.listar()
@@ -20,132 +19,88 @@ class ManterTipoQuartoUI:
 
     @staticmethod
     def listar():
-        tiposquarto = View.tipoquarto_listar()
-        if len(tiposquarto) == 0:
-            st.write("Nenhum tipo de quarto encontrado.")
-        else:
-            # Cria uma lista de dicionários personalizada para formatar valor e capacidade
-            dic_tipos = []
-            for t in tiposquarto:
-                td = t.to_dict()
+        tipos = View.tipoquarto_listar()
+        if not tipos:
+            st.info("Nenhum tipo de quarto cadastrado.")
+            return
 
-                capacidade = t.get_capacidade()
-                sufixo = "" if capacidade == 1 else "s"
-                td["capacidade"] = f"{capacidade} pessoa{sufixo}"
+        dic_tipos = []
+        for t in tipos:
+            dic_tipos.append({
+                "ID": t.get_id_tipoquarto(),
+                "Nome": t.get_nome(),
+                "Descrição": t.get_descricao(),
+                "Capacidade": f"{t.get_capacidade()} pessoa(s)",
+                "Valor Diária": f"R$ {t.get_valor_diaria():.2f}".replace(".", ",")
+            })
 
-                # Formata o valor Decimal para string moeda (ex: R$ 150,00)
-                td["valor_diaria"] = f"R$ {t.get_valor_diaria()}".replace(".", ",")
-
-                dic_tipos.append(td)
-
-            df = pd.DataFrame(dic_tipos)
-
-            df = df.rename(
-                columns={
-                    "id_tipoquarto": "ID",
-                    "nome": "Nome",
-                    "descricao": "Descrição",
-                    "capacidade": "Capacidade",
-                    "valor_diaria": "Valor da Diária",
-                }
-            )
-
-            # Garante a ordem das colunas
-            df = df.reindex(
-                columns=["ID", "Nome", "Descrição", "Capacidade", "Valor da Diária"]
-            )
-
-            # Exibe sem precisar de column_config complexa
-            st.dataframe(df, hide_index=True)
+        df = pd.DataFrame(dic_tipos)
+        st.dataframe(df, hide_index=True, use_container_width=True)
 
     @staticmethod
     def inserir():
-        nome = st.text_input("Informe o nome:", placeholder="Quarto Luxo")
-        descricao = st.text_input(
-            "Informe a descrição:", placeholder="Quarto espaçoso com vista para o mar."
-        )
-        capacidade = st.number_input("Informe a capacidade:", min_value=1, step=1)
-        valor_diaria = st.number_input(
-            "Informe o valor da diária:", min_value=0.0, step=0.01
-        )
+        nome = st.text_input("Nome:", placeholder="Ex: Quarto Luxo")
+        descricao = st.text_input("Descrição:", placeholder="Ex: Vista para o mar")
+        capacidade = st.number_input("Capacidade:", min_value=1, step=1)
+        valor_diaria = st.number_input("Valor da Diária (R$):", min_value=0.0, step=0.01, format="%.2f")
 
-        bloquear = not (nome and descricao and capacidade and valor_diaria)
-
-        if st.button("Inserir", disabled=bloquear):
-            try:
-                View.tipoquarto_inserir(nome, descricao, capacidade, valor_diaria)
-            except Exception as e:
-                st.error("Erro ao inserir: {}".format(e))
+        if st.button("Inserir"):
+            if not (nome and descricao and capacidade and valor_diaria):
+                st.error("Preencha todos os campos.")
             else:
-                st.success("TipoQuarto inserido com sucesso")
-                time.sleep(2)
-                st.rerun()
+                try:
+                    View.tipoquarto_inserir(nome, descricao, capacidade, valor_diaria)
+                    st.success("Tipo de quarto inserido com sucesso!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro ao inserir: {e}")
 
     @staticmethod
     def atualizar():
-        tipoquartos = View.tipoquarto_listar()
-        if len(tipoquartos) == 0:
-            st.write("Nenhum tipo de quarto encontrado.")
-        else:
-            op = st.selectbox(
-                "Escolha o tipo de quarto a atualizar",
-                tipoquartos,
-                format_func=lambda x: x.__str__(),
-                key="selectboxatualizar",
-            )
+        tipos = View.tipoquarto_listar()
+        if not tipos:
+            st.info("Nenhum tipo encontrado para atualizar.")
+            return
 
-            if "ultimo_id_selecionado" not in st.session_state:
-                st.session_state.ultimo_id_selecionado = None
+        op = st.selectbox(
+            "Selecione o tipo para editar:",
+            tipos,
+            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}"
+        )
 
-            # Se o ID mudou, atualizamos as chaves do session_state com os dados do banco
-            if st.session_state.ultimo_id_selecionado != op.get_id_tipoquarto():
-                st.session_state.ultimo_id_selecionado = op.get_id_tipoquarto()
-                st.session_state.atualizarnome = op.get_nome()
-                st.session_state.atualizardescricao = op.get_descricao()
-                st.session_state.atualizarcapacidade = op.get_capacidade()
-                st.session_state.atualizarvalordiaria = op.get_valor_diaria()
+        nome = st.text_input("Novo Nome:", value=op.get_nome())
+        descricao = st.text_input("Nova Descrição:", value=op.get_descricao())
+        capacidade = st.number_input("Nova Capacidade:", min_value=1, step=1, value=op.get_capacidade())
+        valor_diaria = st.number_input("Novo Valor (R$):", min_value=0.0, step=0.01, format="%.2f", value=float(op.get_valor_diaria()))
 
-            nome = st.text_input("Informe o novo nome", key="atualizarnome")
-
-            descricao = st.text_input(
-                "Informe a nova descrição", key="atualizardescricao"
-            )
-
-            capacidade = st.number_input(
-                "Informe a nova capacidade:",
-                min_value=1,
-                step=1,
-                key="atualizarcapacidade",
-            )
-
-            valor_diaria = st.number_input(
-                "Informe o novo valor da diária:",
-                min_value=0.0,
-                step=0.01,
-                key="atualizarvalordiaria",
-            )
-
-            if st.button("Atualizar tipo de quarto"):
-                id = op.get_id_tipoquarto()
-                View.tipoquarto_atualizar(id, nome, descricao, capacidade, valor_diaria)
-                st.success("TipoQuarto atualizado com sucesso")
-                time.sleep(2)
+        if st.button("Salvar Alterações"):
+            try:
+                View.tipoquarto_atualizar(op.get_id_tipoquarto(), nome, descricao, capacidade, valor_diaria)
+                st.success("Atualizado com sucesso!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro ao atualizar: {e}")
 
     @staticmethod
     def excluir():
-        tipoquartos = View.tipoquarto_listar()
-        if len(tipoquartos) == 0:
-            st.write("Nenhum tipo de quarto encontrado.")
-        else:
-            op = st.selectbox(
-                "Exclusão de tipo de quartos",
-                tipoquartos,
-                format_func=lambda x: x.__str__(),
-            )
-            if st.button("Excluir"):
-                id = op.get_id_tipoquarto()
-                View.tipoquarto_excluir(id)
-                st.success("TipoQuarto excluído com sucesso")
-                time.sleep(2)
+        tipos = View.tipoquarto_listar()
+        if not tipos:
+            st.info("Nenhum tipo encontrado para excluir.")
+            return
+
+        op = st.selectbox(
+            "Selecione o tipo para excluir:",
+            tipos,
+            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}"
+        )
+
+        if st.button("Excluir"):
+            try:
+                View.tipoquarto_excluir(op.get_id_tipoquarto())
+                st.success("Excluído com sucesso!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro ao excluir: {e}")

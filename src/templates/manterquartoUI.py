@@ -1,5 +1,5 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
-import pandas as pd  # pyright: ignore[reportMissingImports]
+import streamlit as st
+import pandas as pd
 from views import View
 import time
 
@@ -7,7 +7,7 @@ import time
 class ManterQuartoUI:
     @staticmethod
     def main():
-        st.header("Teste de CRUD de Quarto")
+        st.header("Gerenciar Quartos")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1:
             ManterQuartoUI.listar()
@@ -21,119 +21,129 @@ class ManterQuartoUI:
     @staticmethod
     def listar():
         quartos = View.quarto_listar()
-        if len(quartos) == 0:
-            st.write("Nenhum quarto encontrado.")
-        else:
-            dic_quartos = []
-            for q in quartos:
-                qd = q.to_dict()
-                tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
+        if not quartos:
+            st.info("Nenhum quarto cadastrado.")
+            return
 
-                if tipo:
-                    qd["tipo_descricao"] = tipo.get_nome()
-                else:
-                    qd["tipo_descricao"] = "Tipo não encontrado"
+        dic_quartos = []
+        for q in quartos:
+            tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
+            nome_tipo = tipo.get_nome() if tipo else "Tipo Excluído"
 
-                dic_quartos.append(qd)
-
-            df = pd.DataFrame(dic_quartos)
-
-            df = df.rename(
-                columns={
-                    "id_quarto": "ID",
-                    "tipo_descricao": "Tipo do Quarto",
-                    "bloco": "Bloco",
-                    "numero": "Número",
+            dic_quartos.append(
+                {
+                    "ID": q.get_id_quarto(),
+                    "Tipo": nome_tipo,
+                    "Bloco": q.get_bloco(),
+                    "Número": q.get_numero(),
                 }
             )
-            df = df.reindex(columns=["ID", "Tipo do Quarto", "Bloco", "Número"])
-            st.dataframe(df, hide_index=True)
+
+        df = pd.DataFrame(dic_quartos)
+        st.dataframe(df, hide_index=True, use_container_width=True)
 
     @staticmethod
     def inserir():
-        quartos = View.tipoquarto_listar()
-        if len(quartos) == 0:
-            st.write("Nenhum usuário quarto encontrado.")
-        else:
-            """
-            quarto:
-            id: int,
-            id_tipo: int,
-            bloco: str,
-            numero: int
-            """
+        tipos = View.tipoquarto_listar()
+        if not tipos:
+            st.warning("Cadastre Tipos de Quarto antes de inserir quartos.")
+            return
 
-            tipo = st.selectbox(
-                "Selecione o tipo do quarto:", View.tipoquarto_listar()
-            ).get_id_tipoquarto()
+        tipo_selecionado = st.selectbox(
+            "Tipo de Quarto:", tipos, format_func=lambda t: t.get_nome()
+        )
 
-            bloco = st.text_input("Informe o bloco:", placeholder="Bloco A")
+        bloco = st.text_input("Bloco:", placeholder="Ex: A")
+        numero = st.number_input("Número do Quarto:", step=1, min_value=1)
 
-            numero = st.number_input("Informe o número do quarto:", step=1, min_value=1)
-
-            if st.button("Inserir"):
+        if st.button("Inserir"):
+            if not bloco:
+                st.error("Informe o bloco.")
+            else:
                 try:
-                    View.quarto_inserir(tipo, bloco, numero)
-                except Exception as e:
-                    st.error("Erro ao inserir: {}".format(e))
-                else:
-                    st.success("Quarto inserido com sucesso")
-                    time.sleep(2)
+                    View.quarto_inserir(
+                        tipo_selecionado.get_id_tipoquarto(), bloco, numero
+                    )
+                    st.success("Quarto inserido!")
+                    time.sleep(1)
                     st.rerun()
+                except Exception as e:
+                    st.error(f"Erro: {e}")
 
     @staticmethod
     def atualizar():
         quartos = View.quarto_listar()
-        if len(quartos) == 0:
-            st.write("Nenhum quarto encontrado.")
-        else:
-            op = st.selectbox(
-                "Selecione o quarto para atualizar:",
-                quartos,
-                format_func=lambda h: f"{h.get_id_quarto()} - {View.tipoquarto_listar_id(h.get_id_quarto_tipo()).get_nome()} - {h.get_bloco()} - {h.get_numero()}",
-            )
+        if not quartos:
+            st.info("Nenhum quarto para atualizar.")
+            return
 
-            tipo = st.selectbox(
-                "Selecione o novo tipo do quarto:",
-                View.tipoquarto_listar(),
-                index=[
-                    i
-                    for i, t in enumerate(View.tipoquarto_listar())
-                    if t.get_id_tipoquarto() == op.get_id_quarto_tipo()
-                ][0],
-            ).get_id_tipoquarto()
+        op = st.selectbox(
+            "Selecione o Quarto:",
+            quartos,
+            format_func=lambda q: ManterQuartoUI._formatar_quarto_resumo(q),
+        )
 
-            bloco = st.text_input("Informe o bloco:", value=op.get_bloco())
+        # Prepara seleção do tipo
+        tipos = View.tipoquarto_listar()
+        idx_tipo = ManterQuartoUI._obter_indice(
+            tipos, op.get_id_quarto_tipo(), lambda t: t.get_id_tipoquarto()
+        )
 
-            numero = st.number_input(
-                "Informe o número do quarto:",
-                step=1,
-                min_value=1,
-                value=op.get_numero(),
-            )
+        novo_tipo = st.selectbox(
+            "Tipo de Quarto:", tipos, index=idx_tipo, format_func=lambda t: t.get_nome()
+        )
 
-            if st.button("Atualizar"):
-                id = op.get_id_quarto()
-                View.quarto_atualizar(id, tipo, bloco, numero)
-                st.success("Quarto atualizado com sucesso")
-                time.sleep(2)
+        novo_bloco = st.text_input("Bloco:", value=op.get_bloco())
+        novo_numero = st.number_input(
+            "Número:", step=1, min_value=1, value=op.get_numero()
+        )
+
+        if st.button("Salvar Alterações"):
+            try:
+                View.quarto_atualizar(
+                    op.get_id_quarto(),
+                    novo_tipo.get_id_tipoquarto(),
+                    novo_bloco,
+                    novo_numero,
+                )
+                st.success("Quarto atualizado!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
 
     @staticmethod
     def excluir():
         quartos = View.quarto_listar()
-        if len(quartos) == 0:
-            st.write("Nenhum quarto encontrado.")
-        else:
-            # Corrigido o selectbox que estava comentado e quebrado
-            op = st.selectbox(
-                "Selecione o quarto para excluir:",
-                quartos,
-                format_func=lambda h: f"{h.get_id_quarto()} - {View.tipoquarto_listar_id(h.get_id_quarto_tipo()).get_nome()} - {h.get_bloco()} - {h.get_numero()}",
-            )
-            if st.button("Excluir"):
-                id = op.get_id_quarto()
-                View.quarto_excluir(id)
-                st.success("Quarto excluído com sucesso")
-                time.sleep(2)
+        if not quartos:
+            st.info("Nenhum quarto para excluir.")
+            return
+
+        op = st.selectbox(
+            "Selecione o Quarto para excluir:",
+            quartos,
+            format_func=lambda q: ManterQuartoUI._formatar_quarto_resumo(q),
+        )
+
+        if st.button("Excluir"):
+            try:
+                View.quarto_excluir(op.get_id_quarto())
+                st.success("Quarto excluído!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
+
+    # --- Helpers ---
+    @staticmethod
+    def _formatar_quarto_resumo(q):
+        tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
+        nome_tipo = tipo.get_nome() if tipo else "?"
+        return f"ID {q.get_id_quarto()} - {q.get_bloco()} Nº {q.get_numero()} ({nome_tipo})"
+
+    @staticmethod
+    def _obter_indice(lista, id_alvo, get_id_func):
+        for i, item in enumerate(lista):
+            if get_id_func(item) == id_alvo:
+                return i
+        return 0

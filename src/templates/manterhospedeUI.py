@@ -1,5 +1,5 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
-import pandas as pd  # pyright: ignore[reportMissingImports]
+import streamlit as st
+import pandas as pd
 from views import View
 import time
 
@@ -7,7 +7,7 @@ import time
 class ManterHospedeUI:
     @staticmethod
     def main():
-        st.header("Teste de CRUD de Hóspede")
+        st.header("Gerenciar Hóspedes")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
         with tab1:
             ManterHospedeUI.listar()
@@ -21,133 +21,132 @@ class ManterHospedeUI:
     @staticmethod
     def listar():
         hospedes = View.hospede_listar()
-        if len(hospedes) == 0:
-            st.write("Nenhum hóspede encontrado.")
-        else:
-            dic_hospedes = []
-            for h in hospedes:
-                hd = h.to_dict()
-                usuario = View.usuario_listar_id(h.get_id_usuario())
+        if not hospedes:
+            st.info("Nenhum hóspede cadastrado.")
+            return
 
-                if usuario:
-                    hd.update(
-                        {
-                            "id_usuario": usuario.get_id_usuario(),
-                            "nome": usuario.get_nome(),
-                            "fone": usuario.get_fone(),
-                            "email": usuario.get_email(),
-                        }
-                    )
-                else:
-                    hd.update(
-                        {
-                            "id_usuario": hd.get("id_usuario"),
-                            "nome": None,
-                            "fone": None,
-                            "email": None,
-                        }
-                    )
-                dic_hospedes.append(hd)
+        dic_hospedes = []
+        for h in hospedes:
+            usuario = View.usuario_listar_id(h.get_id_usuario())
+            nome_usuario = usuario.get_nome() if usuario else "Usuário Removido"
+            email_usuario = usuario.get_email() if usuario else "-"
+            fone_usuario = usuario.get_fone() if usuario else "-"
 
-            df = pd.DataFrame(dic_hospedes)
-
-            df = df.rename(
-                columns={
-                    "id_usuario": "ID (Usuário)",
-                    "nome": "Nome",
-                    "email": "Email",
-                    "fone": "Telefone",
-                    "endereco": "Endereço",
-                    "id_hospede": "ID (Hóspede)",
+            dic_hospedes.append(
+                {
+                    "ID Hóspede": h.get_id_hospede(),
+                    "Nome": nome_usuario,
+                    "Email": email_usuario,
+                    "Telefone": fone_usuario,
+                    "Endereço": h.get_endereco(),
                 }
             )
 
-            df = df.reindex(
-                columns=[
-                    "ID (Usuário)",
-                    "Nome",
-                    "Email",
-                    "Telefone",
-                    "Endereço",
-                    "ID (Hóspede)",
-                ]
-            )
-
-            st.dataframe(df, hide_index=True)
+        df = pd.DataFrame(dic_hospedes)
+        st.dataframe(df, hide_index=True, use_container_width=True)
 
     @staticmethod
     def inserir():
-        hospedes = [
+        # Filtra apenas usuários com perfil de hóspede
+        usuarios_hospede = [
             u for u in View.usuario_listar() if u.get_tipo_perfil().lower() == "hóspede"
         ]
-        if len(hospedes) == 0:
-            st.write("Nenhum usuário hóspede encontrado.")
-        else:
-            id_usuario = st.selectbox(
-                "Selecione o usuário:",
-                hospedes,
-                format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
-            ).get_id_usuario()
-            endereco = st.text_input("Informe o endereço:")
 
-            if st.button("Inserir"):
+        if not usuarios_hospede:
+            st.warning("Não há usuários com perfil 'Hóspede' disponíveis.")
+            return
+
+        usuario_selecionado = st.selectbox(
+            "Selecione o Usuário:",
+            usuarios_hospede,
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
+        )
+
+        endereco = st.text_input("Endereço:")
+
+        if st.button("Inserir"):
+            if not endereco:
+                st.error("Informe o endereço.")
+            else:
                 try:
-                    View.hospede_inserir(id_usuario, endereco)
-                except Exception as e:
-                    st.error("Erro ao inserir: {}".format(e))
-                else:
-                    st.success("Hóspede inserido com sucesso")
-                    time.sleep(2)
+                    View.hospede_inserir(usuario_selecionado.get_id_usuario(), endereco)
+                    st.success("Hóspede cadastrado com sucesso!")
+                    time.sleep(1)
                     st.rerun()
+                except Exception as e:
+                    st.error(f"Erro: {e}")
 
     @staticmethod
     def atualizar():
         hospedes = View.hospede_listar()
-        if len(hospedes) == 0:
-            st.write("Nenhum hóspede encontrado.")
-        else:
-            op = st.selectbox(
-                "Atualização de Hóspedes",
-                hospedes,
-                format_func=lambda h: f"{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome() if View.usuario_listar_id(h.get_id_usuario()) else 'Usuário não encontrado'} - {h.get_endereco()}",  # pyright: ignore[reportOptionalMemberAccess]
-            )
-            usuarios_hospede = [
-                u
-                for u in View.usuario_listar()
-                if u.get_tipo_perfil().lower() == "hóspede"
-            ]
-            usuario_selecionado = st.selectbox(
-                "Selecione o usuário:",
-                usuarios_hospede,
-                format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
-                key="usuario_atualizar",
-            )
-            id_usuario = usuario_selecionado.get_id_usuario()
-            endereco = st.text_input(
-                "Informe o novo endereço:", value=op.get_endereco()
-            )
-            if st.button("Atualizar"):
-                id = op.get_id_hospede()
-                View.hospede_atualizar(id, id_usuario, endereco)
-                st.success("Hospede atualizado com sucesso")
-                time.sleep(2)
+        if not hospedes:
+            st.info("Nenhum hóspede para atualizar.")
+            return
+
+        op = st.selectbox(
+            "Selecione o Hóspede:",
+            hospedes,
+            format_func=lambda h: ManterHospedeUI._formatar_hospede_resumo(h),
+        )
+
+        # Lógica para pre-selecionar o usuário vinculado
+        todos_usuarios = View.usuario_listar()
+        idx_usuario = ManterHospedeUI._obter_indice(
+            todos_usuarios, op.get_id_usuario(), lambda u: u.get_id_usuario()
+        )
+
+        novo_usuario = st.selectbox(
+            "Vincular Usuário:",
+            todos_usuarios,
+            index=idx_usuario,
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
+        )
+
+        novo_endereco = st.text_input("Endereço:", value=op.get_endereco())
+
+        if st.button("Salvar Alterações"):
+            try:
+                View.hospede_atualizar(
+                    op.get_id_hospede(), novo_usuario.get_id_usuario(), novo_endereco
+                )
+                st.success("Hóspede atualizado!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
 
     @staticmethod
     def excluir():
         hospedes = View.hospede_listar()
-        if len(hospedes) == 0:
-            st.write("Nenhum hóspede encontrado.")
-        else:
-            # Adicionado format_func para exibir: id_hospede - id_usuario - nome
-            op = st.selectbox(
-                "Exclusão de Hóspedes",
-                hospedes,
-                format_func=lambda h: f"{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome() if View.usuario_listar_id(h.get_id_usuario()) else 'Usuário não encontrado'} - {h.get_id_usuario()}",
-            )
-            if st.button("Excluir"):
-                id = op.get_id_hospede()
-                View.hospede_excluir(id)
-                st.success("Hóspede excluído com sucesso")
-                time.sleep(2)
+        if not hospedes:
+            st.info("Nenhum hóspede para excluir.")
+            return
+
+        op = st.selectbox(
+            "Selecione o Hóspede para excluir:",
+            hospedes,
+            format_func=lambda h: ManterHospedeUI._formatar_hospede_resumo(h),
+        )
+
+        if st.button("Excluir"):
+            try:
+                View.hospede_excluir(op.get_id_hospede())
+                st.success("Hóspede excluído!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
+
+    # --- Helpers ---
+    @staticmethod
+    def _formatar_hospede_resumo(h):
+        u = View.usuario_listar_id(h.get_id_usuario())
+        nome = u.get_nome() if u else "Usuário Desconhecido"
+        return f"ID {h.get_id_hospede()} - {nome}"
+
+    @staticmethod
+    def _obter_indice(lista, id_alvo, get_id_func):
+        for i, item in enumerate(lista):
+            if get_id_func(item) == id_alvo:
+                return i
+        return 0

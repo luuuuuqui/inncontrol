@@ -1,15 +1,14 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
-import pandas as pd  # pyright: ignore[reportMissingImports]
+import streamlit as st
+import pandas as pd
 from views import View
 import time
-
 
 class ManterUsuarioUI:
     @staticmethod
     def main():
-        st.header("Teste de CRUD de Usuário")
+        st.header("Gerenciar Usuários")
         tab1, tab2, tab3, tab4, tab5 = st.tabs(
-            ["Listar", "Inserir", "Atualizar", "Atualizar Senha", "Excluir"]
+            ["Listar", "Inserir", "Atualizar", "Alterar Senha", "Excluir"]
         )
         with tab1:
             ManterUsuarioUI.listar()
@@ -25,158 +24,126 @@ class ManterUsuarioUI:
     @staticmethod
     def listar():
         usuarios = View.usuario_listar()
-        if len(usuarios) == 0:
-            st.write("Nenhum usuário encontrado.")
-        else:
-            df = pd.DataFrame([u.to_dict() for u in usuarios])
-            df = df.rename(
-                columns={
-                    "id_usuario": "ID",
-                    "nome": "Nome",
-                    "email": "Email",
-                    "fone": "Telefone",
-                    "perfil_tipo": "Tipo de Perfil",
-                    "perfil_id": "ID (Perfil)",
-                }
-            )
-            df = df.reindex(
-                columns=[
-                    "ID",
-                    "Nome",
-                    "Email",
-                    "Telefone",
-                    "Tipo de Perfil",
-                    "ID (Perfil)",
-                ]
-            )
-            st.dataframe(df, hide_index=True)
+        if not usuarios:
+            st.info("Nenhum usuário encontrado.")
+            return
+
+        data = []
+        for u in usuarios:
+            data.append({
+                "ID": u.get_id_usuario(),
+                "Nome": u.get_nome(),
+                "Email": u.get_email(),
+                "Telefone": u.get_fone(),
+                "Tipo Perfil": u.get_tipo_perfil()
+            })
+            
+        df = pd.DataFrame(data)
+        st.dataframe(df, hide_index=True, use_container_width=True)
 
     @staticmethod
     def inserir():
-        nome = st.text_input("Informe o nome:", placeholder="João da Silva")
-        fone = st.text_input("Informe o telefone:", placeholder="(11) 99999-0000")
-        email = st.text_input("Informe o email:", placeholder="joaosilva@exemple.com")
-        senha = st.text_input(
-            "Informe a senha:", type="password", placeholder="********"
-        )
-        tipoperfil = st.selectbox(
-            "Informe o tipo do perfil:",
-            ("Administrador", "Recepcionista", "Hóspede"),
-        )
-        idperfil = st.number_input(
-            f"Informe o id do {tipoperfil.lower()}:", step=1, min_value=0
-        )
+        nome = st.text_input("Nome:", placeholder="João da Silva")
+        email = st.text_input("Email:", placeholder="joao@email.com")
+        fone = st.text_input("Telefone:", placeholder="(11) 99999-9999")
+        senha = st.text_input("Senha:", type="password")
+        
+        tipos_perfil = ["Administrador", "Recepcionista", "Hóspede"]
+        tipo_perfil = st.selectbox("Tipo de Perfil:", tipos_perfil)
+        
+        # O campo ID perfil parece ser legado ou para chaves externas manuais, mantendo conforme original
+        id_perfil = st.number_input("ID Externo do Perfil (Opcional):", min_value=0, step=1, value=0)
 
-        bloquear = not (nome and email and senha)
-
-        if st.button("Inserir", disabled=bloquear):
-            try:
-                View.usuario_inserir(nome, fone, email, senha, tipoperfil, idperfil)
-            except Exception as e:
-                st.error("Erro ao inserir: {}".format(e))
+        if st.button("Inserir"):
+            if not (nome and email and senha):
+                st.error("Nome, Email e Senha são obrigatórios.")
             else:
-                st.success("Usuario inserido com sucesso")
-                time.sleep(2)
-                st.rerun()
+                try:
+                    View.usuario_inserir(nome, fone, email, senha, tipo_perfil, id_perfil)
+                    st.success("Usuário inserido!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro: {e}")
 
     @staticmethod
     def atualizar():
         usuarios = View.usuario_listar()
-        if len(usuarios) == 0:
-            st.write("Nenhum usuario encontrado.")
-        else:
-            op = st.selectbox(
-                "Escolha o usuário a atualizar",
-                usuarios,
-                format_func=lambda x: x.__str__(),
-                key="selectboxatualizar",
-            )
+        if not usuarios:
+            st.info("Nenhum usuário para editar.")
+            return
 
-            if "ultimo_id_selecionado" not in st.session_state:
-                st.session_state.ultimo_id_selecionado = None
+        op = st.selectbox(
+            "Selecione o Usuário:",
+            usuarios,
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}"
+        )
 
-            # Se o ID mudou, atualizamos as chaves do session_state com os dados do banco
-            if st.session_state.ultimo_id_selecionado != op.get_id_usuario():
-                st.session_state.ultimo_id_selecionado = op.get_id_usuario()
-                st.session_state.atualizarnome = op.get_nome()
-                st.session_state.atualizarfone = op.get_fone()
-                st.session_state.atualizaremail = op.get_email()
-                st.session_state.atualizartipoperfil = op.get_tipo_perfil()
-                st.session_state.atualizaridperfil = op.get_id_perfil()
+        novo_nome = st.text_input("Nome:", value=op.get_nome())
+        novo_email = st.text_input("Email:", value=op.get_email())
+        novo_fone = st.text_input("Telefone:", value=op.get_fone())
+        
+        tipos_perfil = ["Administrador", "Recepcionista", "Hóspede"]
+        idx_perfil = tipos_perfil.index(op.get_tipo_perfil()) if op.get_tipo_perfil() in tipos_perfil else 0
+        
+        novo_tipo = st.selectbox("Tipo de Perfil:", tipos_perfil, index=idx_perfil)
+        novo_id_perfil = st.number_input("ID Externo:", min_value=0, step=1, value=op.get_id_perfil())
 
-            nome = st.text_input("Informe o novo nome", key="atualizarnome")
-            fone = st.text_input(
-                "Informe o novo telefone:",
-                key="atualizarfone",
-                placeholder="Usuário sem telefone.",
-            )
-            email = st.text_input("Informe o novo email:", key="atualizaremail")
-
-            tipoperfil = st.selectbox(
-                "Informe o tipo do perfil:",
-                ("Administrador", "Recepcionista", "Hóspede"),
-                key="atualizartipoperfil",
-            )
-
-            idperfil = st.number_input(
-                f"Informe o id do {tipoperfil.lower()}:",
-                step=1,
-                min_value=0,
-                key="atualizaridperfil",
-            )
-
-            if st.button("Atualizar usuário"):
-                id = op.get_id_usuario()
-                View.usuario_atualizar(id, nome, fone, email, tipoperfil, idperfil)
-                st.success("Usuario atualizado com sucesso")
-                time.sleep(2)
+        if st.button("Salvar Alterações"):
+            try:
+                View.usuario_atualizar(op.get_id_usuario(), novo_nome, novo_fone, novo_email, novo_tipo, novo_id_perfil)
+                st.success("Usuário atualizado!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
 
     @staticmethod
     def atualizar_senha():
         usuarios = View.usuario_listar()
-        if len(usuarios) == 0:
-            st.write("Nenhum usuario encontrado.")
-        else:
-            op = st.selectbox(
-                "Escolha o usuário a atualizar",
-                usuarios,
-                format_func=lambda x: x.__str__(),
-                key="sb_atualizar_senha",
-            )
+        if not usuarios:
+            st.info("Nenhum usuário encontrado.")
+            return
 
-            # Inicializa a variável de controle se não existir
-            if "ultimo_usuario" not in st.session_state:
-                st.session_state.ultimo_usuario = op.get_id_usuario()
+        op = st.selectbox(
+            "Selecione o Usuário:",
+            usuarios,
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
+            key="sb_senha_user"
+        )
 
-            # Compara o usuário atual com o último armazenado
-            if st.session_state.ultimo_usuario != op.get_id_usuario():
-                st.session_state.atualizarsenha = ""  # Limpa o campo de senha
-                st.session_state.ultimo_usuario = (
-                    op.get_id_usuario()
-                )  # Atualiza o controle
+        nova_senha = st.text_input("Nova Senha:", type="password")
 
-            senha = st.text_input(
-                "Informe a nova senha:", type="password", key="atualizarsenha"
-            )
-
-            if st.button("Atualizar senha", key="btn_atualizar_senha"):
-                id = op.get_id_usuario()
-                View.usuario_atualizar_senha(id, senha)
-                st.success("Senha atualizada com sucesso!")
-                time.sleep(2)
-                st.rerun()
+        if st.button("Alterar Senha"):
+            if not nova_senha:
+                st.error("Digite a nova senha.")
+            else:
+                try:
+                    View.usuario_atualizar_senha(op.get_id_usuario(), nova_senha)
+                    st.success("Senha atualizada!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro: {e}")
 
     @staticmethod
     def excluir():
         usuarios = View.usuario_listar()
-        if len(usuarios) == 0:
-            st.write("Nenhum usuario encontrado.")
-        else:
-            op = st.selectbox("Exclusão de Usuarios", usuarios)
-            if st.button("Excluir"):
-                id = op.get_id_usuario()
-                View.usuario_excluir(id)
-                st.success("Usuario excluído com sucesso")
-                time.sleep(2)
+        if not usuarios:
+            st.info("Nenhum usuário para excluir.")
+            return
+
+        op = st.selectbox(
+            "Selecione para excluir:",
+            usuarios,
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}"
+        )
+
+        if st.button("Excluir"):
+            try:
+                View.usuario_excluir(op.get_id_usuario())
+                st.success("Usuário excluído!")
+                time.sleep(1)
                 st.rerun()
+            except Exception as e:
+                st.error(f"Erro: {e}")
