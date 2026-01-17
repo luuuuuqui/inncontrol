@@ -49,8 +49,12 @@ class ManterQuartoUI:
             st.warning("Cadastre Tipos de Quarto antes de inserir quartos.")
             return
 
+        # Added unique key to prevent DuplicateElementId error
         tipo_selecionado = st.selectbox(
-            "Tipo de Quarto:", tipos, format_func=lambda t: t.get_nome()
+            "Tipo de Quarto:",
+            tipos,
+            format_func=lambda t: t.get_nome(),
+            key="sb_inserir_tipo",
         )
 
         bloco = st.text_input("Bloco:", placeholder="Ex: A")
@@ -89,8 +93,13 @@ class ManterQuartoUI:
             tipos, op.get_id_quarto_tipo(), lambda t: t.get_id_tipoquarto()
         )
 
+        # Added unique key to prevent DuplicateElementId error
         novo_tipo = st.selectbox(
-            "Tipo de Quarto:", tipos, index=idx_tipo, format_func=lambda t: t.get_nome()
+            "Tipo de Quarto:",
+            tipos,
+            index=idx_tipo,
+            format_func=lambda t: t.get_nome(),
+            key="sb_atualizar_tipo",
         )
 
         novo_bloco = st.text_input("Bloco:", value=op.get_bloco())

@@ -3,6 +3,7 @@ import pandas as pd
 from views import View
 import time
 
+
 class ManterUsuarioUI:
     @staticmethod
     def main():
@@ -30,14 +31,16 @@ class ManterUsuarioUI:
 
         data = []
         for u in usuarios:
-            data.append({
-                "ID": u.get_id_usuario(),
-                "Nome": u.get_nome(),
-                "Email": u.get_email(),
-                "Telefone": u.get_fone(),
-                "Tipo Perfil": u.get_tipo_perfil()
-            })
-            
+            data.append(
+                {
+                    "ID": u.get_id_usuario(),
+                    "Nome": u.get_nome(),
+                    "Email": u.get_email(),
+                    "Telefone": u.get_fone(),
+                    "Tipo Perfil": u.get_tipo_perfil(),
+                }
+            )
+
         df = pd.DataFrame(data)
         st.dataframe(df, hide_index=True, use_container_width=True)
 
@@ -47,19 +50,26 @@ class ManterUsuarioUI:
         email = st.text_input("Email:", placeholder="joao@email.com")
         fone = st.text_input("Telefone:", placeholder="(11) 99999-9999")
         senha = st.text_input("Senha:", type="password")
-        
+
         tipos_perfil = ["Administrador", "Recepcionista", "Hóspede"]
-        tipo_perfil = st.selectbox("Tipo de Perfil:", tipos_perfil)
-        
+        # Added unique key
+        tipo_perfil = st.selectbox(
+            "Tipo de Perfil:", tipos_perfil, key="sb_inserir_perfil"
+        )
+
         # O campo ID perfil parece ser legado ou para chaves externas manuais, mantendo conforme original
-        id_perfil = st.number_input("ID Externo do Perfil (Opcional):", min_value=0, step=1, value=0)
+        id_perfil = st.number_input(
+            "ID Externo do Perfil (Opcional):", min_value=0, step=1, value=0
+        )
 
         if st.button("Inserir"):
             if not (nome and email and senha):
                 st.error("Nome, Email e Senha são obrigatórios.")
             else:
                 try:
-                    View.usuario_inserir(nome, fone, email, senha, tipo_perfil, id_perfil)
+                    View.usuario_inserir(
+                        nome, fone, email, senha, tipo_perfil, id_perfil
+                    )
                     st.success("Usuário inserido!")
                     time.sleep(1)
                     st.rerun()
@@ -76,22 +86,38 @@ class ManterUsuarioUI:
         op = st.selectbox(
             "Selecione o Usuário:",
             usuarios,
-            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}"
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
         )
 
         novo_nome = st.text_input("Nome:", value=op.get_nome())
         novo_email = st.text_input("Email:", value=op.get_email())
         novo_fone = st.text_input("Telefone:", value=op.get_fone())
-        
+
         tipos_perfil = ["Administrador", "Recepcionista", "Hóspede"]
-        idx_perfil = tipos_perfil.index(op.get_tipo_perfil()) if op.get_tipo_perfil() in tipos_perfil else 0
-        
-        novo_tipo = st.selectbox("Tipo de Perfil:", tipos_perfil, index=idx_perfil)
-        novo_id_perfil = st.number_input("ID Externo:", min_value=0, step=1, value=op.get_id_perfil())
+        idx_perfil = (
+            tipos_perfil.index(op.get_tipo_perfil())
+            if op.get_tipo_perfil() in tipos_perfil
+            else 0
+        )
+
+        # Added unique key
+        novo_tipo = st.selectbox(
+            "Tipo de Perfil:", tipos_perfil, index=idx_perfil, key="sb_atualizar_perfil"
+        )
+        novo_id_perfil = st.number_input(
+            "ID Externo:", min_value=0, step=1, value=op.get_id_perfil()
+        )
 
         if st.button("Salvar Alterações"):
             try:
-                View.usuario_atualizar(op.get_id_usuario(), novo_nome, novo_fone, novo_email, novo_tipo, novo_id_perfil)
+                View.usuario_atualizar(
+                    op.get_id_usuario(),
+                    novo_nome,
+                    novo_fone,
+                    novo_email,
+                    novo_tipo,
+                    novo_id_perfil,
+                )
                 st.success("Usuário atualizado!")
                 time.sleep(1)
                 st.rerun()
@@ -109,7 +135,7 @@ class ManterUsuarioUI:
             "Selecione o Usuário:",
             usuarios,
             format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
-            key="sb_senha_user"
+            key="sb_senha_user",
         )
 
         nova_senha = st.text_input("Nova Senha:", type="password")
@@ -136,7 +162,7 @@ class ManterUsuarioUI:
         op = st.selectbox(
             "Selecione para excluir:",
             usuarios,
-            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}"
+            format_func=lambda u: f"{u.get_id_usuario()} - {u.get_nome()}",
         )
 
         if st.button("Excluir"):
