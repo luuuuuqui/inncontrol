@@ -1,3 +1,4 @@
+import time
 import streamlit as st  # pyright: ignore[reportMissingImports]
 
 from templates.manterusuarioUI import ManterUsuarioUI as UsuarioUI
@@ -9,10 +10,21 @@ from templates.manterpagamentoUI import ManterPagamentoUI as PagamentoUI
 from templates.manterconsumoUI import ManterConsumoUI as ConsumoUI
 from templates.manteradicionalUI import ManterAdicionalUI as AdicionalUI
 
+from templates.loginUI import LoginUI
+
 from dao.database import Database
 
 
 class IndexUI:
+    @staticmethod
+    def menu_visitante():
+        op = st.sidebar.selectbox("Menu", ["Entrar no Sistema", "Abrir Conta"])
+        match op:
+            case "Entrar no Sistema":
+                LoginUI.main()
+            case "Abrir Conta":
+                st.info("Hey, essa funcionalidade ainda não está disponível ou não pretendemos adicioná-la. Volte mais tarde! :)")
+
     @staticmethod
     def menu_admin():
         op = st.sidebar.selectbox(
@@ -47,10 +59,31 @@ class IndexUI:
                 AdicionalUI.main()
             case _:
                 st.error("Opção inválida.")
+            
+    @staticmethod
+    def sair_do_sistema():
+        if st.sidebar.button("Sair do Sistema"):
+            try:
+                st.session_state.clear()
+            except Exception as e:
+                st.error(f"Erro ao sair: {e}")
+            finally:
+                st.success("Você saiu do sistema com sucesso.")
+                time.sleep(1)
+                st.rerun()
 
     @staticmethod
     def sidebar():
-        IndexUI.menu_admin()
+        if not st.session_state.get("usuario_id"):
+            IndexUI.menu_visitante()
+        else:
+            st.sidebar.write(f"Bem-vindo(a), {st.session_state['usuario_nome'].split()[0]}!")
+            IndexUI.sair_do_sistema()
+            match st.session_state.get("usuario_tipo", "").lower():
+                case "administrador":
+                    IndexUI.menu_admin()
+                case _:
+                    st.error(f"Tipo de usuário inválido (ou não). Usuários de tipo \"{st.session_state['usuario_tipo']}\" ainda não podem acessar o sistema. Por enquanto, apenas administradores podem acessar o sistema.")
 
     @staticmethod
     def main():

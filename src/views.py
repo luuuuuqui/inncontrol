@@ -23,6 +23,24 @@ from models.adicional import Adicional
 
 
 class View:
+    # Autenticação (Login)
+    @staticmethod
+    def usuario_autenticar(email, senha):
+        """
+        Verifica as credenciais do usuário.
+        Retorna um dicionário com os dados do usuário se válido, ou None se falhar.
+        """
+        usuarios = UsuarioDAO.listar()
+        for u in usuarios:
+            if u.get_email() == email and u.get_senha() == senha:
+                return {
+                    "id": u.get_id_usuario(),
+                    "nome": u.get_nome(),
+                    "email": u.get_email(),
+                    "tipo": u.get_tipo_perfil() 
+                }
+        return None
+
     # Usuário
     @staticmethod
     def usuario_inserir(nome, fone, email, senha, tipoperfil, idperfil):
