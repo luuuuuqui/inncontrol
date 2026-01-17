@@ -168,8 +168,14 @@ class View:
             raise ValueError("Reserva não encontrada.")
 
         quarto = QuartoDAO.listar_id(reserva.get_id_quarto())
-        tipo_quarto = TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo())  # pyright: ignore[reportOptionalMemberAccess]
-        valor_diaria = Decimal(tipo_quarto.get_valor_diaria())  # pyright: ignore[reportOptionalMemberAccess]
+        if not quarto:
+            raise ValueError("Quarto não encontrado.")
+
+        tipo_quarto = TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo())
+        if not tipo_quarto:
+            raise ValueError("Tipo de quarto não encontrado.")
+
+        valor_diaria = Decimal(tipo_quarto.get_valor_diaria())
 
         checkin = dt.strptime(reserva.get_data_checkin(), "%Y-%m-%d")
         checkout = dt.strptime(reserva.get_data_checkout(), "%Y-%m-%d")
@@ -189,7 +195,10 @@ class View:
 
         for consumo in lista_consumos:
             adicional = AdicionalDAO.listar_id(consumo.get_id_adicional())
-            valor_item = Decimal(adicional.get_valor())  # pyright: ignore[reportOptionalMemberAccess]
+            if not adicional:
+                raise ValueError("Adicional não encontrado.")
+
+            valor_item = Decimal(adicional.get_valor())
             subtotal_item = valor_item * consumo.get_quantidade()
 
             total_consumo += subtotal_item
@@ -202,9 +211,6 @@ class View:
     def reserva_excluir(id_reserva):
         r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "a")
         ReservaDAO.excluir(r)
-
-    # Pagamento
-    # calma calabreso. eu ainda vou adicionar, bonitão. não se preocupe :)
 
     # Consumo
     @staticmethod
