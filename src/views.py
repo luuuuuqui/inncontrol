@@ -6,6 +6,7 @@ from dao.hospededao import HospedeDAO
 from dao.quartodao import QuartoDAO
 from dao.tipoquartodao import TipoQuartoDAO
 from dao.reservadao import ReservaDAO
+from dao.pagamentodao import PagamentoDAO
 from dao.consumodao import ConsumoDAO
 from dao.adicionaldao import AdicionalDAO
 
@@ -14,6 +15,7 @@ from models.hospede import Hospede
 from models.quarto import Quarto
 from models.tipoquarto import TipoQuarto
 from models.reserva import Reserva
+from models.pagamento import Pagamento
 from models.consumo import Consumo
 from models.adicional import Adicional
 
@@ -211,6 +213,46 @@ class View:
     def reserva_excluir(id_reserva):
         r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "a")
         ReservaDAO.excluir(r)
+    
+    # Pagamento
+    @staticmethod
+    def pagamento_registrar(id_reserva, data_pagamento, forma_pagamento, status):
+        valor_total = View.reserva_calcular_total(id_reserva)
+        p = Pagamento(
+            0, id_reserva, data_pagamento, valor_total, forma_pagamento, status
+        )
+        PagamentoDAO.inserir(p)
+
+    @staticmethod
+    def pagamento_listar():
+        p = PagamentoDAO.listar()
+        p.sort(key=lambda obj: obj.get_id_pagamento())
+        return p
+
+    @staticmethod
+    def pagamento_listar_id(id):
+        return PagamentoDAO.listar_id(id)
+
+    @staticmethod
+    def pagamento_atualizar(
+        id_pagamento, id_reserva, data_pagamento, forma_pagamento, status
+    ):
+        View.pagamento_valor_atualizar(id_pagamento, id_reserva)
+        p = Pagamento(
+            id_pagamento, id_reserva, data_pagamento, 0, forma_pagamento, status
+        )
+        PagamentoDAO.atualizar(p)
+        
+    @staticmethod
+    def pagamento_valor_atualizar(id_pagamento, id_reserva):
+        valor_total = View.reserva_calcular_total(id_reserva)
+        p = Pagamento(id_pagamento, id_reserva, "2000-01-01", valor_total, "a", "a")
+        PagamentoDAO.atualizar_valor(p)
+
+    @staticmethod
+    def pagamento_excluir(id_pagamento):
+        p = Pagamento(id_pagamento, 0, "2026-01-01", Decimal(0.01), "a", "a")
+        PagamentoDAO.excluir(p)
 
     # Consumo
     @staticmethod
