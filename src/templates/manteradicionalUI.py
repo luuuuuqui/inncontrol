@@ -31,7 +31,7 @@ class ManterAdicionalUI:
                 {
                     "ID": a.get_id_adicional(),
                     "Descrição": a.get_descricao(),
-                    "Valor": f"R$ {a.get_valor():.2f}".replace(".", ","),
+                    "Valor": f"R$ {float(a.get_valor()):.2f}".replace(".", ","),
                 }
             )
 

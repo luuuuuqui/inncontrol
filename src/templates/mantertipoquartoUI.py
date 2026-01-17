@@ -3,6 +3,7 @@ import pandas as pd
 from views import View
 import time
 
+
 class ManterTipoQuartoUI:
     @staticmethod
     def main():
@@ -26,13 +27,17 @@ class ManterTipoQuartoUI:
 
         dic_tipos = []
         for t in tipos:
-            dic_tipos.append({
-                "ID": t.get_id_tipoquarto(),
-                "Nome": t.get_nome(),
-                "Descrição": t.get_descricao(),
-                "Capacidade": f"{t.get_capacidade()} pessoa(s)",
-                "Valor Diária": f"R$ {t.get_valor_diaria():.2f}".replace(".", ",")
-            })
+            dic_tipos.append(
+                {
+                    "ID": t.get_id_tipoquarto(),
+                    "Nome": t.get_nome(),
+                    "Descrição": t.get_descricao(),
+                    "Capacidade": f"{t.get_capacidade()} pessoa(s)",
+                    "Valor Diária": f"R$ {float(t.get_valor_diaria()):.2f}".replace(
+                        ".", ","
+                    ),
+                }
+            )
 
         df = pd.DataFrame(dic_tipos)
         st.dataframe(df, hide_index=True, use_container_width=True)
@@ -42,7 +47,9 @@ class ManterTipoQuartoUI:
         nome = st.text_input("Nome:", placeholder="Ex: Quarto Luxo")
         descricao = st.text_input("Descrição:", placeholder="Ex: Vista para o mar")
         capacidade = st.number_input("Capacidade:", min_value=1, step=1)
-        valor_diaria = st.number_input("Valor da Diária (R$):", min_value=0.0, step=0.01, format="%.2f")
+        valor_diaria = st.number_input(
+            "Valor da Diária (R$):", min_value=0.0, step=0.01, format="%.2f"
+        )
 
         if st.button("Inserir"):
             if not (nome and descricao and capacidade and valor_diaria):
@@ -66,17 +73,28 @@ class ManterTipoQuartoUI:
         op = st.selectbox(
             "Selecione o tipo para editar:",
             tipos,
-            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}"
+            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}",
         )
 
         nome = st.text_input("Novo Nome:", value=op.get_nome())
         descricao = st.text_input("Nova Descrição:", value=op.get_descricao())
-        capacidade = st.number_input("Nova Capacidade:", min_value=1, step=1, value=op.get_capacidade())
-        valor_diaria = st.number_input("Novo Valor (R$):", min_value=0.0, step=0.01, format="%.2f", value=float(op.get_valor_diaria()))
+        capacidade = st.number_input(
+            "Nova Capacidade:", min_value=1, step=1, value=op.get_capacidade()
+        )
+
+        valor_diaria = st.number_input(
+            "Novo Valor (R$):",
+            min_value=0.0,
+            step=0.01,
+            format="%.2f",
+            value=float(op.get_valor_diaria()),
+        )
 
         if st.button("Salvar Alterações"):
             try:
-                View.tipoquarto_atualizar(op.get_id_tipoquarto(), nome, descricao, capacidade, valor_diaria)
+                View.tipoquarto_atualizar(
+                    op.get_id_tipoquarto(), nome, descricao, capacidade, valor_diaria
+                )
                 st.success("Atualizado com sucesso!")
                 time.sleep(1)
                 st.rerun()
@@ -93,7 +111,7 @@ class ManterTipoQuartoUI:
         op = st.selectbox(
             "Selecione o tipo para excluir:",
             tipos,
-            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}"
+            format_func=lambda x: f"{x.get_id_tipoquarto()} - {x.get_nome()}",
         )
 
         if st.button("Excluir"):
