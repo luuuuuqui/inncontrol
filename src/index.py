@@ -5,6 +5,7 @@ from templates.manterhospedeUI import ManterHospedeUI as HospedeUI
 from templates.manterquartoUI import ManterQuartoUI as QuartoUI
 from templates.mantertipoquartoUI import ManterTipoQuartoUI as TipoQuartoUI
 from templates.manterreservaUI import ManterReservaUI as ReservaUI
+from templates.manterpagamentoUI import ManterPagamentoUI as PagamentoUI
 from templates.manterconsumoUI import ManterConsumoUI as ConsumoUI
 from templates.manteradicionalUI import ManterAdicionalUI as AdicionalUI
 
@@ -22,6 +23,7 @@ class IndexUI:
                 "Quarto",
                 "Tipo de Quarto",
                 "Reserva",
+                "Pagamento",
                 "Consumo",
                 "Adicional",
             ],
@@ -37,6 +39,8 @@ class IndexUI:
                 TipoQuartoUI.main()
             case "Reserva":
                 ReservaUI.main()
+            case "Pagamento":
+                PagamentoUI.main()
             case "Consumo":
                 ConsumoUI.main()
             case "Adicional":
