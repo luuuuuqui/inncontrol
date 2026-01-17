@@ -26,7 +26,7 @@ class Pagamento:
         self.__id_pagamento = id
 
     def set_id_reserva(self, id: int) -> None:
-        if id <= 0:
+        if id < 0:
             raise ValueError("ID da reserva deve ser um inteiro positivo.")
         self.__id_reserva = id
 
