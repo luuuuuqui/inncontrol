@@ -1,6 +1,7 @@
 from decimal import Decimal
 from datetime import datetime as dt
 
+# DAOs
 from dao.usuariodao import UsuarioDAO
 from dao.hospededao import HospedeDAO
 from dao.quartodao import QuartoDAO
@@ -10,6 +11,7 @@ from dao.pagamentodao import PagamentoDAO
 from dao.consumodao import ConsumoDAO
 from dao.adicionaldao import AdicionalDAO
 
+# Models
 from models.usuario import Usuario
 from models.hospede import Hospede
 from models.quarto import Quarto
@@ -19,14 +21,17 @@ from models.pagamento import Pagamento
 from models.consumo import Consumo
 from models.adicional import Adicional
 
-# todo: adicionar verifiação de usuarios com mesmas credenciais
-# exemplo: mesmo email para usuario, mesmo numero de quarto no mesmo bloco, etc.
-
 
 class View:
     # Usuário
     @staticmethod
     def usuario_inserir(nome, fone, email, senha, tipoperfil, idperfil):
+        # validação: email único
+        usuarios = UsuarioDAO.listar()
+        for u in usuarios:
+            if u.get_email() == email:
+                raise ValueError(f"O email '{email}' já está em uso.")
+
         u = Usuario(0, nome, fone, email, senha, tipoperfil, idperfil)
         UsuarioDAO.inserir(u)
 
@@ -42,6 +47,12 @@ class View:
 
     @staticmethod
     def usuario_atualizar(id, nome, fone, email, tipoperfil, idperfil):
+        # validação: email único (mas permitindo o próprio email atual)
+        usuarios = UsuarioDAO.listar()
+        for u in usuarios:
+            if u.get_email() == email and u.get_id_usuario() != id:
+                raise ValueError(f"O email '{email}' já pertence a outro usuário.")
+
         u = Usuario(id, nome, fone, email, "********", tipoperfil, idperfil)
         UsuarioDAO.atualizar(u)
 
@@ -58,6 +69,12 @@ class View:
     # Hóspede
     @staticmethod
     def hospede_inserir(id_usuario, endereco):
+        # validação: o usuário já é hóspede? (1 usuário <-> 1 hóspede)
+        hospedes = HospedeDAO.listar()
+        for h in hospedes:
+            if h.get_id_usuario() == id_usuario:
+                raise ValueError("Este usuário já possui cadastro de hóspede.")
+
         h = Hospede(0, id_usuario, endereco)
         HospedeDAO.inserir(h)
 
@@ -73,6 +90,12 @@ class View:
 
     @staticmethod
     def hospede_atualizar(id_hospede, id_usuario, endereco):
+        # validação: Verifica se o id_usuario pertence a outro hóspede
+        hospedes = HospedeDAO.listar()
+        for h in hospedes:
+            if h.get_id_usuario() == id_usuario and h.get_id_hospede() != id_hospede:
+                raise ValueError("Este usuário já está vinculado a outro hóspede.")
+
         h = Hospede(id_hospede, id_usuario, endereco)
         HospedeDAO.atualizar(h)
 
@@ -81,15 +104,21 @@ class View:
         h = Hospede(id_hospede, 0, "")
         HospedeDAO.excluir(h)
 
-    # TipoQuarto
+    # Tipo de Quarto
     @staticmethod
     def tipoquarto_inserir(nome, descricao, capacidade, valor_diaria):
+        # validação: nome do tipo deve ser único
+        tipos = TipoQuartoDAO.listar()
+        for t in tipos:
+            if t.get_nome().lower() == nome.lower():
+                raise ValueError(f"O tipo de quarto '{nome}' já existe.")
+
         tq = TipoQuarto(0, nome, descricao, capacidade, valor_diaria)
         TipoQuartoDAO.inserir(tq)
 
     @staticmethod
     def tipoquarto_listar():
-        tq = TipoQuartoDAO.listar()  # retorna uma lista de objetos TipoQuarto
+        tq = TipoQuartoDAO.listar()
         tq.sort(key=lambda obj: obj.get_id_tipoquarto())
         return tq
 
@@ -99,6 +128,15 @@ class View:
 
     @staticmethod
     def tipoquarto_atualizar(id_tipoquarto, nome, descricao, capacidade, valor_diaria):
+        # validação: nome único na atualização
+        tipos = TipoQuartoDAO.listar()
+        for t in tipos:
+            if (
+                t.get_nome().lower() == nome.lower()
+                and t.get_id_tipoquarto() != id_tipoquarto
+            ):
+                raise ValueError(f"Já existe outro tipo de quarto com o nome '{nome}'.")
+
         tq = TipoQuarto(id_tipoquarto, nome, descricao, capacidade, valor_diaria)
         TipoQuartoDAO.atualizar(tq)
 
@@ -110,6 +148,12 @@ class View:
     # Quarto
     @staticmethod
     def quarto_inserir(id_tipo, bloco, numero):
+        # validação: bloco + número deve ser único
+        quartos = QuartoDAO.listar()
+        for q in quartos:
+            if q.get_bloco() == bloco and q.get_numero() == numero:
+                raise ValueError(f"O quarto {numero} já existe no bloco {bloco}.")
+
         q = Quarto(0, id_tipo, bloco, numero)
         QuartoDAO.inserir(q)
 
@@ -125,6 +169,13 @@ class View:
 
     @staticmethod
     def quarto_atualizar(id_quarto, id_tipo, bloco, numero):
+        # validação: bloco + número único na atualização
+        quartos = QuartoDAO.listar()
+        for q in quartos:
+            mesmo_bloco_num = q.get_bloco() == bloco and q.get_numero() == numero
+            if mesmo_bloco_num and q.get_id_quarto() != id_quarto:
+                raise ValueError(f"Já existe o quarto {numero} no bloco {bloco}.")
+
         q = Quarto(id_quarto, id_tipo, bloco, numero)
         QuartoDAO.atualizar(q)
 
@@ -135,7 +186,48 @@ class View:
 
     # Reserva
     @staticmethod
+    def _validar_disponibilidade(
+        id_quarto, data_in_str, data_out_str, ignorar_id_reserva=None
+    ):
+        """
+        Método auxiliar para verificar conflito de datas (Overbooking).
+        """
+        # converter strings para data
+        try:
+            nova_in = dt.strptime(data_in_str, "%Y-%m-%d")
+            nova_out = dt.strptime(data_out_str, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("Formato de data inválido. Use AAAA-MM-DD.")
+
+        if nova_in >= nova_out:
+            raise ValueError(
+                "A data de Check-in deve ser anterior à data de Check-out."
+            )
+
+        # verificar conflitos
+        reservas = ReservaDAO.listar()
+        for r in reservas:
+            # pula a própria reserva se for uma atualização
+            if ignorar_id_reserva and r.get_id_reserva() == ignorar_id_reserva:
+                continue
+
+            # verifica apenas reservas do mesmo quarto que não foram canceladas
+            if r.get_id_quarto() == id_quarto and r.get_status() != "Cancelada":
+                existente_in = dt.strptime(r.get_data_checkin(), "%Y-%m-%d")
+                existente_out = dt.strptime(r.get_data_checkout(), "%Y-%m-%d")
+
+                # lógica de sobreposição de datas:
+                # (checkinA < checkoutB) e (checkoutA > checkinB)
+                if nova_in < existente_out and nova_out > existente_in:
+                    raise ValueError(
+                        f"Quarto indisponível! Já existe reserva de {r.get_data_checkin()} a {r.get_data_checkout()}."
+                    )
+
+    @staticmethod
     def reserva_inserir(id_hospede, id_quarto, data_checkin, data_checkout, status):
+        # Validação de Overbooking
+        View._validar_disponibilidade(id_quarto, data_checkin, data_checkout)
+
         r = Reserva(0, id_hospede, id_quarto, data_checkin, data_checkout, status)
         ReservaDAO.inserir(r)
 
@@ -147,23 +239,27 @@ class View:
 
     @staticmethod
     def reserva_listar_id(id):
-        return QuartoDAO.listar_id(id)
+        # correção: tava retornando QuartoDAO anteriormente
+        return ReservaDAO.listar_id(id)
 
     @staticmethod
     def reserva_atualizar(
         id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status
     ):
+        # validação de overbooking (ignorando a própria reserva atual)
+        View._validar_disponibilidade(
+            id_quarto, data_checkin, data_checkout, ignorar_id_reserva=id_reserva
+        )
+
         r = Reserva(
             id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status
         )
         ReservaDAO.atualizar(r)
 
     @staticmethod
-    def reserva_calcular_total(id_reserva) -> Decimal:
+    def reserva_calcular_pagamento(id_reserva) -> Decimal:
         """
-        Cálculo do total da reserva baseado no ID da reserva.
-
-        :param id_reserva: ID da reserva a calcular o valor.
+        Calcula o total da reserva (Diárias + Consumo).
         """
         reserva = ReservaDAO.listar_id(id_reserva)
         if not reserva:
@@ -185,24 +281,27 @@ class View:
         dias = Decimal(abs((checkin - checkout).days))
 
         if dias == 0:
-            dias = 1  # Cobrança mínima de 1 diária
+            dias = 1  # cobrança mínima
         elif dias < 0:
-            raise ValueError("A reserva tem um número negativo de dias.")
+            raise ValueError("Datas inconsistentes na reserva.")
 
         total_diarias = valor_diaria * dias
 
-        # 4. Calcular Consumos
+        # calcular consumos
         lista_consumos = ConsumoDAO.listar_por_reserva(id_reserva)
+        # se o DAO retornar None ou lista vazia, garantimos lista vazia
+        if not lista_consumos:
+            lista_consumos = []
+
         total_consumo = Decimal("0.00")
 
         for consumo in lista_consumos:
             adicional = AdicionalDAO.listar_id(consumo.get_id_adicional())
             if not adicional:
-                raise ValueError("Adicional não encontrado.")
+                continue  # pula se item adicional foi excluído do sistema
 
             valor_item = Decimal(adicional.get_valor())
             subtotal_item = valor_item * consumo.get_quantidade()
-
             total_consumo += subtotal_item
 
         total_geral = total_diarias + total_consumo
@@ -213,11 +312,19 @@ class View:
     def reserva_excluir(id_reserva):
         r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "a")
         ReservaDAO.excluir(r)
-    
+
     # Pagamento
     @staticmethod
     def pagamento_registrar(id_reserva, data_pagamento, forma_pagamento, status):
-        valor_total = View.reserva_calcular_total(id_reserva)
+        # validação: já existe pagamento para esta reserva?
+        # (assumindo 1 pagamento por reserva)
+        pagamento_existente = PagamentoDAO.listar_reserva(id_reserva)
+        if pagamento_existente:
+            raise ValueError(
+                f"A reserva {id_reserva} já possui um pagamento registrado."
+            )
+
+        valor_total = View.reserva_calcular_pagamento(id_reserva)
         p = Pagamento(
             0, id_reserva, data_pagamento, valor_total, forma_pagamento, status
         )
@@ -237,15 +344,18 @@ class View:
     def pagamento_atualizar(
         id_pagamento, id_reserva, data_pagamento, forma_pagamento, status
     ):
+        # primeiro atualiza o valor financeiro
         View.pagamento_valor_atualizar(id_pagamento, id_reserva)
+
+        # depois atualiza dados administrativos
         p = Pagamento(
             id_pagamento, id_reserva, data_pagamento, 0, forma_pagamento, status
         )
         PagamentoDAO.atualizar(p)
-        
+
     @staticmethod
     def pagamento_valor_atualizar(id_pagamento, id_reserva):
-        valor_total = View.reserva_calcular_total(id_reserva)
+        valor_total = View.reserva_calcular_pagamento(id_reserva)
         p = Pagamento(id_pagamento, id_reserva, "2000-01-01", valor_total, "a", "a")
         PagamentoDAO.atualizar_valor(p)
 
@@ -257,6 +367,10 @@ class View:
     # Consumo
     @staticmethod
     def consumo_inserir(id_reserva, id_adicional, quantidade, data_consumo):
+        # validação: quantidade positiva
+        if quantidade <= 0:
+            raise ValueError("A quantidade deve ser maior que zero.")
+
         c = Consumo(0, id_reserva, id_adicional, quantidade, data_consumo)
         ConsumoDAO.inserir(c)
 
@@ -274,6 +388,9 @@ class View:
     def consumo_atualizar(
         id_consumo, id_reserva, id_adicional, quantidade, data_consumo
     ):
+        if quantidade <= 0:
+            raise ValueError("A quantidade deve ser maior que zero.")
+
         c = Consumo(id_consumo, id_reserva, id_adicional, quantidade, data_consumo)
         ConsumoDAO.atualizar(c)
 
@@ -282,9 +399,15 @@ class View:
         c = Consumo(id_consumo, 0, 0, 0, "2000-01-01 00:00:00")
         ConsumoDAO.excluir(c)
 
-    # Adicional
+    # Adicional (Produtos/Serviços)
     @staticmethod
     def adicional_inserir(descricao, valor):
+        # validação: descrição única (evitar "Coca Cola" e "Coca-Cola")
+        adicionais = AdicionalDAO.listar()
+        for a in adicionais:
+            if a.get_descricao().lower() == descricao.lower():
+                raise ValueError(f"O item '{descricao}' já está cadastrado.")
+
         a = Adicional(0, descricao, valor)
         AdicionalDAO.inserir(a)
 
@@ -300,6 +423,15 @@ class View:
 
     @staticmethod
     def adicional_atualizar(id_adicional, descricao, valor):
+        # validação na atualização
+        adicionais = AdicionalDAO.listar()
+        for a in adicionais:
+            if (
+                a.get_descricao().lower() == descricao.lower()
+                and a.get_id_adicional() != id_adicional
+            ):
+                raise ValueError(f"O item '{descricao}' já existe.")
+
         a = Adicional(id_adicional, descricao, valor)
         AdicionalDAO.atualizar(a)
 
