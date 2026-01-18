@@ -1,4 +1,4 @@
-# CDU003 – Cadastrar Quarto
+# CDU03 – Cadastrar Quarto
 
 **Ator Primário:** Administrador.  
 **Descrição:** Permite que o administrador cadastre um novo quarto no sistema.  
@@ -28,7 +28,7 @@
 ## Fluxos De Exceção
 
 - **FE1 – Dados inválidos:**  
-  7. Caso o administrador insira dados inválidos (ex: bloco inexistente, tipo de quarto não selecionado), o sistema exibirá uma mensagem de erro e não realizará o cadastro.
+  7. Caso o administrador insira dados inválidos (ex: bloco inexistente, tipo de quarto não selecionadosistema exibirá uma mensagem de erro e não realizará o cadastro.
 
 - **FE2 – Dados repetidos:**  
   7. Caso o administrador tenha inserido algum dado repetido (ex: o mesmo número de quarto no mesmo bloco), o sistema exibirá uma mensagem de erro avisando que já existe um quarto com o mesmo número e não realizará o cadastro.

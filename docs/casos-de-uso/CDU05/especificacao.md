@@ -1,4 +1,4 @@
-# CDU005 – Atualizar Quarto
+# CDU05 – Atualizar Quarto
 
 **Descrição:** Permite que o administrador atualize as informações de um quarto já cadastrado no sistema.
 
