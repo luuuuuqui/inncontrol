@@ -10,8 +10,8 @@ Desenvolvido como projeto final da disciplina de **Programação Orientada a Obj
 
 ## Integrantes do Grupo
 
-- [João Gustavo Alves da Silva] (https://github.com/JGustavo123)
 - [Lucas Gabriel da Silva Duarte](https://github.com/luuuuuqui)
+- [João Gustavo Alves da Silva](https://github.com/JGustavo123)
 - [José Luan Ribeiro Vieira](https://github.com/luanzxy)
 - [Winnicius da Silva Faustino de Alcântara](https://github.com/winsilv16)
 
