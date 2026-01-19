@@ -21,37 +21,15 @@
 2. O sistema exibe uma tabela com todas as reservas cadastradas, incluindo ID, Hóspede, Quarto (Bloco e Número), Tipo de Quarto, Check-In, Check-Out, Diárias, Total (calculado com base no valor da diária do tipo de quarto) e Status (com ícones: ❔ Pendente, ✔️ Confirmado, ❌ Cancelado, ☑️ Finalizado).
 3. Se não houver reservas, o sistema exibe uma mensagem informativa: "Nenhuma reserva encontrada."
 
-### Inserir Reserva
+### Operações de Gerenciamento
 
-1. O administrador acessa a aba "Inserir" na interface de gestão de reservas.
-2. O sistema verifica se existem hóspedes e quartos cadastrados; caso contrário, exibe erro: "É necessário ter hóspedes e quartos cadastrados para criar uma reserva."
-3. O administrador seleciona um hóspede no seletor (formato: ID - Nome).
-4. O administrador seleciona um quarto no seletor (formato: Bloco - Nº Número - Tipo).
-5. O administrador seleciona o período de estadia (Check-In e Check-Out) no date input, com mínimo a partir da data atual.
-6. O administrador seleciona o status inicial: "Pendente" ou "Confirmado".
-7. O administrador clica no botão "Inserir Reserva" (habilitado apenas se todos os campos estiverem preenchidos).
-8. O sistema valida a disponibilidade do quarto no período e insere a reserva.
-9. O sistema exibe uma mensagem de sucesso e recarrega a interface.
+Para inserir, atualizar ou excluir reservas:
 
-### Atualizar Reserva
-
-1. O administrador acessa a aba "Atualizar" na interface de gestão de reservas.
-2. O sistema exibe um seletor com as reservas existentes (formato: ID - Nome Hóspede - Bloco NºNúmero - Data Check-In - Diárias - Status).
-3. O administrador seleciona uma reserva.
-4. O sistema preenche os campos editáveis: Hóspede, Quarto, Período (Check-In/Check-Out), Status.
-5. O administrador edita os campos desejados.
-6. O administrador clica no botão "Salvar Alterações".
-7. O sistema valida a disponibilidade do quarto no novo período (ignorando a própria reserva) e atualiza a reserva.
-8. O sistema exibe uma mensagem de sucesso e recarrega a interface.
-
-### Excluir Reserva
-
-1. O administrador acessa a aba "Excluir" na interface de gestão de reservas.
-2. O sistema exibe um seletor com as reservas existentes (formato: ID - Nome Hóspede - Bloco NºNúmero - Data Check-In - Diárias - Status).
-3. O administrador seleciona uma reserva.
-4. O administrador clica no botão "Excluir Reserva".
-5. O sistema remove a reserva do banco de dados.
-6. O sistema exibe uma mensagem de sucesso e recarrega a interface.
+1. O administrador faz as alterações necessárias nos campos ou seleciona a reserva.
+2. O administrador clica no botão correspondente à ação (Inserir Reserva, Salvar Alterações ou Excluir Reserva).
+3. O sistema valida os dados fornecidos e a disponibilidade do quarto.
+4. Se válido, o sistema executa a operação no banco de dados e exibe uma mensagem de sucesso.
+5. O sistema recarrega a interface.
 
 ## Fluxos de Exceção
 

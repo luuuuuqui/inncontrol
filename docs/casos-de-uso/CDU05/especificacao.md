@@ -20,33 +20,15 @@
 2. O sistema exibe uma tabela com todos os tipos de quarto cadastrados, incluindo ID, Nome, Descrição, Capacidade e Valor da Diária.
 3. Se não houver tipos cadastrados, o sistema exibe uma mensagem informativa: "Nenhum tipo de quarto cadastrado."
 
-### Inserir Tipo de Quarto
+### Operações de Gerenciamento
 
-1. O administrador acessa a aba "Inserir" na interface de gerenciamento de tipos de quarto.
-2. O administrador preenche os campos: Nome, Descrição, Capacidade (número inteiro positivo) e Valor da Diária (valor decimal positivo).
-3. O administrador clica no botão "Inserir".
-4. O sistema valida os dados e insere o novo tipo de quarto no banco de dados.
-5. O sistema exibe uma mensagem de sucesso e recarrega a interface.
+Para inserir, atualizar ou excluir tipos de quarto:
 
-### Atualizar Tipo de Quarto
-
-1. O administrador acessa a aba "Atualizar" na interface de gerenciamento de tipos de quarto.
-2. O sistema exibe um seletor com os tipos de quarto existentes (formato: ID - Nome).
-3. O administrador seleciona um tipo de quarto.
-4. O sistema preenche os campos editáveis com os valores atuais: Nome, Descrição, Capacidade e Valor da Diária.
-5. O administrador edita os campos desejados.
-6. O administrador clica no botão "Salvar Alterações".
-7. O sistema valida os dados e atualiza o tipo de quarto no banco de dados.
-8. O sistema exibe uma mensagem de sucesso e recarrega a interface.
-
-### Excluir Tipo de Quarto
-
-1. O administrador acessa a aba "Excluir" na interface de gerenciamento de tipos de quarto.
-2. O sistema exibe um seletor com os tipos de quarto existentes (formato: ID - Nome).
-3. O administrador seleciona um tipo de quarto.
-4. O administrador clica no botão "Excluir".
-5. O sistema remove o tipo de quarto do banco de dados.
-6. O sistema exibe uma mensagem de sucesso e recarrega a interface.
+1. O administrador faz as alterações necessárias nos campos ou seleciona o tipo de quarto.
+2. O administrador clica no botão correspondente à ação (Inserir, Salvar Alterações ou Excluir).
+3. O sistema valida os dados fornecidos.
+4. Se válido, o sistema executa a operação no banco de dados e exibe uma mensagem de sucesso.
+5. O sistema recarrega a interface.
 
 ## Fluxos de Exceção
 

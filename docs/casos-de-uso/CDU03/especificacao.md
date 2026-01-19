@@ -24,32 +24,15 @@
 1. O sistema exibe uma tabela com os quartos cadastrados, mostrando ID, Tipo, Bloco e Número.
 2. Se não houver quartos, exibe mensagem informativa.
 
-### Inserir Quarto
+### Operações de Gerenciamento
 
-1. O administrador seleciona o Tipo de Quarto.
-2. O administrador preenche o Bloco e o Número do Quarto.
-3. O administrador clica em "Inserir".
-4. O sistema valida se o Bloco está preenchido.
-5. O sistema verifica se já existe um quarto com o mesmo Número no mesmo Bloco.
-6. O sistema insere o novo quarto no banco de dados.
-7. O sistema exibe mensagem de sucesso e atualiza a lista.
+Para inserir, atualizar ou excluir quartos:
 
-### Atualizar Quarto
-
-1. O administrador seleciona um quarto da lista.
-2. O sistema preenche os campos com os dados atuais.
-3. O administrador edita os campos desejados (Tipo de Quarto, Bloco, Número).
-4. O administrador clica em "Salvar Alterações".
-5. O sistema verifica se já existe outro quarto com o mesmo Número no mesmo Bloco.
-6. O sistema atualiza os dados no banco de dados.
-7. O sistema exibe mensagem de sucesso e atualiza a lista.
-
-### Excluir Quarto
-
-1. O administrador seleciona um quarto da lista.
-2. O administrador clica em "Excluir".
-3. O sistema remove o quarto do banco de dados.
-4. O sistema exibe mensagem de sucesso e atualiza a lista.
+1. O administrador faz as alterações necessárias nos campos ou seleciona o quarto.
+2. O administrador clica no botão correspondente à ação (Inserir, Salvar Alterações ou Excluir).
+3. O sistema valida os dados fornecidos.
+4. Se válido, o sistema executa a operação no banco de dados e exibe uma mensagem de sucesso.
+5. O sistema atualiza a lista de quartos.
 
 ## Fluxos De Exceção
 
