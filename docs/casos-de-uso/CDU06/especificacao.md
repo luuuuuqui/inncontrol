@@ -18,7 +18,7 @@
 ### Listar Reservas
 
 1. O administrador acessa a aba "Listar" na interface de gestão de reservas.
-2. O sistema exibe uma tabela com todas as reservas cadastradas, incluindo ID, Hóspede, Quarto (Bloco e Número), Tipo de Quarto, Check-In, Check-Out, Diárias, Total (calculado com base no valor da diária do tipo de quarto) e Status (com ícones: ❔ Pendente, ✔️ Confirmado, ❌ Cancelado, ☑️ Finalizado).
+2. O sistema exibe uma tabela com todas as reservas cadastradas, incluindo ID, Hóspede, Quarto (Bloco e Número), Tipo de Quarto, Check-In, Check-Out, Diárias, Total (calculado com base no valor da diária do tipo de quarto) e Status (Pendente, Confirmado, Cancelado, Finalizado).
 3. Se não houver reservas, o sistema exibe uma mensagem informativa: "Nenhuma reserva encontrada."
 
 ### Operações de Gerenciamento
