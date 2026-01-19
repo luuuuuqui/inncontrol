@@ -1,24 +1,26 @@
 # CDU04 – Listar Quartos
 
-**Descrição:** Permite visualizar todos os quartos cadastrados no sistema, com opção de filtros por tipo e disponibilidade.
+**Descrição:** Permite visualizar todos os quartos cadastrados no sistema.
 
-**Ator Primário:** Administrador, Recepcionista ou Hóspede.
+**Ator Primário:** Administrador ou Recepcionista.
 
 **Pré-condições:**  
+
 - O usuário deve estar logado no sistema.
 
 **Pós-condições:**  
-- A lista de quartos é exibida conforme os filtros selecionados.
+
+- A lista de quartos é exibida.
 
 ## Fluxo Principal
 
-1. O usuário acessa a opção Listar Quartos no sistema.
-2. O sistema exibe todos os quartos cadastrados.
-3. O usuário pode selecionar filtros por tipo de quarto e disponibilidade.
-4. O sistema atualiza a lista conforme os filtros aplicados.
-5. O sistema exibe os quartos correspondentes à busca.
+1. O usuário acessa a opção "Quarto" no menu lateral e seleciona a aba "Listar".
+2. O sistema exibe uma tabela com todos os quartos cadastrados, mostrando ID, Tipo, Bloco e Número.
+3. Se não houver quartos, exibe mensagem informativa.
 
 ## Fluxos de Exceção
 
 - **FE1 – Nenhum quarto encontrado:**  
-  Se não existir nenhum quarto que atenda aos filtros informados, o sistema exibirá uma mensagem informando que não há quartos disponíveis.
+  Se não existir nenhum quarto cadastrado, o sistema exibirá uma mensagem informando que não há quartos.
+
+(Notas: Filtros por tipo e disponibilidade não estão implementados no código atual.)
