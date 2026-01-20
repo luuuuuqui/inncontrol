@@ -18,7 +18,6 @@ class Reserva:
         self.set_data_checkout(data_checkout)
         self.set_status(status)
 
-    # Setters:
     def set_id_reserva(self, id_reserva: int) -> None:
         if id_reserva < 0:
             raise ValueError("ID da reserva deve ser um inteiro positivo.")
@@ -71,7 +70,6 @@ class Reserva:
             raise ValueError("Status da reserva não pode ser vazio.")
         self.__status = status
 
-    # Getters:
     def get_id_reserva(self) -> int:
         return self.__id_reserva
 
@@ -90,7 +88,6 @@ class Reserva:
     def get_status(self) -> str:
         return self.__status
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_reserva": self.get_id_reserva(),

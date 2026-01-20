@@ -5,7 +5,6 @@ class Quarto:
         self.set_bloco(bloco)
         self.set_numero(numero)
 
-    # Setters:
     def set_id_quarto(self, id: int) -> None:
         if id < 0:
             raise ValueError("ID do quarto deve ser um inteiro positivo.")
@@ -26,7 +25,6 @@ class Quarto:
             raise ValueError("Número do quarto deve ser um inteiro positivo.")
         self.__numero = numero
 
-    # Getters:
     def get_id_quarto(self) -> int:
         return self.__id_quarto
 
@@ -39,7 +37,6 @@ class Quarto:
     def get_numero(self) -> int:
         return self.__numero
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_quarto": self.get_id_quarto(),

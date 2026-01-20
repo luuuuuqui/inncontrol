@@ -17,7 +17,6 @@ class Usuario:
         self.set_tipo_perfil(tipo_perfil)
         self.set_id_perfil(id_perfil)
 
-    # Setters:
     def set_id_usuario(self, id_usuario: int) -> None:
         if id_usuario < 0:
             raise ValueError("ID do usuário deve ser um inteiro positivo.")
@@ -51,7 +50,6 @@ class Usuario:
             raise ValueError("O tipo do usuário não pode ser vazio.")
         self.__id_perfil = id_perfil
 
-    # Getters:
     def get_id_usuario(self):
         return self.__id
 
@@ -73,7 +71,6 @@ class Usuario:
     def get_id_perfil(self):
         return self.__id_perfil
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "ID": self.get_id_usuario(),

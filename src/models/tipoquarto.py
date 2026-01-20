@@ -16,7 +16,6 @@ class TipoQuarto:
         self.set_capacidade(capacidade)
         self.set_valor_diaria(valor_diaria)
 
-    # Setters:
     def set_id_tipoquarto(self, id: int) -> None:
         if id < 0:
             raise ValueError("ID do tipo de quarto deve ser um inteiro positivo.")
@@ -40,29 +39,24 @@ class TipoQuarto:
         self.__capacidade = capacidade
 
     def set_valor_diaria(self, valor_diaria: Decimal) -> None:
-
         if isinstance(valor_diaria, float):
             valor_diaria = str(valor_diaria)
 
-        # PASSO 2: Se for string (agora seguro), limpamos espaços e trocamos vírgula
         if isinstance(valor_diaria, str):
-            valor_diaria = valor_diaria.strip()        # Remove espaços extras: " 10.50 " -> "10.50"
-            valor_diaria = valor_diaria.replace(',', '.') # Garante que "10,50" vire "10.50"
+            valor_diaria = valor_diaria.strip()
+            valor_diaria = valor_diaria.replace(',', '.')
         
-        # PASSO 3: Converte para Decimal se ainda não for
         if not isinstance(valor_diaria, Decimal):
             try:
                 valor_diaria = Decimal(valor_diaria)
             except Exception:
                 raise ValueError(f"Valor inválido: {valor_diaria}")
 
-        # PASSO 4: Validação e Arredondamento
         if valor_diaria < 0:
             raise ValueError("Valor do adicional não pode ser negativo.")
         
         self.__valor_diaria = valor_diaria.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
-    # Getters:
     def get_id_tipoquarto(self) -> int:
         return self.__id_tipoquarto
 
@@ -78,7 +72,6 @@ class TipoQuarto:
     def get_valor_diaria(self) -> str:
         return str(self.__valor_diaria)
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_tipoquarto": self.get_id_tipoquarto(),

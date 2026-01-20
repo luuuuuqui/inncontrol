@@ -19,7 +19,6 @@ class Pagamento:
         self.set_forma_pagamento(forma_pagamento)
         self.set_status(status)
 
-    # Setters:
     def set_id_pagamento(self, id: int) -> None:
         if id < 0:
             raise ValueError("ID do pagamento deve ser um inteiro positivo.")
@@ -77,7 +76,6 @@ class Pagamento:
             raise ValueError("Status do pagamento não pode ser vazio.")
         self.__status = status.strip()
 
-    # Getters:
     def get_id_pagamento(self) -> int:
         return self.__id_pagamento
 
@@ -96,7 +94,6 @@ class Pagamento:
     def get_status(self) -> str:
         return self.__status
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_pagamento": self.get_id_pagamento(),

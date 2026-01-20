@@ -16,7 +16,6 @@ class Consumo:
         self.set_quantidade(quantidade)
         self.set_data_consumo(data_consumo)
 
-    # Setters:
     def set_id_consumo(self, id_consumo: int) -> None:
         if not isinstance(id_consumo, int):
             raise TypeError("ID do consumo deve ser um inteiro.")
@@ -61,7 +60,6 @@ class Consumo:
             raise ValueError("Data do consumo não pode ser no futuro.")
         self.__data_consumo = data_consumo
 
-    # Getters:
     def get_id_consumo(self) -> int:
         return self.__id_consumo
 
@@ -77,7 +75,6 @@ class Consumo:
     def get_data_consumo(self) -> str:
         return self.__data_consumo.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Métodos:
     def to_dict(self) -> dict:
         return {
             "id_consumo": self.get_id_consumo(),
