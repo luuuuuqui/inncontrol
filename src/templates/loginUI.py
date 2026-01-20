@@ -5,7 +5,7 @@ from views import View
 class LoginUI:
     @staticmethod
     def main():
-        st.header("🔐 Entrar no Sistema")
+        st.header("Entrar no Sistema")
 
         # cria um container para o formulário de login (pra ux)
         with st.container():
@@ -17,7 +17,7 @@ class LoginUI:
 
             if submit_button:
                 if not email or not senha:
-                    st.warning("⚠️ Preencha o e-mail e a senha.")
+                    st.warning("Preencha o e-mail e a senha.")
                 else:
                     LoginUI.autenticar_usuario(email, senha)
 
@@ -42,4 +42,4 @@ class LoginUI:
             time.sleep(1)
             st.rerun()
         else:
-            st.error("❌ E-mail ou senha inválidos.")
+            st.error("E-mail ou senha inválidos.")

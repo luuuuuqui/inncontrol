@@ -94,7 +94,7 @@ class ManterPagamentoUI:
                     reserva_selecionada.get_id_reserva()
                 )
                 st.info(
-                    f"💰 Valor total calculado para esta reserva: **R$ {valor_previsto:.2f}**"
+                    f"Valor total calculado para esta reserva: **R$ {valor_previsto:.2f}**"
                 )
             except Exception as e:
                 st.warning(f"Não foi possível calcular o valor prévio: {e}")
