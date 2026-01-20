@@ -31,7 +31,6 @@ class ManterConsumoUI:
         for c in consumos:
             cd = c.to_dict()
 
-            # Recupera objetos relacionados
             adicional = View.adicional_listar_id(c.get_id_adicional())
             nome_adicional = (
                 adicional.get_descricao() if adicional else "Adicional Removido"
@@ -40,7 +39,6 @@ class ManterConsumoUI:
                 Decimal(adicional.get_valor()) if adicional else Decimal("0.00")
             )
 
-            # Cálculos e Formatação
             quantidade = Decimal(c.get_quantidade())
             total = valor_unitario * quantidade
 
@@ -66,7 +64,6 @@ class ManterConsumoUI:
 
     @staticmethod
     def inserir():
-        # Em produção, seria ideal listar Reservas ativas em um selectbox
         id_reserva = st.number_input("ID da Reserva:", min_value=1, step=1)
 
         adicionais = View.adicional_listar()
@@ -114,13 +111,11 @@ class ManterConsumoUI:
             format_func=lambda c: ManterConsumoUI._formatar_consumo_resumo(c),
         )
 
-        # Prepara dados atuais
         try:
             dt_atual = datetime.strptime(op.get_data_consumo(), "%Y-%m-%d %H:%M:%S")
         except:
             dt_atual = datetime.now()
 
-        # Índices
         adicionais = View.adicional_listar()
         idx_adic = ManterConsumoUI._obter_indice(
             adicionais, op.get_id_adicional(), lambda a: a.get_id_adicional()

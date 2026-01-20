@@ -32,7 +32,6 @@ class ManterPagamentoUI:
 
         dic_pagamentos = []
         for p in pagamentos:
-            # --- Recuperação de Objetos Relacionados ---
             reserva = View.reserva_listar_id(p.get_id_reserva())
             nome_hospede = "Desconhecido"
 
@@ -43,8 +42,6 @@ class ManterPagamentoUI:
                     if usuario:
                         nome_hospede = usuario.get_nome()
 
-            # --- Formatação de Valores e Datas ---
-            # CORREÇÃO: Converter para Decimal antes de formatar para evitar erro se vier como string
             valor_obj = Decimal(p.get_valor_total())
             valor_formatado = f"R$ {valor_obj:.2f}".replace(".", ",")
 
@@ -78,15 +75,13 @@ class ManterPagamentoUI:
             st.error("Não há reservas cadastradas para efetuar pagamentos.")
             return
 
-        # Seleção de Reserva
         reserva_selecionada = st.selectbox(
             "Selecione a Reserva para pagar:",
             reservas,
             format_func=lambda r: ManterPagamentoUI._formatar_resumo_reserva(r),
-            key="ins_reserva_pagamento",  # Adicionado key
+            key="ins_reserva_pagamento",
         )
 
-        # --- PRÉVIA DO VALOR ---
         if reserva_selecionada:
             try:
                 # O método de cálculo da view já retorna Decimal, então aqui costuma ser seguro
@@ -105,7 +100,7 @@ class ManterPagamentoUI:
                 "Data do Pagamento:",
                 value=dt.datetime.now(),
                 format="DD/MM/YYYY",
-                key="ins_data_pagamento",  # Adicionado key
+                key="ins_data_pagamento",
             )
 
         with col2:
@@ -118,16 +113,16 @@ class ManterPagamentoUI:
                     "Dinheiro",
                     "Transferência",
                 ],
-                key="ins_forma_pagamento",  # Adicionado key
+                key="ins_forma_pagamento",
             )
 
         status = st.selectbox(
             "Status do Pagamento:",
             ("Confirmado", "Pendente", "Estornado"),
             key="ins_status_pagamento",
-        )  # Adicionado key
+        )
 
-        if st.button("Registrar Pagamento", key="btn_ins_pagamento"):  # Adicionado key
+        if st.button("Registrar Pagamento", key="btn_ins_pagamento"):
             try:
                 View.pagamento_registrar(
                     reserva_selecionada.get_id_reserva(),
@@ -151,7 +146,6 @@ class ManterPagamentoUI:
             st.info("Nenhum pagamento encontrado.")
             return
 
-        # Selectbox para escolher qual pagamento editar
         pagamento_op = st.selectbox(
             "Selecione o pagamento para editar:",
             pagamentos,
@@ -159,7 +153,6 @@ class ManterPagamentoUI:
             key="upd_select_pagamento",
         )
 
-        # Recuperar dados atuais
         try:
             data_atual = dt.datetime.strptime(
                 pagamento_op.get_data_pagamento(), "%Y-%m-%d"
@@ -174,7 +167,6 @@ class ManterPagamentoUI:
             "Dinheiro",
             "Transferência",
         ]
-        # Segurança caso a forma salva não esteja na lista
         forma_atual = pagamento_op.get_forma_pagamento()
         idx_forma = (
             lista_formas.index(forma_atual) if forma_atual in lista_formas else 0
@@ -186,16 +178,12 @@ class ManterPagamentoUI:
             lista_status.index(status_atual) if status_atual in lista_status else 0
         )
 
-        # --- Formulário de Edição ---
         st.caption(
             "Nota: O valor será recalculado automaticamente com base nos consumos atuais da reserva."
         )
 
         col1, col2 = st.columns(2)
 
-        # CORREÇÃO: Usamos o ID do pagamento na KEY dos campos.
-        # Isso força o Streamlit a recriar o componente quando mudamos o pagamento selecionado,
-        # garantindo que os valores (datas, selectbox) sejam atualizados visualmente.
         with col1:
             nova_data = st.date_input(
                 "Data do Pagamento:",
@@ -245,16 +233,15 @@ class ManterPagamentoUI:
             "Selecione o pagamento para excluir:",
             pagamentos,
             format_func=lambda p: ManterPagamentoUI._formatar_resumo_pagamento(p),
-            key="del_select_pagamento",  # Adicionado key
+            key="del_select_pagamento",
         )
 
-        # CORREÇÃO: Converter para Decimal antes de formatar no warning
         valor_obj = Decimal(pagamento_op.get_valor_total())
         st.warning(f"Tem certeza que deseja excluir o pagamento de R$ {valor_obj:.2f}?")
 
         if st.button(
             "Excluir Pagamento", type="primary", key="btn_del_pagamento"
-        ):  # Adicionado key
+        ):
             try:
                 View.pagamento_excluir(pagamento_op.get_id_pagamento())
                 st.success("Pagamento excluído com sucesso!")
@@ -262,8 +249,6 @@ class ManterPagamentoUI:
                 st.rerun()
             except Exception as e:
                 st.error(f"Erro ao excluir: {e}")
-
-    # --- MÉTODOS AUXILIARES DE FORMATAÇÃO ---
 
     @staticmethod
     def _formatar_status_icone(status):
@@ -279,7 +264,6 @@ class ManterPagamentoUI:
 
     @staticmethod
     def _formatar_resumo_reserva(r):
-        """Formata a reserva no dropdown de inserção"""
         h = View.hospede_listar_id(r.get_id_hospede())
         nome = "Desconhecido"
         if h:
@@ -291,7 +275,5 @@ class ManterPagamentoUI:
 
     @staticmethod
     def _formatar_resumo_pagamento(p):
-        """Formata o pagamento no dropdown de atualização/exclusão"""
-        # CORREÇÃO: Converter para Decimal antes de formatar
         valor_obj = Decimal(p.get_valor_total())
         return f"ID {p.get_id_pagamento()} - Reserva {p.get_id_reserva()} - R$ {valor_obj:.2f} ({p.get_status()})"

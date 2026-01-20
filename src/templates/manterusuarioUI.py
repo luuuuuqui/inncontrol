@@ -52,12 +52,10 @@ class ManterUsuarioUI:
         senha = st.text_input("Senha:", type="password")
 
         tipos_perfil = ["Administrador", "Recepcionista", "Hóspede"]
-        # Added unique key
         tipo_perfil = st.selectbox(
             "Tipo de Perfil:", tipos_perfil, key="sb_inserir_perfil"
         )
 
-        # O campo ID perfil parece ser legado ou para chaves externas manuais, mantendo conforme original
         id_perfil = st.number_input(
             "ID Externo do Perfil (Opcional):", min_value=0, step=1, value=0
         )
@@ -100,7 +98,6 @@ class ManterUsuarioUI:
             else 0
         )
 
-        # Added unique key
         novo_tipo = st.selectbox(
             "Tipo de Perfil:", tipos_perfil, index=idx_perfil, key="sb_atualizar_perfil"
         )

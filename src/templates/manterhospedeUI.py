@@ -47,7 +47,6 @@ class ManterHospedeUI:
 
     @staticmethod
     def inserir():
-        # Filtra apenas usuários com perfil de hóspede
         usuarios_hospede = [
             u for u in View.usuario_listar() if u.get_tipo_perfil().lower() == "hóspede"
         ]
@@ -89,7 +88,6 @@ class ManterHospedeUI:
             format_func=lambda h: ManterHospedeUI._formatar_hospede_resumo(h),
         )
 
-        # Lógica para pre-selecionar o usuário vinculado
         todos_usuarios = View.usuario_listar()
         idx_usuario = ManterHospedeUI._obter_indice(
             todos_usuarios, op.get_id_usuario(), lambda u: u.get_id_usuario()
@@ -137,7 +135,6 @@ class ManterHospedeUI:
             except Exception as e:
                 st.error(f"Erro: {e}")
 
-    # --- Helpers ---
     @staticmethod
     def _formatar_hospede_resumo(h):
         u = View.usuario_listar_id(h.get_id_usuario())

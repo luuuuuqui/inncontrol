@@ -32,7 +32,6 @@ class ManterReservaUI:
         for r in reservas:
             rd = r.to_dict()
 
-            # --- Recuperação de Objetos Relacionados ---
             hospede = View.hospede_listar_id(r.get_id_hospede())
             usuario_hospede = (
                 View.usuario_listar_id(hospede.get_id_usuario()) if hospede else None
@@ -45,18 +44,15 @@ class ManterReservaUI:
                 else None
             )
 
-            # --- Tratamento de Datas e Cálculos ---
             try:
                 checkin = dt.datetime.strptime(rd["data_checkin"], "%Y-%m-%d")
                 checkout = dt.datetime.strptime(rd["data_checkout"], "%Y-%m-%d")
                 diarias = abs((checkin - checkout).days)
             except (ValueError, TypeError):
-                # Fallback caso as datas venham corrompidas
                 checkin = dt.datetime.now()
                 checkout = dt.datetime.now()
                 diarias = 0
 
-            # Formatação de Valores
             valor_diaria = (
                 Decimal(tipo_quarto.get_valor_diaria())
                 if tipo_quarto
@@ -64,7 +60,6 @@ class ManterReservaUI:
             )
             total_diarias = Decimal(valor_diaria * diarias).quantize(Decimal("0.01"))
 
-            # --- Construção do Dicionário para o DataFrame ---
             dic_reservas.append(
                 {
                     "ID": rd["id_reserva"],
@@ -96,24 +91,21 @@ class ManterReservaUI:
             )
             return
 
-        # Seleção de Hóspede
         hospede_selecionado = st.selectbox(
             "Selecione o Hóspede:",
             hospedes,
             format_func=lambda h: ManterReservaUI._formatar_hospede(h),
         )
 
-        # Seleção de Quarto
         quarto_selecionado = st.selectbox(
             "Selecione o Quarto:",
             quartos,
             format_func=lambda q: ManterReservaUI._formatar_quarto(q),
         )
 
-        # Seleção de Data
         estadia = st.date_input(
             "Período de Estadia:",
-            value=[],  
+            value=[],
             min_value=dt.datetime.now(),
             format="DD/MM/YYYY",
             help="Selecione a data inicial e final no calendário.",
@@ -126,7 +118,6 @@ class ManterReservaUI:
 
         status = st.selectbox("Status Inicial:", ("Pendente", "Confirmado"))
 
-        # Botão de Ação
         bloquear = not (
             hospede_selecionado and quarto_selecionado and checkin and checkout
         )
@@ -154,18 +145,15 @@ class ManterReservaUI:
             st.info("Nenhuma reserva encontrada.")
             return
 
-        # Selectbox principal para escolher qual reserva editar
         reserva_op = st.selectbox(
             "Selecione a reserva para editar:",
             reservas,
             format_func=lambda r: ManterReservaUI._formatar_resumo_reserva(r),
         )
 
-        # Dados para preenchimento dos campos
         hospedes = View.hospede_listar()
         quartos = View.quarto_listar()
 
-        # Determinar índices atuais para pré-selecionar nos componentes
         idx_hospede = ManterReservaUI._obter_indice(
             hospedes, reserva_op.get_id_hospede(), lambda h: h.get_id_hospede()
         )
@@ -181,7 +169,6 @@ class ManterReservaUI:
             else 0
         )
 
-        # Tratamento das datas atuais da reserva
         try:
             data_in_atual = dt.datetime.strptime(
                 reserva_op.get_data_checkin(), "%Y-%m-%d"
@@ -192,8 +179,6 @@ class ManterReservaUI:
         except:
             data_in_atual = dt.date.today()
             data_out_atual = dt.date.today()
-
-        # --- Formulário de Edição ---
 
         novo_hospede = st.selectbox(
             "Hóspede:",
@@ -215,19 +200,15 @@ class ManterReservaUI:
             format="DD/MM/YYYY",
         )
 
-        # Garante que temos as duas datas
         if isinstance(nova_estadia, tuple) and len(nova_estadia) == 2:
             n_checkin, n_checkout = nova_estadia
         else:
-            # Fallback se o usuário limpar o campo
             n_checkin, n_checkout = data_in_atual, data_out_atual
 
         novo_status = st.selectbox("Status:", lista_status, index=idx_status)
 
         if st.button("Salvar Alterações"):
             try:
-                # Nota: Assumindo que a View espera (id, id_hospede, id_quarto, checkin, checkout, status)
-                # Se a View esperar 'dias' em vez de datas, a lógica deve ser ajustada aqui.
                 View.reserva_atualizar(
                     reserva_op.get_id_reserva(),
                     novo_hospede.get_id_hospede(),
@@ -264,9 +245,6 @@ class ManterReservaUI:
                 st.rerun()
             except Exception as e:
                 st.error(f"Erro ao excluir: {e}")
-
-    # métodos auxiliares de formatação
-    # só pra deixar legível e fácil de entender o que, do que/de quem e pra o que/quem você está trocando
 
     @staticmethod
     def _formatar_status_icone(status):

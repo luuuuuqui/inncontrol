@@ -49,7 +49,6 @@ class ManterQuartoUI:
             st.warning("Cadastre Tipos de Quarto antes de inserir quartos.")
             return
 
-        # Added unique key to prevent DuplicateElementId error
         tipo_selecionado = st.selectbox(
             "Tipo de Quarto:",
             tipos,
@@ -87,13 +86,11 @@ class ManterQuartoUI:
             format_func=lambda q: ManterQuartoUI._formatar_quarto_resumo(q),
         )
 
-        # Prepara seleção do tipo
         tipos = View.tipoquarto_listar()
         idx_tipo = ManterQuartoUI._obter_indice(
             tipos, op.get_id_quarto_tipo(), lambda t: t.get_id_tipoquarto()
         )
 
-        # Added unique key to prevent DuplicateElementId error
         novo_tipo = st.selectbox(
             "Tipo de Quarto:",
             tipos,
@@ -143,7 +140,6 @@ class ManterQuartoUI:
             except Exception as e:
                 st.error(f"Erro: {e}")
 
-    # --- Helpers ---
     @staticmethod
     def _formatar_quarto_resumo(q):
         tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
