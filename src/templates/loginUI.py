@@ -7,9 +7,7 @@ class LoginUI:
     def main():
         st.header("Entrar no Sistema")
 
-        # cria um container para o formulário de login (pra ux)
         with st.container():
-            # formulário de login (permite submit com enter)
             with st.form(key="login_form"):
                 email = st.text_input("E-mail")
                 senha = st.text_input("Senha", type="password")
