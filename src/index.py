@@ -82,6 +82,12 @@ class IndexUI:
             match st.session_state.get("usuario_tipo", "").lower():
                 case "administrador":
                     IndexUI.menu_admin()
+                case "recepcionista":
+                    st.info(
+                        "Ops! O menu de recepcionista ainda não está implementado. Em breve estaremos trazendo essa funcionalidade!"
+                    )
+                case "hóspede" | "hospede":
+                    PerfilHospedeUI.main()
                 case _:
                     st.error(f"Tipo de usuário inválido (ou não). Usuários de tipo \"{st.session_state['usuario_tipo']}\" ainda não podem acessar o sistema. Por enquanto, apenas administradores podem acessar o sistema.")
 
