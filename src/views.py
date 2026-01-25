@@ -98,6 +98,10 @@ class View:
     @staticmethod
     def hospede_listar_id(id):
         return HospedeDAO.listar_id(id)
+    
+    @staticmethod
+    def hospede_listar_por_usuario(id_usuario):
+        return HospedeDAO.listar_por_usuario(id_usuario)
 
     @staticmethod
     def hospede_atualizar(id_hospede, id_usuario, endereco):
@@ -237,6 +241,75 @@ class View:
     @staticmethod
     def reserva_listar_id(id):
         return ReservaDAO.listar_id(id)
+    
+    @staticmethod
+    def reservas_listar_hospede(id_hospede) -> list[dict]:
+        """
+        Retorna uma lista de dicionários com os dados das reservas do hóspede,
+        formatada exatamente como o front-end (perfilhospedeui.py) espera.
+        """
+        
+        id_usuario_logado = View.hospede_listar_id(id_hospede).get_id_usuario()
+
+        hospede = View.hospede_listar_por_usuario(id_usuario_logado)
+        if not hospede:
+            return []
+
+        reservas_hospede = ReservaDAO.listar_por_hospede(hospede.get_id_hospede())
+
+        lista_formatada = []
+
+        for r in reservas_hospede:
+            # Busca objetos relacionados
+            usuario = View.usuario_listar_id(id_usuario_logado)
+            nome_hospede = usuario.get_nome() if usuario else "N/A"
+            quarto = QuartoDAO.listar_id(r.get_id_quarto())
+            tipo_quarto = (
+                TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo()) if quarto else None
+            )
+
+            # Verifica Pagamento
+            pagamento = PagamentoDAO.listar_reserva(r.get_id_reserva())
+            reserva_paga = False
+            tipo_pagamento = "Pendente"
+
+            if pagamento:
+                tipo_pagamento = pagamento.get_forma_pagamento()
+                if pagamento.get_status() in ["Confirmado", "Pago"]:
+                    reserva_paga = True
+
+            consumos = ConsumoDAO.listar_por_reserva(r.get_id_reserva())
+            lista_adicionais = []
+            if consumos:
+                for c in consumos:
+                    item = AdicionalDAO.listar_id(c.get_id_adicional())
+                    if item:
+                        lista_adicionais.append(
+                            {
+                                "nome": item.get_descricao(),
+                                "preco": float(item.get_valor()),
+                                "quantidade": c.get_quantidade(),
+                            }
+                        )
+
+            dados_reserva = {
+                "id": r.get_id_reserva(),
+                "hospede": nome_hospede,
+                "tipo_quarto": tipo_quarto.get_nome() if tipo_quarto else "N/A",
+                "numero_quarto": str(quarto.get_numero()) if quarto else "?",
+                "checkin": r.get_data_checkin(),
+                "checkout": r.get_data_checkout(),
+                "valor_diaria": (
+                    float(tipo_quarto.get_valor_diaria()) if tipo_quarto else 0.0
+                ),
+                "pago": reserva_paga,
+                "tipo_pagamento": tipo_pagamento,
+                "adicionais": lista_adicionais,
+                "total": float(View.reserva_calcular_pagamento(r.get_id_reserva())),
+            }
+            lista_formatada.append(dados_reserva)
+
+        return lista_formatada
 
     @staticmethod
     def reserva_atualizar(
