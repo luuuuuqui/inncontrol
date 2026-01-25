@@ -35,6 +35,16 @@ class HospedeDAO(DAO):
         obj = Hospede(*row) if row else None
         cls.fechar()
         return obj
+    
+    @classmethod
+    def listar_por_usuario(cls, id_usuario):
+        cls.abrir()
+        sql = "SELECT * FROM hospede WHERE id_usuario = ?"
+        cursor = cls.execute(sql, (id_usuario,))
+        row = cursor.fetchone()
+        obj = Hospede(*row) if row else None
+        cls.fechar()
+        return obj
 
     @classmethod
     def atualizar(cls, obj):

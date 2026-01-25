@@ -55,6 +55,20 @@ class ReservaDAO(DAO):
         return obj
 
     @classmethod
+    def listar_por_hospede(cls, id_hospede):
+        cls.abrir()
+        sql = "SELECT * FROM reserva WHERE id_hospede = ?"
+        cursor = cls.execute(sql, (id_hospede,))
+        rows = cursor.fetchall()
+
+        objs = [
+            Reserva(id, id_hosp, id_q, d_in, d_out, status)
+            for (id, id_hosp, id_q, d_in, d_out, status) in rows
+        ]
+        cls.fechar()
+        return objs
+
+    @classmethod
     def atualizar(cls, obj):
         cls.abrir()
         sql = """
