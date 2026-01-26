@@ -1,6 +1,5 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st
 import datetime as dt
-from datetime import date
 from views import View
 import time
 
@@ -17,291 +16,189 @@ class PerfilHospedeUI:
             st.warning("Faça login para visualizar suas reservas.")
             return
 
-        id_usuario = st.session_state["usuario_id"]
-        hospede = View.hospede_listar_por_usuario(id_usuario)
+        usuario_id = st.session_state["usuario_id"]
+        hospede = View.hospede_listar_por_usuario(usuario_id)
 
-        if hospede is None:
+        if not hospede:
             st.warning("Perfil de hóspede não encontrado.")
             return
 
-        id_hospede = hospede.get_id_hospede()
-
-        reservas = []
         try:
-            reservas = View.reservas_listar_hospede(id_hospede)
+            reservas = View.reservas_listar_hospede(hospede.get_id_hospede())
         except Exception as e:
-            st.warning(f"Não foi possível carregar suas reservas: {e}.")
+            st.warning(f"Erro ao carregar reservas: {e}")
+            reservas = []
 
-        # Carrega lista de adicionais e prepara dicionário de opções (Nome -> Objeto)
+        # Prepara dicionário de produtos para o selectbox
         opcoes_adicionais = {}
         try:
-            lista = View.adicional_listar()
-            for item in lista:
-                # Cria um rótulo único para o selectbox
-                lbl = f"{item.get_descricao()} ({PerfilHospedeUI._formatar_dinheiro(item.get_valor())})"
-                opcoes_adicionais[lbl] = item
+            for item in View.adicional_listar():
+                label = f"{item.get_descricao()} ({PerfilHospedeUI._formatar_dinheiro(item.get_valor())})"
+                opcoes_adicionais[label] = item
         except Exception:
-            opcoes_adicionais = {}
+            pass
 
         PerfilHospedeUI._aplicar_estilos()
 
-        colunas = st.columns(2)
         if not reservas:
             st.info("Nenhuma reserva encontrada.")
+            return
 
-        hoje = dt.datetime.now().date()
+        colunas = st.columns(2)
+        hoje = dt.date.today()
 
-        for i, r in enumerate(reservas):
-            coluna = colunas[i % 2]
-            with coluna:
+        for i, reserva in enumerate(reservas):
+            with colunas[i % 2]:
                 with st.container(border=True):
-                    # --- Dados da Reserva ---
-                    checkin_date = PerfilHospedeUI._converter_data(r.get('checkin'))
-                    checkout_date = PerfilHospedeUI._converter_data(r.get('checkout'))
+                    PerfilHospedeUI._renderizar_info_reserva(reserva)
+                    
+                    # Exibe formulário apenas se a reserva estiver ativa
+                    checkout = PerfilHospedeUI._converter_data(reserva.get('checkout'))
+                    if checkout >= hoje:
+                        PerfilHospedeUI._renderizar_form_adicional(reserva, opcoes_adicionais)
 
-                    qtd_diarias = (
-                        PerfilHospedeUI._calcular_diarias(r["checkin"], r["checkout"])
-                        if r.get("checkin") and r.get("checkout")
-                        else 0
-                    )
+    @staticmethod
+    def _renderizar_info_reserva(reserva):
+        checkin = PerfilHospedeUI._formatar_data_br(reserva.get('checkin'))
+        checkout = PerfilHospedeUI._formatar_data_br(reserva.get('checkout'))
+        dias = PerfilHospedeUI._calcular_diarias(reserva.get('checkin'), reserva.get('checkout'))
+        
+        # Lista de consumos
+        itens_html = ""
+        for item in reserva.get("adicionais", []):
+            qtd = float(item.get("quantidade", 0))
+            preco = float(item.get("preco", 0))
+            total = qtd * preco
+            qtd_fmt = int(qtd) if qtd.is_integer() else qtd
+            itens_html += f"<div>- <b>{qtd_fmt}x</b> {item['nome']}: {PerfilHospedeUI._formatar_dinheiro(total)}</div>"
 
-                    pagamento_css = "payment-paid" if r.get("pago") else "payment-pending"
+        # Definição de estilos baseados no pagamento
+        pago = reserva.get('pago')
+        status_txt = "Pago" if pago else "Pendente"
+        status_cls = "payment-paid" if pago else "payment-pending"
 
-                    adicionais_html = ""
-                    for item in r.get("adicionais", []):
-                        qtd = float(item.get("quantidade", 1))
-                        preco_unit = float(item.get("preco", 0))
-                        total_item = qtd * preco_unit
-                        qtd_display = int(qtd) if qtd.is_integer() else qtd
-                        
-                        adicionais_html += f"<div>- <b>{qtd_display}x</b> {item['nome']}: {PerfilHospedeUI._formatar_dinheiro(total_item)}</div>"
+        html = f"""
+        <div style='display:flex;justify-content:space-between;align-items:center'>
+            <div>
+                <div style='font-weight:700;font-size:16px'>#{reserva.get('id')} — {reserva.get('hospede')}</div>
+                <div class='meta'>{reserva.get('tipo_quarto')} • Quarto {reserva.get('numero_quarto')}</div>
+            </div>
+            <div class='payment {status_cls}'>{status_txt}</div>
+        </div>
+        <hr class='custom-hr'>
+        <div style='display:flex;justify-content:space-between;gap:10px'>
+            <div><div class='meta'>Check-in</div><div>{checkin}</div></div>
+            <div><div class='meta'>Check-out</div><div>{checkout}</div></div>
+            <div><div class='meta'>Diárias</div><div>{dias}</div></div>
+            <div>
+                <div class='meta'>Total</div>
+                <div style='font-weight:700'>{PerfilHospedeUI._formatar_dinheiro(reserva.get('total'))}</div>
+            </div>
+        </div>
+        <div style='margin-top:8px'>
+            <div class='meta'>Método Pagamento</div>
+            <div>{reserva.get('tipo_pagamento', '-')}</div>
+        </div>
+        <div style='margin-top:6px; margin-bottom:10px;'>
+            <div class='meta'>Consumo</div>
+            <div>{itens_html or '<span class="meta" style="font-style:italic">Nenhum item consumido.</span>'}</div>
+        </div>
+        """
+        st.markdown(html, unsafe_allow_html=True)
 
-                    html_info = f"""
-                    <div style='display:flex;justify-content:space-between;align-items:center'>
-                        <div>
-                            <div style='font-weight:700;font-size:16px; color:var(--text-color)'>#{r.get('id')} — {r.get('hospede')}</div>
-                            <div class='meta'>{r.get('tipo_quarto')} • Quarto {r.get('numero_quarto')}</div>
-                        </div>
-                        <div>
-                            <div class='payment {pagamento_css}'>{'Pago' if r.get('pago') else 'Pendente'}</div>
-                        </div>
-                    </div>
-                    <hr class='custom-hr'>
-                    <div style='display:flex;justify-content:space-between;gap:12px'>
-                        <div>
-                            <div class='meta'>Check-in</div>
-                            <div>{PerfilHospedeUI._formatar_data_br(r.get('checkin'))}</div>
-                        </div>
-                        <div>
-                            <div class='meta'>Check-out</div>
-                            <div>{PerfilHospedeUI._formatar_data_br(r.get('checkout'))}</div>
-                        </div>
-                        <div>
-                            <div class='meta'>Diárias</div>
-                            <div>{qtd_diarias}</div>
-                        </div>
-                        <div>
-                            <div class='meta'>Valor Total</div>
-                            <div style='font-weight:700'>{PerfilHospedeUI._formatar_dinheiro(r.get('total'))}</div>
-                        </div>
-                    </div>
-                    <div style='margin-top:8px'>
-                        <div class='meta'>Pagamento</div>
-                        <div>{r.get('tipo_pagamento', '-')}</div>
-                    </div>
-                    <div style='margin-top:6px; margin-bottom:10px;'>
-                        <div class='meta'>Adicionais / Consumo</div>
-                        <div>{adicionais_html or '<span class="meta" style="font-style:italic">Nenhum item consumido.</span>'}</div>
-                    </div>
-                    """
-                    st.markdown(html_info, unsafe_allow_html=True)
+    @staticmethod
+    def _renderizar_form_adicional(reserva, opcoes):
+        with st.expander("Adicionar Consumo"):
+            if not opcoes:
+                st.info("Nenhum item disponível.")
+                return
 
-                    # --- Área de Ação: Adicionar Consumo ---
-                    if checkout_date >= hoje:
-                        with st.expander("Adicionar Consumo"):
-                            if not opcoes_adicionais:
-                                st.info("Não há itens disponíveis no cardápio.")
-                            else:
-                                # Placeholder para mensagens fora das colunas estreitas
-                                msg_placeholder = st.empty()
+            reserva_id = reserva.get('id')
+            col_item, col_qtd = st.columns([3, 1])
+            
+            with col_item:
+                selecao = st.selectbox(
+                    "Item",
+                    options=list(opcoes.keys()),
+                    key=f"sel_{reserva_id}",
+                    label_visibility="collapsed"
+                )
+            
+            with col_qtd:
+                qtd = st.number_input(
+                    "Qtd",
+                    min_value=1,
+                    value=1,
+                    key=f"qtd_{reserva_id}",
+                    label_visibility="collapsed"
+                )
 
-                                c1, c2 = st.columns([3, 1])
-                                with c1:
-                                    label_selecionado = st.selectbox(
-                                        "Item",
-                                        options=list(opcoes_adicionais.keys()),
-                                        key=f"item_sel_{r.get('id')}",
-                                        label_visibility="collapsed"
-                                    )
-                                    item_obj = opcoes_adicionais[label_selecionado]
+            item_obj = opcoes[selecao]
+            total_previsto = float(item_obj.get_valor()) * qtd
 
-                                with c2:
-                                    qtd_input = st.number_input(
-                                        "Qtd",
-                                        min_value=1,
-                                        step=1,
-                                        value=1,
-                                        key=f"qtd_input_{r.get('id')}",
-                                        label_visibility="collapsed"
-                                    )
-                                
-                                subtotal = 0.0
-                                if item_obj:
-                                    try:
-                                        val_str = str(item_obj.get_valor()).replace(',', '.')
-                                        valor_float = float(val_str)
-                                        subtotal = valor_float * qtd_input
-                                    except:
-                                        subtotal = 0.0
-
-                                c_resumo, c_btn = st.columns([2, 1])
-                                with c_resumo:
-                                    st.markdown(
-                                        f"<div style='margin-top:5px; font-size:15px; color:var(--text-color)'>"
-                                        f"Total previsto: <b>{PerfilHospedeUI._formatar_dinheiro(subtotal)}</b>"
-                                        f"</div>", 
-                                        unsafe_allow_html=True
-                                    )
-                                with c_btn:
-                                    if st.button("Confirmar", key=f"btn_save_{r.get('id')}", use_container_width=True):
-                                        try:
-                                            View.consumo_inserir(
-                                                r.get('id'),
-                                                item_obj.get_id_adicional(),
-                                                qtd_input,
-                                                dt.datetime.now()
-                                            )
-                                            # Usa o placeholder para mostrar a mensagem na largura total
-                                            msg_placeholder.success("Adicionado com sucesso!")
-                                            time.sleep(1)
-                                            st.rerun()
-                                        except Exception as e:
-                                            msg_placeholder.error(f"Erro: {e}")
+            col_total, col_btn = st.columns([2, 1])
+            with col_total:
+                st.markdown(
+                    f"<div style='margin-top:5px; font-size:14px'>Total: <b>{PerfilHospedeUI._formatar_dinheiro(total_previsto)}</b></div>",
+                    unsafe_allow_html=True
+                )
+            
+            with col_btn:
+                if st.button("Confirmar", key=f"btn_{reserva_id}", use_container_width=True):
+                    try:
+                        View.consumo_inserir(
+                            reserva_id,
+                            item_obj.get_id_adicional(),
+                            qtd,
+                            dt.datetime.now()
+                        )
+                        st.success("Salvo!")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erro: {e}")
 
     @staticmethod
     def _aplicar_estilos():
-        st.markdown(
-            """
+        st.markdown("""
         <style>
-        :root {
-            /* borda e fundo */
-            --border-strong: #111;
-            --border-subtle: #80808033;
-            --border-dashed: #8080804c;
-            --bg-subtle: #8080800c;
-
-            /* status - pagamento confirmado */
-            --status-paid-text: #059669;
-            --status-paid-bg: #05966926;
-
-            /* status - pagamento pendente */
-            --status-pending-text: #dc2626;
-            --status-pending-bg: #dc262626;
-        }
-
-        .meta {
-            font-size: 13px;
-            color: var(--text-color);
-            opacity: 0.7;
-        }
-
+        .meta { font-size: 13px; opacity: 0.7; }
         .payment {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 15px;
-            font-weight: 600;
-            border: 1px solid var(--border-strong);
+            padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+            border: 1px solid #ccc;
         }
-
-        .payment-paid {
-            background-color: var(--status-paid-bg);
-            color: var(--status-paid-text);
-            border-color: var(--status-paid-text);
-        }
-
-        .payment-pending {
-            background-color: var(--status-pending-bg);
-            color: var(--status-pending-text);
-            border-color: var(--status-pending-text);
-        }
-
-        hr.custom-hr {
-            margin: 8px 0;
-            border: 0;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        [data-testid="stExpander"] {
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-        }
-
+        .payment-paid { background-color: rgba(5, 150, 105, 0.1); color: #059669; border-color: #059669; }
+        .payment-pending { background-color: rgba(220, 38, 38, 0.1); color: #dc2626; border-color: #dc2626; }
+        hr.custom-hr { margin: 8px 0; border: 0; border-top: 1px solid rgba(128,128,128,0.2); }
+        [data-testid="stExpander"] { border: none; box-shadow: none; }
         [data-testid="stExpander"] details {
-            border: 1px dashed var(--border-dashed);
-            border-radius: 8px;
-            background-color: var(--bg-subtle);
-        }
-
-        [data-testid="stExpander"] summary {
-            padding-left: 10px;
-            color: var(--primary-color);
-            font-weight: 600;
+            border: 1px dashed rgba(128,128,128,0.3); border-radius: 8px; background-color: rgba(128,128,128,0.05);
         }
         </style>
-        """,
-            unsafe_allow_html=True,
-        )
+        """, unsafe_allow_html=True)
 
     @staticmethod
     def _converter_data(s):
-        if isinstance(s, dt.datetime):
-            return s.date()
-        if isinstance(s, dt.date):
-            return s
+        if isinstance(s, dt.datetime): return s.date()
+        if isinstance(s, dt.date): return s
         return dt.datetime.strptime(s, "%Y-%m-%d").date()
 
     @staticmethod
     def _formatar_data_br(d):
-        d = PerfilHospedeUI._converter_data(d)
-        return d.strftime("%d/%m/%Y")
+        return PerfilHospedeUI._converter_data(d).strftime("%d/%m/%Y")
 
     @staticmethod
     def _calcular_diarias(checkin, checkout):
-        delta = (
-            PerfilHospedeUI._converter_data(checkout)
-            - PerfilHospedeUI._converter_data(checkin)
-        ).days
-        return delta if delta > 0 else 0
+        delta = (PerfilHospedeUI._converter_data(checkout) - PerfilHospedeUI._converter_data(checkin)).days
+        return max(delta, 0)
 
     @staticmethod
     def _formatar_dinheiro(v):
         try:
-            val_str = str(v).replace(',', '.')
-            v = float(val_str)
+            v = float(str(v).replace(',', '.'))
         except Exception:
             v = 0.0
-        s = f"{v:,.2f}"
-        s = s.replace(",", "@").replace(".", ",").replace("@", ".")
-        return f"R$ {s}"
-
-    @staticmethod
-    def _calcular_total(reserva):
-        base = float(
-            reserva.get("valor_diaria", 0)
-        ) * PerfilHospedeUI._calcular_diarias(reserva["checkin"], reserva["checkout"])
-
-        total_adicionais = 0.0
-        for item in reserva.get("adicionais", []):
-            try:
-                preco = float(str(item.get("preco", 0)).replace(',', '.'))
-                qtd = float(item.get("quantidade", 1))
-                total_adicionais += preco * qtd
-            except:
-                pass
-
-        return round(base + total_adicionais, 2)
+        return f"R$ {v:,.2f}".replace(",", "@").replace(".", ",").replace("@", ".")
 
 if __name__ == "__main__":
     PerfilHospedeUI.main()
