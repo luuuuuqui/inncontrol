@@ -4,45 +4,29 @@
 
 **Ator Primário:** Administrador.
 
-**Pré-condições:**
-
+**Pré-condições:** 
 - O usuário deve estar logado como administrador no sistema.
 
-**Pós-condições:**
-
+**Pós-condições:** 
 - Os tipos de quarto estarão atualizados no banco de dados conforme as operações realizadas.
 
 ## Fluxo Principal
 
-### Listar Tipos de Quarto
-
-1. O administrador acessa a aba "Listar" na interface de gerenciamento de tipos de quarto.
-2. O sistema exibe uma tabela com todos os tipos de quarto cadastrados, incluindo ID, Nome, Descrição, Capacidade e Valor da Diária.
-3. Se não houver tipos cadastrados, o sistema exibe uma mensagem informativa: "Nenhum tipo de quarto cadastrado."
-
-### Operações de Gerenciamento
-
-Para inserir, atualizar ou excluir tipos de quarto:
-
-1. O administrador faz as alterações necessárias nos campos ou seleciona o tipo de quarto.
-2. O administrador clica no botão correspondente à ação (Inserir, Salvar Alterações ou Excluir).
-3. O sistema valida os dados fornecidos.
-4. Se válido, o sistema executa a operação no banco de dados e exibe uma mensagem de sucesso.
-5. O sistema recarrega a interface.
+1. O administrador acessa a interface de gerenciamento de tipos de quarto.
+2. O sistema exibe a aba "Listar" com todos os tipos cadastrados (ID, Nome, Descrição, Capacidade e Valor da Diária).
+3. O administrador seleciona a aba desejada para Inserir, Atualizar ou Excluir.
+4. O administrador preenche os campos necessários ou seleciona o registro na lista.
+5. O administrador clica no botão correspondente à ação.
+6. O sistema valida os dados fornecidos.
+7. O sistema executa a operação no banco de dados.
+8. O sistema exibe uma mensagem de sucesso e recarrega a interface.
 
 ## Fluxos de Exceção
 
-- **FE1 – Campos obrigatórios não preenchidos (Inserir/Atualizar):**  
-  Se algum campo obrigatório (Nome, Descrição, Capacidade, Valor da Diária) não for preenchido, o sistema exibe uma mensagem de erro: "Preencha todos os campos."
+- **FE1 – Campos obrigatórios não preenchidos:** Se algum campo obrigatório não for preenchido, o sistema exibirá uma mensagem solicitando o preenchimento total.
 
-- **FE2 – Nome duplicado (Inserir/Atualizar):**  
-  Se o nome do tipo de quarto já existir (ignorando maiúsculas/minúsculas), o sistema exibe uma mensagem de erro: "O tipo de quarto '[nome]' já existe." ou "Já existe outro tipo de quarto com o nome '[nome]'."
+- **FE2 – Nome duplicado:** Se o nome do tipo de quarto já existir no sistema, o administrador será informado do conflito.
 
-- **FE3 – Capacidade inválida:**  
-  Se a capacidade não for um inteiro positivo, o sistema lança ValueError: "Capacidade do tipo de quarto deve ser um inteiro positivo."
+- **FE3 – Dados inválidos:** Se a capacidade ou o valor da diária forem preenchidos com valores negativos ou em formato incorreto, o sistema exibirá uma mensagem de erro.
 
-- **FE4 – Valor da diária inválido:**  
-  Se o valor da diária não for um decimal positivo, o sistema lança ValueError: "Valor do adicional não pode ser negativo." (Nota: a validação menciona "adicional", mas aplica-se aqui).
-
-- **FE5 – Erro geral:**  
-  Em caso de erro inesperado durante inserção, atualização ou exclusão, o sistema exibe: "Erro ao [operação]: [mensagem do erro]".
+- **FE4 – Erro inesperado:** Em caso de falha na comunicação com o banco de dados, o sistema exibirá uma mensagem detalhando o erro ocorrido.

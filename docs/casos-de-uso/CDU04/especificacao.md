@@ -2,25 +2,21 @@
 
 **Descrição:** Permite visualizar todos os quartos cadastrados no sistema.
 
-**Ator Primário:** Administrador ou Recepcionista.
+**Ator Primário:** Administrador.
 
-**Pré-condições:**  
-
+**Pré-condições:** 
 - O usuário deve estar logado no sistema.
 
-**Pós-condições:**  
-
+**Pós-condições:** 
 - A lista de quartos é exibida.
 
 ## Fluxo Principal
 
-1. O usuário acessa a opção "Quarto" no menu lateral e seleciona a aba "Listar".
-2. O sistema exibe uma tabela com todos os quartos cadastrados, mostrando ID, Tipo, Bloco e Número.
-3. Se não houver quartos, exibe mensagem informativa.
+1. O administrador acessa a opção "Quarto" no menu lateral e seleciona a aba "Listar".
+2. O sistema busca todos os quartos registrados no banco de dados.
+3. O sistema exibe uma tabela contendo ID, Tipo, Bloco e Número de cada quarto.
+4. Caso não existam registros, o sistema informa que a lista está vazia.
 
 ## Fluxos de Exceção
 
-- **FE1 – Nenhum quarto encontrado:**  
-  Se não existir nenhum quarto cadastrado, o sistema exibirá uma mensagem informando que não há quartos.
-
-(Notas: Filtros por tipo e disponibilidade não estão implementados no código atual.)
+- **FE1 – Nenhum quarto encontrado:** Se não existir nenhum quarto cadastrado na base de dados, o sistema exibirá uma mensagem informando que não há registros para exibição.

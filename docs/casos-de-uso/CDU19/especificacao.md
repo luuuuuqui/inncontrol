@@ -4,10 +4,10 @@
 
 **Ator Primário:** Administrador.
 
-**Pré-condições:**  
+**Pré-condições:** 
 - O administrador deve estar logado no sistema.
 
-**Pós-condições:**  
+**Pós-condições:** 
 - O relatório de serviços mais consumidos é exibido.
 
 ## Fluxo Principal
@@ -21,8 +21,6 @@
 
 ## Fluxos de Exceção
 
-- **FE1 – Período inválido:**  
-  Se o período informado for inválido, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE1 – Período inválido:** Se o período informado for inválido, o sistema exibirá uma mensagem de erro e solicitará a correção.
 
-- **FE2 – Nenhum dado encontrado:**  
-  Se não houver registros de serviços consumidos no período informado, o sistema exibirá uma mensagem informando a ausência de dados.
+- **FE2 – Nenhum dado encontrado:** Se não houver registros de serviços consumidos no período informado, o sistema exibirá uma mensagem informando a ausência de dados.

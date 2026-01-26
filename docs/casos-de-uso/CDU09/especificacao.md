@@ -1,32 +1,30 @@
 # CDU09 – Realizar Reserva
 
-**Descrição:** Permite que o hóspede realize a reserva de um quarto, selecionando datas, tipo de quarto e serviços adicionais.
+**Descrição:** Permite o registro de uma reserva no sistema, vinculando um hóspede a um quarto em um período específico.
 
-**Ator Primário:** Hóspede.
+**Ator Primário:** Administrador.
 
-**Pré-condições:**  
-- O hóspede deve estar logado no sistema.
-- Deve existir quarto disponível para o período selecionado.
+**Pré-condições:** 
+- O administrador deve estar logado no sistema.
+- Devem existir hóspedes e quartos cadastrados no sistema.
 
-**Pós-condições:**  
-- A reserva é registrada no sistema.
+**Pós-condições:** 
+- A reserva é registrada no banco de dados.
 
 ## Fluxo Principal
 
-1. O hóspede acessa a opção Realizar Reserva no sistema.
-2. O sistema exibe os quartos disponíveis para o período informado.
-3. O hóspede seleciona o quarto desejado.
-4. O hóspede informa as datas de entrada e saída.
-5. O hóspede pode selecionar serviços adicionais.
-6. O sistema calcula o valor total da reserva.
-7. O hóspede confirma a reserva.
-8. O sistema registra a reserva.
-9. O sistema exibe uma mensagem de sucesso.
+1. O administrador acessa a opção Realizar Reserva no sistema.
+2. O sistema exibe a lista de hóspedes e quartos cadastrados.
+3. O administrador seleciona o hóspede que deseja vincular à reserva.
+4. O administrador seleciona o quarto desejado.
+5. O administrador informa o período de estadia (check-in e check-out).
+6. O administrador define o status inicial da reserva (Pendente ou Confirmado).
+7. O administrador confirma a reserva.
+8. O sistema valida a disponibilidade do quarto para o período informado.
+9. O sistema registra a reserva e exibe uma mensagem de sucesso.
 
 ## Fluxos de Exceção
 
-- **FE1 – Quarto indisponível:**  
-  Se o quarto selecionado não estiver disponível para o período escolhido, o sistema exibirá uma mensagem informando a indisponibilidade.
+- **FE1 – Quarto indisponível:** Se o quarto selecionado já possuir uma reserva ativa para o período escolhido, o sistema exibirá uma mensagem de indisponibilidade.
 
-- **FE2 – Dados inválidos:**  
-  Se as datas informadas forem inválidas ou inconsistentes, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE2 – Dados inválidos:** Se as datas forem inconsistentes (ex: check-out anterior ao check-in) ou campos obrigatórios não forem preenchidos, o sistema exibirá uma mensagem de erro.

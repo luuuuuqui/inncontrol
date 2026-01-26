@@ -4,10 +4,10 @@
 
 **Ator Primário:** Administrador.
 
-**Pré-condições:**  
+**Pré-condições:** 
 - O administrador deve estar logado no sistema.
 
-**Pós-condições:**  
+**Pós-condições:** 
 - O período de reservas é aberto e disponibilizado no sistema.
 
 ## Fluxo Principal
@@ -22,8 +22,6 @@
 
 ## Fluxos de Exceção
 
-- **FE1 – Datas inválidas:**  
-  Se as datas informadas forem inválidas ou inconsistentes, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE1 – Datas inválidas:** Se as datas informadas forem inválidas ou inconsistentes, o sistema exibirá uma mensagem de erro e solicitará a correção.
 
-- **FE2 – Período já existente:**  
-  Se já existir um período de reservas aberto para as datas informadas, o sistema exibirá uma mensagem informando o conflito.
+- **FE2 – Período já existente:** Se já existir um período de reservas aberto para as datas informadas, o sistema exibirá uma mensagem informando o conflito.

@@ -4,11 +4,11 @@
 
 **Ator Primário:** Administrador.
 
-**Pré-condições:**  
+**Pré-condições:** 
 - O administrador deve estar logado no sistema.
 - Deve existir tipo de quarto cadastrado no sistema.
 
-**Pós-condições:**  
+**Pós-condições:** 
 - As tarifas dos quartos são atualizadas conforme os critérios definidos.
 
 ## Fluxo Principal
@@ -24,8 +24,6 @@
 
 ## Fluxos de Exceção
 
-- **FE1 – Valor inválido:**  
-  Se o valor informado for inválido, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE1 – Valor inválido:** Se o valor informado for inválido, o sistema exibirá uma mensagem de erro e solicitará a correção.
 
-- **FE2 – Nenhum quarto afetado:**  
-  Se não houver quartos que atendam aos critérios informados, o sistema exibirá uma mensagem informando que nenhuma tarifa foi atualizada.
+- **FE2 – Nenhum quarto afetado:** Se não houver quartos que atendam aos critérios informados, o sistema exibirá uma mensagem informando que nenhuma tarifa foi atualizada.
