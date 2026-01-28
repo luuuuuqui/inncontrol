@@ -39,7 +39,7 @@ Centralizar e automatizar a gestão de estabelecimentos hoteleiros, permitindo:
 
 Toda a documentação técnica e diagramas UML estão disponíveis na pasta [`docs/`](docs/):
 
-- [Documento de Visão](docs/visao-do-produto/visao.pdf)
+- [Documento de Visão](docs/visao-do-produto/visaodoproduto.pdf)
 - [Casos de Uso](docs/casos-de-uso/)
 - [Diagramas UML](docs/diagrama-de-classes/)
 
