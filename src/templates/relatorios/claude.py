@@ -11,26 +11,26 @@ import calendar
 
 class RelatoriosClaudeUI:
     """
-    módulo de relatórios administrativos para inncontrol.
-    dashboards visuais para análise de reservas, faturamento e consumo.
+    Módulo de relatórios administrativos para InnControl.
+    Dashboards visuais para análise de reservas, faturamento e consumo.
     """
 
     @staticmethod
     def main():
-        st.header("relatórios administrativos")
+        st.header("Relatórios Administrativos")
 
         col_filtro1, col_filtro2 = st.columns(2)
 
         with col_filtro1:
             ano_selecionado = st.selectbox(
-                "ano:",
+                "Ano:",
                 options=list(range(datetime.now().year - 2, datetime.now().year + 2)),
                 index=2,
             )
 
         with col_filtro2:
             mes_selecionado = st.selectbox(
-                "mês:",
+                "Mês:",
                 options=list(range(1, 13)),
                 format_func=lambda x: calendar.month_name[x],
                 index=datetime.now().month - 1,
@@ -40,10 +40,10 @@ class RelatoriosClaudeUI:
 
         tab1, tab2, tab3, tab4 = st.tabs(
             [
-                "visão geral",
-                "comparativo temporal",
-                "serviços/adicionais",
-                "exportar relatórios",
+                "Visão Geral",
+                "Comparativo Temporal",
+                "Serviços/Adicionais",
+                "Exportar Relatórios",
             ]
         )
 
@@ -63,7 +63,7 @@ class RelatoriosClaudeUI:
     def visao_geral(ano, mes):
         """dashboard principal com kpis do período"""
 
-        st.subheader(f"visão geral - {calendar.month_name[mes]}/{ano}")
+        st.subheader(f"Visão Geral - {calendar.month_name[mes]}/{ano}")
 
         dados_atual = RelatoriosClaudeUI._obter_dados_periodo(ano, mes)
 
@@ -74,21 +74,21 @@ class RelatoriosClaudeUI:
 
         with col1:
             RelatoriosClaudeUI._card_metrica(
-                "total de reservas",
+                "Total de Reservas",
                 dados_atual["total_reservas"],
                 dados_anterior["total_reservas"],
             )
 
         with col2:
             RelatoriosClaudeUI._card_metrica(
-                "total de hóspedes",
+                "Total de Hóspedes",
                 dados_atual["total_hospedes"],
                 dados_anterior["total_hospedes"],
             )
 
         with col3:
             RelatoriosClaudeUI._card_metrica(
-                "faturamento total",
+                "Faturamento Total",
                 dados_atual["faturamento_total"],
                 dados_anterior["faturamento_total"],
                 formato_moeda=True,
@@ -96,7 +96,7 @@ class RelatoriosClaudeUI:
 
         with col4:
             RelatoriosClaudeUI._card_metrica(
-                "ticket médio",
+                "Ticket Médio",
                 dados_atual["ticket_medio"],
                 dados_anterior["ticket_medio"],
                 formato_moeda=True,
@@ -107,20 +107,20 @@ class RelatoriosClaudeUI:
         col_grafico1, col_grafico2 = st.columns(2)
 
         with col_grafico1:
-            st.markdown("#### status das reservas")
+            st.markdown("#### Status das Reservas")
             RelatoriosClaudeUI._grafico_status_reservas(
                 dados_atual["reservas_por_status"]
             )
 
         with col_grafico2:
-            st.markdown("#### ocupação por tipo de quarto")
+            st.markdown("#### Ocupação por Tipo de Quarto")
             RelatoriosClaudeUI._grafico_tipos_quarto(dados_atual["reservas_por_tipo"])
 
     @staticmethod
     def comparativo_temporal(ano, mes):
         """comparação mês a mês com evolução temporal"""
 
-        st.subheader("comparativo temporal")
+        st.subheader("Comparativo Temporal")
 
         meses_dados = []
         for i in range(6, 0, -1):
@@ -133,7 +133,7 @@ class RelatoriosClaudeUI:
         dados_atual["mes_label"] = f"{calendar.month_abbr[mes]}/{str(ano)[2:]}"
         meses_dados.append(dados_atual)
 
-        st.markdown("#### evolução de reservas")
+        st.markdown("#### Evolução de Reservas")
         df_reservas = pd.DataFrame(
             [
                 {"mês": d["mes_label"], "reservas": d["total_reservas"]}
@@ -146,12 +146,12 @@ class RelatoriosClaudeUI:
             x="mês",
             y="reservas",
             markers=True,
-            title="número de reservas por mês",
+            title="Número de Reservas por Mês",
         )
         fig_reservas.update_layout(height=300)
         st.plotly_chart(fig_reservas, use_container_width=True)
 
-        st.markdown("#### evolução de faturamento")
+        st.markdown("#### Evolução de Faturamento")
         df_faturamento = pd.DataFrame(
             [
                 {"mês": d["mes_label"], "faturamento": float(d["faturamento_total"])}
@@ -160,25 +160,25 @@ class RelatoriosClaudeUI:
         )
 
         fig_fat = px.bar(
-            df_faturamento, x="mês", y="faturamento", title="faturamento por mês (r$)"
+            df_faturamento, x="mês", y="faturamento", title="Faturamento por Mês (R$)"
         )
         fig_fat.update_layout(height=300)
         st.plotly_chart(fig_fat, use_container_width=True)
 
-        st.markdown("#### tabela comparativa")
+        st.markdown("#### Tabela Comparativa")
 
         ultimos_3 = meses_dados[-3:]
 
         df_comparativo = pd.DataFrame(
             [
                 {
-                    "período": d["mes_label"],
-                    "reservas": d["total_reservas"],
-                    "hóspedes": d["total_hospedes"],
-                    "faturamento": f"r$ {float(d['faturamento_total']):.2f}".replace(
+                    "Período": d["mes_label"],
+                    "Reservas": d["total_reservas"],
+                    "Hóspedes": d["total_hospedes"],
+                    "Faturamento": f"R$ {float(d['faturamento_total']):.2f}".replace(
                         ".", ","
                     ),
-                    "ticket médio": f"r$ {float(d['ticket_medio']):.2f}".replace(
+                    "Ticket Médio": f"R$ {float(d['ticket_medio']):.2f}".replace(
                         ".", ","
                     ),
                 }
@@ -192,12 +192,12 @@ class RelatoriosClaudeUI:
     def servicos_adicionais(ano, mes):
         """análise detalhada dos serviços/adicionais consumidos"""
 
-        st.subheader("análise de serviços adicionais")
+        st.subheader("Análise de Serviços Adicionais")
 
         consumos = View.consumo_listar()
 
         if not consumos:
-            st.info("nenhum consumo registrado no período.")
+            st.info("Nenhum consumo registrado no período.")
             return
 
         consumos_periodo = []
@@ -212,14 +212,14 @@ class RelatoriosClaudeUI:
                 continue
 
         if not consumos_periodo:
-            st.info(f"nenhum consumo em {calendar.month_name[mes]}/{ano}.")
+            st.info(f"Nenhum consumo em {calendar.month_name[mes]}/{ano}.")
             return
 
         adicionais_stats = defaultdict(
             lambda: {
                 "quantidade": 0,
                 "valor_total": Decimal("0.00"),
-                "nome": "desconhecido",
+                "nome": "Desconhecido",
             }
         )
 
@@ -250,13 +250,13 @@ class RelatoriosClaudeUI:
 
         with col1:
             total_itens = df_adicionais["quantidade"].sum()
-            st.metric("total de itens", f"{total_itens}")
+            st.metric("Total de Itens", f"{total_itens}")
 
         with col2:
             receita_adicionais = df_adicionais["valor_total"].sum()
             st.metric(
-                "receita adicionais",
-                f"r$ {receita_adicionais:.2f}".replace(".", ","),
+                "Receita Adicionais",
+                f"R$ {receita_adicionais:.2f}".replace(".", ","),
             )
 
         with col3:
@@ -264,7 +264,7 @@ class RelatoriosClaudeUI:
                 receita_adicionais / total_itens if total_itens > 0 else 0
             )
             st.metric(
-                "ticket médio/item", f"r$ {ticket_medio_adic:.2f}".replace(".", ",")
+                "Ticket Médio/Item", f"R$ {ticket_medio_adic:.2f}".replace(".", ",")
             )
 
         st.divider()
@@ -272,43 +272,43 @@ class RelatoriosClaudeUI:
         col_graf1, col_graf2 = st.columns(2)
 
         with col_graf1:
-            st.markdown("#### ranking por quantidade")
+            st.markdown("#### Ranking por Quantidade")
             fig_qtd = px.bar(
                 df_adicionais.head(10),
                 x="adicional",
                 y="quantidade",
-                title="top 10 adicionais mais consumidos",
+                title="Top 10 Adicionais Mais Consumidos",
             )
             fig_qtd.update_layout(height=350, xaxis_tickangle=-45)
             st.plotly_chart(fig_qtd, use_container_width=True)
 
         with col_graf2:
-            st.markdown("#### impacto financeiro")
+            st.markdown("#### Impacto Financeiro")
             fig_valor = px.pie(
                 df_adicionais.head(10),
                 values="valor_total",
                 names="adicional",
-                title="distribuição de receita por adicional",
+                title="Distribuição de Receita por Adicional",
             )
             fig_valor.update_layout(height=350)
             st.plotly_chart(fig_valor, use_container_width=True)
 
-        st.markdown("#### detalhamento completo")
+        st.markdown("#### Detalhamento Completo")
         df_display = df_adicionais.copy()
         df_display["valor_total"] = df_display["valor_total"].apply(
-            lambda x: f"r$ {x:.2f}".replace(".", ",")
+            lambda x: f"R$ {x:.2f}".replace(".", ",")
         )
-        df_display.columns = ["adicional", "quantidade", "valor total"]
+        df_display.columns = ["Adicional", "Quantidade", "Valor Total"]
         st.dataframe(df_display, hide_index=True, use_container_width=True)
 
     @staticmethod
     def exportar_relatorios(ano, mes):
         """exportação de relatórios em pdf e excel"""
 
-        st.subheader("exportar relatórios")
+        st.subheader("Exportar Relatórios")
 
         st.info(
-            "selecione o formato desejado para exportar os dados consolidados do período."
+            "Selecione o formato desejado para exportar os dados consolidados do período."
         )
 
         dados = RelatoriosClaudeUI._obter_dados_periodo(ano, mes)
@@ -316,42 +316,42 @@ class RelatoriosClaudeUI:
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("#### exportar para excel")
-            st.caption("arquivo .xlsx com todas as tabelas e dados")
+            st.markdown("#### Exportar para Excel")
+            st.caption("Arquivo .xlsx com todas as tabelas e dados")
 
-            if st.button("gerar excel", key="btn_excel"):
+            if st.button("Gerar Excel", key="btn_excel"):
                 try:
                     arquivo_excel = RelatoriosClaudeUI._gerar_excel(ano, mes, dados)
-                    st.success("excel gerado com sucesso!")
+                    st.success("Excel gerado com sucesso!")
 
                     with open(arquivo_excel, "rb") as f:
                         st.download_button(
-                            label="baixar excel",
+                            label="Baixar Excel",
                             data=f,
                             file_name=f"relatorio_inncontrol_{mes:02d}_{ano}.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         )
                 except Exception as e:
-                    st.error(f"erro ao gerar excel: {e}")
+                    st.error(f"Erro ao gerar Excel: {e}")
 
         with col2:
-            st.markdown("#### exportar para pdf")
-            st.caption("relatório consolidado em pdf")
+            st.markdown("#### Exportar para PDF")
+            st.caption("Relatório consolidado em PDF")
 
-            if st.button("gerar pdf", key="btn_pdf"):
+            if st.button("Gerar PDF", key="btn_pdf"):
                 try:
                     arquivo_pdf = RelatoriosClaudeUI._gerar_pdf(ano, mes, dados)
-                    st.success("pdf gerado com sucesso!")
+                    st.success("PDF gerado com sucesso!")
 
                     with open(arquivo_pdf, "rb") as f:
                         st.download_button(
-                            label="baixar pdf",
+                            label="Baixar PDF",
                             data=f,
                             file_name=f"relatorio_inncontrol_{mes:02d}_{ano}.pdf",
                             mime="application/pdf",
                         )
                 except Exception as e:
-                    st.error(f"erro ao gerar pdf: {e}")
+                    st.error(f"Erro ao gerar PDF: {e}")
 
     @staticmethod
     def _obter_dados_periodo(ano, mes):
@@ -440,7 +440,7 @@ class RelatoriosClaudeUI:
         """renderiza card de métrica com comparação"""
 
         if formato_moeda:
-            valor_display = f"r$ {float(valor_atual):.2f}".replace(".", ",")
+            valor_display = f"R$ {float(valor_atual):.2f}".replace(".", ",")
         else:
             valor_display = f"{valor_atual}"
 
@@ -450,7 +450,7 @@ class RelatoriosClaudeUI:
             ) * 100
             delta = f"{variacao:+.1f}%"
         else:
-            delta = "n/a"
+            delta = "N/A"
 
         st.metric(label=titulo, value=valor_display, delta=delta)
 
@@ -459,7 +459,7 @@ class RelatoriosClaudeUI:
         """gráfico pizza para status das reservas"""
 
         if not dados_status:
-            st.info("sem dados de status")
+            st.info("Sem dados de status")
             return
 
         df = pd.DataFrame(
@@ -475,7 +475,7 @@ class RelatoriosClaudeUI:
         """gráfico barras horizontais para tipos de quarto"""
 
         if not dados_tipos:
-            st.info("sem dados de tipos de quarto")
+            st.info("Sem dados de tipos de quarto")
             return
 
         df = pd.DataFrame(
@@ -502,22 +502,22 @@ class RelatoriosClaudeUI:
         wb = openpyxl.Workbook()
 
         ws_resumo = wb.active
-        ws_resumo.title = "resumo executivo"
+        ws_resumo.title = "Resumo Executivo"
 
-        ws_resumo["A1"] = f"relatório inncontrol - {calendar.month_name[mes]}/{ano}"
+        ws_resumo["A1"] = f"Relatório InnControl - {calendar.month_name[mes]}/{ano}"
         ws_resumo["A1"].font = Font(size=14, bold=True)
         ws_resumo.merge_cells("A1:D1")
 
-        ws_resumo["A3"] = "métrica"
-        ws_resumo["B3"] = "valor"
+        ws_resumo["A3"] = "Métrica"
+        ws_resumo["B3"] = "Valor"
         ws_resumo["A3"].font = Font(bold=True)
         ws_resumo["B3"].font = Font(bold=True)
 
         metricas = [
-            ("total de reservas", dados["total_reservas"]),
-            ("total de hóspedes", dados["total_hospedes"]),
-            ("faturamento total", f"r$ {float(dados['faturamento_total']):.2f}"),
-            ("ticket médio", f"r$ {float(dados['ticket_medio']):.2f}"),
+            ("Total de Reservas", dados["total_reservas"]),
+            ("Total de Hóspedes", dados["total_hospedes"]),
+            ("Faturamento Total", f"R$ {float(dados['faturamento_total']):.2f}"),
+            ("Ticket Médio", f"R$ {float(dados['ticket_medio']):.2f}"),
         ]
 
         row = 4
@@ -529,9 +529,9 @@ class RelatoriosClaudeUI:
         ws_resumo.column_dimensions["A"].width = 25
         ws_resumo.column_dimensions["B"].width = 20
 
-        ws_status = wb.create_sheet("reservas por status")
-        ws_status["A1"] = "status"
-        ws_status["B1"] = "quantidade"
+        ws_status = wb.create_sheet("Reservas por Status")
+        ws_status["A1"] = "Status"
+        ws_status["B1"] = "Quantidade"
         ws_status["A1"].font = Font(bold=True)
         ws_status["B1"].font = Font(bold=True)
 
@@ -582,7 +582,7 @@ class RelatoriosClaudeUI:
         )
 
         titulo = Paragraph(
-            f"<b>relatório administrativo inncontrol</b><br/>{calendar.month_name[mes]}/{ano}",
+            f"<b>Relatório Administrativo InnControl</b><br/>{calendar.month_name[mes]}/{ano}",
             titulo_style,
         )
         elements.append(titulo)
@@ -596,14 +596,14 @@ class RelatoriosClaudeUI:
             spaceAfter=12,
         )
 
-        elements.append(Paragraph("resumo executivo", secao_style))
+        elements.append(Paragraph("Resumo Executivo", secao_style))
 
         dados_tabela = [
-            ["métrica", "valor"],
-            ["total de reservas", str(dados["total_reservas"])],
-            ["total de hóspedes", str(dados["total_hospedes"])],
-            ["faturamento total", f"r$ {float(dados['faturamento_total']):.2f}"],
-            ["ticket médio", f"r$ {float(dados['ticket_medio']):.2f}"],
+            ["Métrica", "Valor"],
+            ["Total de Reservas", str(dados["total_reservas"])],
+            ["Total de Hóspedes", str(dados["total_hospedes"])],
+            ["Faturamento Total", f"R$ {float(dados['faturamento_total']):.2f}"],
+            ["Ticket Médio", f"R$ {float(dados['ticket_medio']):.2f}"],
         ]
 
         tabela = Table(dados_tabela, colWidths=[8 * cm, 6 * cm])
@@ -626,9 +626,9 @@ class RelatoriosClaudeUI:
         elements.append(Spacer(1, 1 * cm))
 
         if dados["reservas_por_status"]:
-            elements.append(Paragraph("distribuição por status", secao_style))
+            elements.append(Paragraph("Distribuição por Status", secao_style))
 
-            dados_status = [["status", "quantidade"]]
+            dados_status = [["Status", "Quantidade"]]
             for status, qtd in dados["reservas_por_status"].items():
                 dados_status.append([status, str(qtd)])
 
