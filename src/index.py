@@ -13,6 +13,11 @@ from templates.manterpagamentoUI import ManterPagamentoUI as PagamentoUI
 from templates.manterconsumoUI import ManterConsumoUI as ConsumoUI
 from templates.manteradicionalUI import ManterAdicionalUI as AdicionalUI
 
+# relatórios
+from templates.relatorios.kimi import RelatoriosKimiUI as RelatoriosKimiUI
+from templates.relatorios.claude import RelatoriosClaudeUI as RelatoriosClaudeUI
+from templates.relatorios.claude2 import RelatoriosUI as RelatoriosClaude2UI
+
 # recepcionista
 # (nenhum por enquanto)
 
@@ -48,6 +53,9 @@ class IndexUI:
                 "Pagamento",
                 "Consumo",
                 "Adicional",
+                "Relatórios (Kimi)",
+                "Relatórios (Claude2)",
+                "Relatórios (Claude)",
             ],
         )
         match op:
@@ -67,6 +75,12 @@ class IndexUI:
                 ConsumoUI.main()
             case "Adicional":
                 AdicionalUI.main()
+            case "Relatórios (Kimi)":
+                RelatoriosKimiUI.main()
+            case "Relatórios (Claude2)":
+                RelatoriosClaude2UI.main()
+            case "Relatórios (Claude)":
+                RelatoriosClaudeUI.main()
             case _:
                 st.error("Opção inválida.")
 
@@ -102,7 +116,7 @@ class IndexUI:
                     PerfilHospedeUI.main()
                 case _:
                     st.error(
-                        f"Ei! Seu tipo de usuário, \"{st.session_state['usuario_tipo']}\", não foi reconhecido por nosso sistema. Entre em contato com nosso suporte."
+                        f'Ei! Seu tipo de usuário, "{st.session_state["usuario_tipo"]}", não foi reconhecido por nosso sistema. Entre em contato com nosso suporte.'
                     )
 
     @staticmethod
