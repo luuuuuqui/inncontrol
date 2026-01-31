@@ -369,7 +369,7 @@ class RelatoriosUI:
         pdf.set_auto_page_break(auto=True, margin=15)
 
         pdf.set_font("Arial", "B", 16)
-        pdf.cell(0, 10, "Relatorio Gerencial - InnControl", ln=True, align="C")
+        pdf.cell(0, 10, "Relatório Gerencial - InnControl", ln=True, align="C")
         pdf.line(10, 20, 200, 20)
         pdf.ln(15)
 
@@ -381,7 +381,7 @@ class RelatoriosUI:
         pdf.cell(
             0,
             8,
-            f"Periodo Analisado: {filtros['inicio'].strftime('%d/%m/%Y')} a {filtros['fim'].strftime('%d/%m/%Y')}",
+            f"Período Analisado: {filtros['inicio'].strftime('%d/%m/%Y')} a {filtros['fim'].strftime('%d/%m/%Y')}",
             ln=True,
         )
         pdf.ln(10)
@@ -393,19 +393,19 @@ class RelatoriosUI:
         m = dados["metricas"]
         pdf.cell(0, 8, f"Receita Total: R$ {m['receita_total']:,.2f}", ln=True)
         pdf.cell(0, 8, f"Total de Reservas: {m['total_reservas']}", ln=True)
-        pdf.cell(0, 8, f"Ticket Medio: R$ {m['ticket_medio']:,.2f}", ln=True)
+        pdf.cell(0, 8, f"Ticket Médio: R$ {m['ticket_medio']:,.2f}", ln=True)
         pdf.cell(
-            0, 8, f"Media de Estadia: {m['tempo_medio_estadia']:.1f} dias", ln=True
+            0, 8, f"Média de Estadia: {m['tempo_medio_estadia']:.1f} dias", ln=True
         )
 
         pdf.ln(10)
 
         pdf.set_font("Arial", "B", 14)
-        pdf.cell(0, 10, "Ultimas Reservas (Top 20)", ln=True)
+        pdf.cell(0, 10, "Últimas Reservas (Top 20)", ln=True)
 
         pdf.set_font("Arial", "B", 10)
         col_w = [20, 60, 40, 30, 30]
-        headers = ["ID", "Hospede", "Quarto", "Data", "Valor"]
+        headers = ["ID", "Hóspede", "Quarto", "Data", "Valor"]
 
         for i, h in enumerate(headers):
             pdf.cell(col_w[i], 8, h, 1)
