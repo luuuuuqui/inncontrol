@@ -1,4 +1,4 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st  # pyright: ignore[reportMissingImports]
 import datetime as dt
 import time
 from views import View
@@ -6,17 +6,104 @@ from views import View
 
 class PerfilHospedeUI:
     @staticmethod
-    def main():
-        st.set_page_config(page_title="Minhas Reservas", layout="wide")
-        st.markdown("## Suas Reservas")
-        PerfilHospedeUI.listar()
+    def meus_dados():
+        st.header("Meus Dados:")
+        usuario_id = st.session_state["usuario_id"]
+        usuario = View.usuario_listar_id(usuario_id)
 
-    @staticmethod
-    def listar():
-        if "usuario_id" not in st.session_state:
-            st.warning("Faça login para visualizar suas reservas.")
+        if not usuario:
+            st.error("Dados do usuário não encontrados.")
             return
 
+        hospede = View.hospede_listar_por_usuario(usuario_id)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            novo_nome = st.text_input("Nome:", value=usuario.get_nome())
+            novo_fone = st.text_input("Telefone:", value=usuario.get_fone())
+
+        with col2:
+            novo_email = st.text_input("Email:", value=usuario.get_email())
+            if hospede:
+                novo_endereco = st.text_input("Endereço:", value=hospede.get_endereco())
+            else:
+                novo_endereco = st.text_input("Endereço:", value="")
+
+        col_salvar, col_senha = st.columns(2)
+
+        with col_salvar:
+            if st.button("Salvar Alterações", use_container_width=True, type="primary"):
+                if not novo_nome or not novo_email:
+                    st.error("Nome e email são obrigatórios.")
+                else:
+                    try:
+                        View.usuario_atualizar(
+                            usuario.get_id_usuario(),
+                            novo_nome,
+                            novo_fone,
+                            novo_email,
+                            usuario.get_tipo_perfil(),
+                            usuario.get_id_perfil(),
+                        )
+
+                        if hospede and novo_endereco:
+                            View.hospede_atualizar(
+                                hospede.get_id_hospede(),
+                                usuario.get_id_usuario(),
+                                novo_endereco,
+                            )
+                        elif not hospede and novo_endereco:
+                            View.hospede_inserir(
+                                usuario.get_id_usuario(), novo_endereco
+                            )
+
+                        st.session_state["usuario_nome"] = novo_nome
+                        st.success("Dados atualizados com sucesso!")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erro: {e}")
+
+        with col_senha:
+            with st.expander("Alterar Senha"):
+                senha_atual = st.text_input(
+                    "Senha Atual:", type="password", key="senha_atual"
+                )
+                nova_senha = st.text_input(
+                    "Nova Senha:", type="password", key="nova_senha"
+                )
+                confirmar_senha = st.text_input(
+                    "Confirmar Senha:", type="password", key="confirmar_senha"
+                )
+
+                if st.button("Alterar Senha", use_container_width=True):
+                    if not senha_atual:
+                        st.error("Digite a senha atual.")
+                    elif not nova_senha:
+                        st.error("Digite a nova senha.")
+                    elif nova_senha != confirmar_senha:
+                        st.error("As senhas não coincidem.")
+                    else:
+                        try:
+                            usuario_autenticado = View.usuario_autenticar(
+                                usuario.get_email(), senha_atual
+                            )
+                            if not usuario_autenticado:
+                                st.error("Senha atual incorreta.")
+                            else:
+                                View.usuario_atualizar_senha(
+                                    usuario.get_id_usuario(), nova_senha
+                                )
+                                st.success("Senha atualizada com sucesso!")
+                                time.sleep(1)
+                                st.rerun()
+                        except Exception as e:
+                            st.error(f"Erro: {e}")
+
+    @staticmethod
+    def minhas_reservas():
+        st.header("Minhas Reservas:")
         usuario_id = st.session_state["usuario_id"]
         hospede = View.hospede_listar_por_usuario(usuario_id)
 
@@ -98,8 +185,8 @@ class PerfilHospedeUI:
         html = f"""
         <div style='display:flex;justify-content:space-between;align-items:center'>
             <div>
-                <div style='font-weight:700;font-size:16px'>#{reserva.get('id')} — {reserva.get('hospede')}</div>
-                <div class='meta'>{reserva.get('tipo_quarto')} • Quarto {reserva.get('numero_quarto')}</div>
+                <div style='font-weight:700;font-size:16px'>#{reserva.get("id")} — {reserva.get("hospede")}</div>
+                <div class='meta'>{reserva.get("tipo_quarto")} • Quarto {reserva.get("numero_quarto")}</div>
             </div>
             <div class='payment {status_cls}'>{status_txt}</div>
         </div>
@@ -110,12 +197,12 @@ class PerfilHospedeUI:
             <div><div class='meta'>Diárias</div><div>{dias}</div></div>
             <div>
                 <div class='meta'>Total Geral</div>
-                <div style='font-weight:700'>{PerfilHospedeUI._formatar_dinheiro(reserva.get('total'))}</div>
+                <div style='font-weight:700'>{PerfilHospedeUI._formatar_dinheiro(reserva.get("total"))}</div>
             </div>
         </div>
         <div style='margin-top:8px'>
             <div class='meta'>Método Pagamento</div>
-            <div>{reserva.get('tipo_pagamento', '-')}</div>
+            <div>{reserva.get("tipo_pagamento", "-")}</div>
         </div>
         <div style='margin-top:6px; margin-bottom:10px;'>
             <div style="display:flex; justify-content:space-between; align-items:flex-end;">

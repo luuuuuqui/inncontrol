@@ -109,6 +109,21 @@ class IndexUI:
                 RecepcionistaPagamentoUI.main()
 
     @staticmethod
+    def menu_hospede():
+        op = st.sidebar.selectbox(
+            "Menu",
+            [
+                "Minhas Reservas",
+                "Meus Dados",
+            ],
+        )
+        match op:
+            case "Minhas Reservas":
+                PerfilHospedeUI.minhas_reservas()
+            case "Meus Dados":
+                PerfilHospedeUI.meus_dados()
+
+    @staticmethod
     def sair_do_sistema():
         if st.sidebar.button("Sair do Sistema"):
             try:
@@ -135,7 +150,7 @@ class IndexUI:
                 case "recepcionista":
                     IndexUI.menu_recepcionista()
                 case "hóspede" | "hospede":
-                    PerfilHospedeUI.main()
+                    IndexUI.menu_hospede()
                 case _:
                     st.error(
                         f'Ei! Seu tipo de usuário, "{st.session_state["usuario_tipo"]}", não foi reconhecido por nosso sistema. Entre em contato com nosso suporte.'
