@@ -1,29 +1,26 @@
-# CDU17 – Registrar Serviço Consumido
+# CDU18 – Listar Serviços da Reserva
 
-**Descrição:** Permite registrar o consumo de produtos ou serviços adicionais vinculando-os a uma reserva específica.
+**Descrição:** Permite visualizar detalhadamente todos os produtos e serviços adicionais que foram lançados como consumo em uma reserva específica.
 
 **Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
 - O usuário deve estar logado no sistema.
-- Devem existir reservas e itens adicionais cadastrados no sistema.
+- Devem existir registros de consumo vinculados a reservas.
 
 **Pós-condições:** 
-- O consumo é registrado e o valor total da reserva é atualizado.
+- Os detalhes do consumo (item, quantidade e reserva vinculada) são exibidos para conferência.
 
 ## Fluxo Principal
 
 1. O usuário acessa a opção "Consumo" no menu lateral.
-2. O sistema exibe a interface e o usuário seleciona a aba "Inserir".
-3. O usuário seleciona a reserva do hóspede em uma lista de seleção.
-4. O usuário seleciona o item adicional consumido (produto ou serviço).
-5. O usuário informa a quantidade consumida e a data do registro.
-6. O usuário confirma a operação clicando no botão "Lançar Consumo".
-7. O sistema valida se a quantidade informada é superior a zero.
-8. O sistema registra o consumo, exibe uma mensagem de sucesso e atualiza a lista de consumos.
+2. O sistema exibe por padrão a aba "Listar".
+3. O sistema recupera todos os registros de consumo do banco de dados.
+4. O sistema exibe uma tabela com as colunas: Identificador, Reserva, Adicional, Quantidade e Data.
+5. O usuário identifica os serviços vinculados à reserva desejada através da coluna "Reserva".
 
 ## Fluxos de Exceção
 
-- **FE1 – Quantidade inválida:** Se o usuário informar uma quantidade igual ou inferior a zero, o sistema exibirá a mensagem "A quantidade deve ser maior que zero." e impedirá a gravação.
+- **FE1 – Nenhum serviço registrado:** Se não houver nenhum lançamento de consumo no sistema, a tabela será exibida vazia ou com a mensagem "Nenhum consumo cadastrado.".
 
-- **FE2 – Dados incompletos:** Se o usuário não selecionar uma reserva ou um item adicional, o sistema impedirá a confirmação do lançamento.
+- **FE2 – Erro na recuperação de dados:** Caso ocorra uma falha na conexão com o banco de dados ao tentar listar os serviços, o sistema exibirá uma mensagem de erro técnica.

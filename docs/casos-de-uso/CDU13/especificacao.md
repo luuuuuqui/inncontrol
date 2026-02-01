@@ -1,28 +1,31 @@
-# CDU13 – Realizar Check-in
+# CDU13 – Realizar Check-out
 
-**Descrição:** Permite confirmar a entrada do hóspede no hotel, alterando o status da reserva para indicar que a estadia está em curso.
+**Descrição:** Permite finalizar a estadia do hóspede, realizando o cálculo automático do valor total (diárias e consumos) e registrando o encerramento da conta no sistema.
 
 **Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
 - O usuário deve estar logado no sistema.
-- Deve existir uma reserva cadastrada para o hóspede.
+- Deve existir uma reserva com status indicando que a estadia está em curso.
 
 **Pós-condições:** 
-- O status da reserva é atualizado para refletir o início da estadia.
+- A reserva é finalizada e o registro de pagamento é gerado com o valor total calculado.
 
 ## Fluxo Principal
 
-1. O usuário acessa a opção "Reserva" no menu lateral.
-2. O sistema exibe o painel de gerenciamento e o usuário seleciona a aba "Atualizar".
-3. O usuário seleciona a reserva correspondente ao hóspede na lista de seleção.
-4. O usuário altera o status da reserva para "Em andamento" (ou status equivalente).
-5. O usuário confirma a operação clicando no botão "Salvar Alterações".
-6. O sistema valida os dados e a persistência da informação.
-7. O sistema exibe uma mensagem de sucesso confirmando a operação.
+1. O usuário acessa a opção de gestão de reservas ou pagamentos no menu lateral.
+2. O sistema exibe a lista de reservas ativas.
+3. O usuário seleciona a reserva do hóspede que deseja realizar o check-out.
+4. O sistema calcula automaticamente o valor total da estadia, multiplicando o valor da diária pelo número de dias e somando todos os itens de consumo registrados.
+5. O sistema exibe o resumo financeiro para conferência do usuário.
+6. O usuário registra o pagamento informando a data, forma de pagamento e status.
+7. O sistema altera o status da reserva para finalizada (ou equivalente) e salva o registro financeiro.
+8. O sistema exibe uma mensagem de sucesso confirmando a operação.
 
 ## Fluxos de Exceção
 
-- **FE1 – Reserva não encontrada:** Se a reserva selecionada não puder ser carregada para atualização, o sistema exibirá uma mensagem de erro informando que o registro não foi encontrado.
+- **FE1 – Reserva já paga:** Se o usuário tentar registrar um pagamento para uma reserva que já possui um registro financeiro vinculado, o sistema exibirá uma mensagem de erro informando que o pagamento já existe.
 
-- **FE2 – Erro na validação de datas:** Se as datas da reserva forem inconsistentes ou houver conflito de disponibilidade ao tentar salvar, o sistema impedirá a atualização e exibirá uma mensagem explicativa.
+- **FE2 – Erro no cálculo de datas:** Se as datas de check-in e check-out da reserva apresentarem inconsistências, o sistema impedirá o cálculo do valor e exibirá uma mensagem de erro.
+
+- **FE3 – Itens de consumo sem valor:** Se houver um item de consumo vinculado a um adicional que foi removido, o sistema poderá ignorar o item no cálculo total para evitar erros de processamento.
