@@ -122,7 +122,12 @@ class RelatoriosUI:
                 if not (filtros["inicio"] <= dt_checkin <= filtros["fim"]):
                     continue
 
-                val_total = float(r.get_valor_total() or 0.0)
+                try:
+                    val_total = float(
+                        View.reserva_calcular_pagamento(r.get_id_reserva())
+                    )
+                except Exception:
+                    val_total = 0.0
 
                 if val_total < filtros["valor_min"]:
                     continue
@@ -145,7 +150,7 @@ class RelatoriosUI:
                     estadia = 1
 
                 item = {
-                    "id": r.get_id(),
+                    "id": r.get_id_reserva(),
                     "data_checkin": dt_checkin,
                     "data_checkout": dt_checkout,
                     "hospede": nome_hospede,
@@ -196,24 +201,28 @@ class RelatoriosUI:
             with c_chart1:
                 st.markdown("##### Receita por Quarto")
                 df_quarto = df.groupby("quarto")["valor_total"].sum().reset_index()
-                fig_pie = px.pie(
-                    df_quarto, values="valor_total", names="quarto", hole=0.4
-                )
-                fig_pie.update_layout(showlegend=True, margin=dict(t=0, b=0, l=0, r=0))
-                st.plotly_chart(fig_pie, use_container_width=True)
+                if PLOTLY_AVAILABLE:
+                    fig_pie = px.pie(
+                        df_quarto, values="valor_total", names="quarto", hole=0.4
+                    )
+                    fig_pie.update_layout(
+                        showlegend=True, margin=dict(t=0, b=0, l=0, r=0)
+                    )
+                    st.plotly_chart(fig_pie, use_container_width=True)
 
             with c_chart2:
                 st.markdown("##### Duração da Estadia (Distribuição)")
-                fig_hist = px.histogram(
-                    df,
-                    x="estadia_dias",
-                    nbins=10,
-                    labels={"estadia_dias": "Dias de Estadia"},
-                )
-                fig_hist.update_layout(
-                    showlegend=False, margin=dict(t=0, b=0, l=0, r=0)
-                )
-                st.plotly_chart(fig_hist, use_container_width=True)
+                if PLOTLY_AVAILABLE:
+                    fig_hist = px.histogram(
+                        df,
+                        x="estadia_dias",
+                        nbins=10,
+                        labels={"estadia_dias": "Dias de Estadia"},
+                    )
+                    fig_hist.update_layout(
+                        showlegend=False, margin=dict(t=0, b=0, l=0, r=0)
+                    )
+                    st.plotly_chart(fig_hist, use_container_width=True)
 
         RelatoriosUI._render_secao_exportacao(dados)
 
@@ -234,36 +243,37 @@ class RelatoriosUI:
         )
         df_diario.columns = ["Data", "Receita", "Qtd Reservas"]
 
-        fig = go.Figure()
+        if PLOTLY_AVAILABLE:
+            fig = go.Figure()
 
-        fig.add_trace(
-            go.Bar(
-                x=df_diario["Data"],
-                y=df_diario["Qtd Reservas"],
-                name="Qtd Reservas",
-                marker_color="#A0C4FF",
+            fig.add_trace(
+                go.Bar(
+                    x=df_diario["Data"],
+                    y=df_diario["Qtd Reservas"],
+                    name="Qtd Reservas",
+                    marker_color="#A0C4FF",
+                )
             )
-        )
 
-        fig.add_trace(
-            go.Scatter(
-                x=df_diario["Data"],
-                y=df_diario["Receita"],
-                name="Receita (R$)",
-                yaxis="y2",
-                line=dict(color="#264653", width=3),
+            fig.add_trace(
+                go.Scatter(
+                    x=df_diario["Data"],
+                    y=df_diario["Receita"],
+                    name="Receita (R$)",
+                    yaxis="y2",
+                    line=dict(color="#264653", width=3),
+                )
             )
-        )
 
-        fig.update_layout(
-            title="Receita vs Volume de Reservas",
-            yaxis=dict(title="Quantidade de Reservas"),
-            yaxis2=dict(title="Receita (R$)", overlaying="y", side="right"),
-            legend=dict(x=0, y=1.1, orientation="h"),
-            hovermode="x unified",
-        )
+            fig.update_layout(
+                title="Receita vs Volume de Reservas",
+                yaxis=dict(title="Quantidade de Reservas"),
+                yaxis2=dict(title="Receita (R$)", overlaying="y", side="right"),
+                legend=dict(x=0, y=1.1, orientation="h"),
+                hovermode="x unified",
+            )
 
-        st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
 
         st.divider()
 
@@ -364,6 +374,8 @@ class RelatoriosUI:
     @staticmethod
     def _gerar_pdf(dados):
         """Geração de PDF com formatação profissional"""
+        if not FPDF_AVAILABLE:
+            raise ImportError("Biblioteca FPDF não está disponível")
         pdf = FPDF()
         pdf.add_page()
         pdf.set_auto_page_break(auto=True, margin=15)
@@ -428,13 +440,16 @@ class RelatoriosUI:
             pdf.cell(col_w[4], 8, f"{row['valor_total']:.2f}", 1)
             pdf.ln()
 
-        return pdf.output(dest="S").encode("latin-1")
+        pdf_bytes = pdf.output(dest="S")
+        if isinstance(pdf_bytes, str):
+            return pdf_bytes.encode("latin-1")
+        return pdf_bytes
 
     @staticmethod
     def _gerar_excel(dados):
         """Gera arquivo Excel com múltiplas abas"""
         output = BytesIO()
-        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:  # type: ignore[arg-type]
             dados["df_reservas"].to_excel(
                 writer, index=False, sheet_name="Base de Dados"
             )
@@ -442,4 +457,5 @@ class RelatoriosUI:
             resumo = pd.DataFrame([dados["metricas"]])
             resumo.to_excel(writer, index=False, sheet_name="Resumo KPIs")
 
+        output.seek(0)
         return output.getvalue()

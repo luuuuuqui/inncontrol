@@ -1,4 +1,4 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st  # pyright: ignore[reportMissingImports]
 import pandas as pd
 from views import View
 import time
@@ -49,7 +49,7 @@ class ManterPagamentoUI:
                 data_pag = dt.datetime.strptime(
                     p.get_data_pagamento(), "%Y-%m-%d"
                 ).strftime("%d/%m/%Y")
-            except:
+            except (ValueError, TypeError):
                 data_pag = p.get_data_pagamento()
 
             dic_pagamentos.append(
@@ -157,7 +157,7 @@ class ManterPagamentoUI:
             data_atual = dt.datetime.strptime(
                 pagamento_op.get_data_pagamento(), "%Y-%m-%d"
             ).date()
-        except:
+        except (ValueError, TypeError):
             data_atual = dt.date.today()
 
         lista_formas = [
@@ -239,9 +239,7 @@ class ManterPagamentoUI:
         valor_obj = Decimal(pagamento_op.get_valor_total())
         st.warning(f"Tem certeza que deseja excluir o pagamento de R$ {valor_obj:.2f}?")
 
-        if st.button(
-            "Excluir Pagamento", type="primary", key="btn_del_pagamento"
-        ):
+        if st.button("Excluir Pagamento", type="primary", key="btn_del_pagamento"):
             try:
                 View.pagamento_excluir(pagamento_op.get_id_pagamento())
                 st.success("Pagamento excluído com sucesso!")
