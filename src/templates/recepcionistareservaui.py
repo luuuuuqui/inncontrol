@@ -110,6 +110,8 @@ class RecepcionistaReservaUI:
                 "Período", min_value=dt.datetime.now(), format="DD/MM/YYYY", value=[]
             )
 
+            status = st.selectbox("Status Inicial:", ("Pendente", "Confirmado"))
+
             submitted = st.form_submit_button("Confirmar Reserva")
 
             if submitted:
@@ -120,7 +122,7 @@ class RecepcionistaReservaUI:
                             quarto_selecionado.get_id_quarto(),
                             estadia[0],
                             estadia[1],
-                            "Pendente",
+                            status,
                         )
                         st.success("Reserva criada!")
                         time.sleep(1)
