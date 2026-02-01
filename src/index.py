@@ -3,6 +3,7 @@ import streamlit as st  # pyright: ignore[reportMissingImports]
 
 from dao.database import Database
 
+
 # admin
 from templates.manterusuarioUI import ManterUsuarioUI as UsuarioUI
 from templates.manterhospedeUI import ManterHospedeUI as HospedeUI
@@ -16,7 +17,12 @@ from templates.manterrelatoriosui import RelatoriosUI
 
 
 # recepcionista
-# (nenhum por enquanto)
+from templates.recepcionistareservaui import RecepcionistaReservaUI
+from templates.recepcionistahospedeui import RecepcionistaHospedeUI
+from templates.recepcionistaconsumoui import RecepcionistaConsumoUI
+from templates.recepcionistapagamentoui import RecepcionistaPagamentoUI
+from templates.recepcionistaconsultasui import RecepcionistaConsultasUI
+from templates.recepcionistaadicionalui import RecepcionistaAdicionalUI
 
 # hóspede
 from templates.perfilhospedeui import PerfilHospedeUI
@@ -76,6 +82,33 @@ class IndexUI:
                 st.error("Opção inválida.")
 
     @staticmethod
+    def menu_recepcionista():
+        op = st.sidebar.selectbox(
+            "Menu",
+            [
+                "Consulta",
+                "Adicional",
+                "Consumo",
+                "Reserva",
+                "Hospede",
+                "Pagamento"
+            ],
+        )
+        match op:
+            case "Consulta":
+                RecepcionistaConsultasUI.main()
+            case "Adicional":
+                RecepcionistaAdicionalUI.main()
+            case "Consumo":
+                RecepcionistaConsumoUI.main()
+            case "Reserva":
+                RecepcionistaReservaUI.main()
+            case "Hospede":
+                RecepcionistaHospedeUI.main()
+            case "Pagamento":
+                RecepcionistaPagamentoUI.main()
+
+    @staticmethod
     def sair_do_sistema():
         if st.sidebar.button("Sair do Sistema"):
             try:
@@ -100,9 +133,7 @@ class IndexUI:
                 case "administrador":
                     IndexUI.menu_admin()
                 case "recepcionista":
-                    st.info(
-                        "Ops! O menu de recepcionista ainda não está implementado. Em breve estaremos trazendo essa funcionalidade!"
-                    )
+                    IndexUI.menu_recepcionista()
                 case "hóspede" | "hospede":
                     PerfilHospedeUI.main()
                 case _:
