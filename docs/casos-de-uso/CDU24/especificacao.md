@@ -1,28 +1,27 @@
 # CDU24 – Pedir Serviços Adicionais
 
-**Descrição:** Permite que o hóspede solicite serviços adicionais durante sua estadia.
+**Descrição:** Permite que o hóspede, através de seu próprio acesso, solicite itens de consumo (como frigobar ou lavanderia) para sua estadia atual.
 
 **Ator Primário:** Hóspede.
 
 **Pré-condições:** 
 - O hóspede deve estar logado no sistema.
-- Deve possuir uma reserva ativa.
+- Deve existir uma reserva ativa vinculada a este hóspede.
 
 **Pós-condições:** 
-- O serviço solicitado será registrado e associado à reserva do hóspede.
+- O serviço solicitado é registrado e o valor é somado à conta da reserva.
 
 ## Fluxo Principal
 
-1. O hóspede acessa a página inicial do sistema.
-2. No menu lateral, o hóspede seleciona a opção "Pedir Serviços Adicionais".
-3. O sistema exibe a lista de serviços disponíveis.
-4. O hóspede seleciona o serviço desejado.
-5. O hóspede confirma a solicitação.
-6. O sistema registra o serviço solicitado no banco de dados.
-7. O sistema exibe uma mensagem de sucesso confirmando a operação.
+1. O hóspede acessa o sistema e seleciona a opção "Consumo" (ou Pedir Serviços) no menu lateral.
+2. O sistema exibe o formulário de solicitação.
+3. O hóspede seleciona o serviço desejado na lista de itens disponíveis.
+4. O hóspede informa a quantidade e confirma a solicitação.
+5. O sistema registra o pedido no banco de dados, vinculando-o à reserva ativa.
+6. O sistema exibe uma mensagem de sucesso confirmando a operação.
 
 ## Fluxos de Exceção
 
-- **FE1 – Reserva inexistente ou inativa:** Se o hóspede não possuir uma reserva ativa, o sistema exibirá uma mensagem informando que não é possível solicitar serviços adicionais.
+- **FE1 – Reserva inexistente ou inativa:** Se o sistema não identificar uma reserva ativa para o usuário logado, exibirá uma mensagem informando que não é possível solicitar serviços.
 
-- **FE2 – Serviço indisponível:** Se o serviço selecionado não estiver disponível, o sistema exibirá uma mensagem informando a indisponibilidade.
+- **FE2 – Serviço indisponível:** Se o item selecionado não estiver cadastrado ou ativo no sistema, o pedido não será concluído.

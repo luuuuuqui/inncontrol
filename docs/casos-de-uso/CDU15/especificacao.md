@@ -1,27 +1,29 @@
 # CDU15 – Cadastrar Hóspede
 
-**Descrição:** Permite cadastrar os dados de um hóspede no sistema para utilização em reservas e estadias.
+**Descrição:** Permite vincular dados de endereço a um usuário já existente no sistema, habilitando-o para realizar reservas e estadias.
 
-**Ator Primário:** Administrador.
+**Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
-- O usuário deve estar logado no sistema.
+- O funcionário deve estar autenticado no sistema.
+- Deve existir uma conta de usuário cadastrada que ainda não possua perfil de hóspede.
 
 **Pós-condições:** 
-- O hóspede é cadastrado no sistema.
+- O perfil de hóspede é criado e vinculado ao usuário selecionado.
 
 ## Fluxo Principal
 
-1. O administrador acessa a opção Cadastrar Hóspede no sistema.
-2. O sistema exibe o formulário de cadastro de hóspede.
-3. O administrador informa os dados do hóspede (nome, e-mail, telefone e endereço).
-4. O administrador confirma o cadastro.
-5. O sistema valida os dados informados.
-6. O sistema salva o hóspede no banco de dados.
-7. O sistema exibe uma mensagem de sucesso.
+1. O usuário acessa a opção "Hóspede" no menu lateral.
+2. O sistema exibe o painel de gerenciamento e o usuário seleciona a aba "Inserir".
+3. O usuário seleciona a conta do usuário que deseja tornar hóspede em uma lista de seleção.
+4. O usuário informa o endereço completo do hóspede.
+5. O usuário confirma o cadastro clicando no botão "Inserir".
+6. O sistema valida se o endereço foi preenchido corretamente.
+7. O sistema valida se o usuário escolhido já não possui um perfil de hóspede vinculado.
+8. O sistema registra o vínculo e exibe uma mensagem de sucesso.
 
 ## Fluxos de Exceção
 
-- **FE1 – Dados inválidos:** Se o administrador informar dados inválidos ou deixar campos obrigatórios em branco, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE1 – Dados inválidos:** Se o endereço for deixado em branco ou nenhum usuário for selecionado, o sistema exibirá uma mensagem de erro e solicitará a correção.
 
-- **FE2 – Hóspede já cadastrado:** Se o e-mail informado já estiver vinculado a um hóspede existente, o sistema exibirá uma mensagem informando o conflito.
+- **FE2 – Hóspede já cadastrado:** Se o usuário selecionado já possuir um cadastro de hóspede ativo, o sistema exibirá a mensagem "Este usuário já possui cadastro de hóspede."

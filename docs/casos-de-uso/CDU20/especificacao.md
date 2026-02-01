@@ -1,26 +1,25 @@
 # CDU20 – Pesquisar Hóspede
 
-**Descrição:** Permite pesquisar um hóspede cadastrado no sistema utilizando o nome como critério.
+**Descrição:** Permite localizar rapidamente um hóspede cadastrado no sistema utilizando o nome como critério de busca.
 
-**Ator Primário:** Administrador.
+**Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
 - O usuário deve estar logado no sistema.
 
 **Pós-condições:** 
-- Os dados do hóspede pesquisado são exibidos.
+- O sistema exibe apenas os hóspedes que correspondem ao critério de busca informado.
 
 ## Fluxo Principal
 
-1. O administrador acessa a opção Pesquisar Hóspede no sistema.
-2. O sistema exibe o campo de pesquisa.
-3. O administrador informa o nome do hóspede.
-4. O administrador confirma a pesquisa.
-5. O sistema busca o hóspede no banco de dados.
-6. O sistema exibe os dados do hóspede encontrado (Nome, E-mail, Telefone e Endereço).
+1. O usuário acessa a opção "Hóspede" no menu lateral.
+2. O sistema exibe a aba "Listar" contendo a relação completa de hóspedes.
+3. O usuário digita o nome (ou parte dele) no campo de pesquisa localizado acima da tabela.
+4. O sistema filtra os dados em tempo real ou após a confirmação.
+5. O sistema exibe os dados dos hóspedes encontrados (ID, Nome, E-mail e Endereço).
 
 ## Fluxos de Exceção
 
-- **FE1 – Hóspede não encontrado:** Se não existir hóspede com o nome informado, o sistema exibirá uma mensagem informando que não foram encontrados resultados.
+- **FE1 – Hóspede não encontrado:** Se nenhum registro corresponder ao termo pesquisado, a tabela ficará vazia ou exibirá a mensagem "Nenhum hóspede cadastrado.".
 
-- **FE2 – Dados inválidos:** Se o campo de pesquisa for enviado vazio ou com caracteres inválidos, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE2 – Campo de pesquisa limpo:** Se o usuário apagar o conteúdo do campo de pesquisa, o sistema voltará a exibir a lista completa de hóspedes automaticamente.

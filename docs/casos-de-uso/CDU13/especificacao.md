@@ -1,29 +1,28 @@
 # CDU13 – Realizar Check-in
 
-**Descrição:** Permite confirmar a entrada do hóspede no hotel, alterando o status da reserva para “em andamento”.
+**Descrição:** Permite confirmar a entrada do hóspede no hotel, alterando o status da reserva para indicar que a estadia está em curso.
 
-**Ator Primário:** Administrador.
+**Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
-- O administrador deve estar logado no sistema.
-- Deve existir uma reserva confirmada para o hóspede.
-- A data de entrada deve ser compatível com a data atual.
+- O usuário deve estar logado no sistema.
+- Deve existir uma reserva cadastrada para o hóspede.
 
 **Pós-condições:** 
-- O status da reserva é atualizado para “em andamento”.
+- O status da reserva é atualizado para refletir o início da estadia.
 
 ## Fluxo Principal
 
-1. O administrador acessa a opção Realizar Check-in no sistema.
-2. O sistema exibe a lista de reservas confirmadas.
-3. O administrador seleciona a reserva do hóspede.
-4. O sistema exibe os dados da reserva.
-5. O administrador confirma o check-in.
-6. O sistema atualiza o status da reserva para "em andamento".
+1. O usuário acessa a opção "Reserva" no menu lateral.
+2. O sistema exibe o painel de gerenciamento e o usuário seleciona a aba "Atualizar".
+3. O usuário seleciona a reserva correspondente ao hóspede na lista de seleção.
+4. O usuário altera o status da reserva para "Em andamento" (ou status equivalente).
+5. O usuário confirma a operação clicando no botão "Salvar Alterações".
+6. O sistema valida os dados e a persistência da informação.
 7. O sistema exibe uma mensagem de sucesso confirmando a operação.
 
 ## Fluxos de Exceção
 
-- **FE1 – Reserva inexistente ou inválida:** Se a reserva não existir ou não estiver confirmada, o sistema exibirá uma mensagem de erro.
+- **FE1 – Reserva não encontrada:** Se a reserva selecionada não puder ser carregada para atualização, o sistema exibirá uma mensagem de erro informando que o registro não foi encontrado.
 
-- **FE2 – Data incompatível:** Se a data atual não corresponder à data de entrada da reserva, o sistema impedirá o check-in e exibirá uma mensagem informativa.
+- **FE2 – Erro na validação de datas:** Se as datas da reserva forem inconsistentes ou houver conflito de disponibilidade ao tentar salvar, o sistema impedirá a atualização e exibirá uma mensagem explicativa.
