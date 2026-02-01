@@ -94,16 +94,34 @@ class RecepcionistaReservaUI:
         with st.form("form_nova_reserva"):
             col1, col2 = st.columns(2)
             with col1:
+
+                def formatar_hospede(h):
+                    usuario = View.usuario_listar_id(h.get_id_usuario())
+                    if usuario:
+                        nome = usuario.get_nome()
+                    else:
+                        nome = "Não encontrado"
+                    return f"#{h.get_id_hospede()} - {nome}"
+
                 hospede_selecionado = st.selectbox(
                     "Hóspede",
                     hospedes,
-                    format_func=lambda h: f"#{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome()}",
+                    format_func=formatar_hospede,
                 )
             with col2:
+
+                def formatar_quarto(q):
+                    tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
+                    if tipo:
+                        nome_tipo = tipo.get_nome()
+                    else:
+                        nome_tipo = "N/A"
+                    return f"{q.get_bloco()} - {q.get_numero()} - {nome_tipo}"
+
                 quarto_selecionado = st.selectbox(
                     "Quarto",
                     quartos,
-                    format_func=lambda q: f"{q.get_bloco()} - {q.get_numero()} - {View.tipoquarto_listar_id(q.get_id_quarto_tipo()).get_nome()}",
+                    format_func=formatar_quarto,
                 )
 
             estadia = st.date_input(
@@ -117,11 +135,15 @@ class RecepcionistaReservaUI:
             if submitted:
                 if len(estadia) == 2:
                     try:
+                        # Converter datetime.date para string no formato esperado
+                        data_checkin_str = estadia[0].strftime("%Y-%m-%d")
+                        data_checkout_str = estadia[1].strftime("%Y-%m-%d")
+
                         View.reserva_inserir(
                             hospede_selecionado.get_id_hospede(),
                             quarto_selecionado.get_id_quarto(),
-                            estadia[0],
-                            estadia[1],
+                            data_checkin_str,
+                            data_checkout_str,
                             status,
                         )
                         st.success("Reserva criada!")
@@ -148,16 +170,129 @@ class RecepcionistaReservaUI:
 
         status_atual = reserva_op.get_status()
 
-        if status_atual == "Pendente":
-            with st.form("form_checkin"):
-                submitted = st.form_submit_button("Realizar Check-in")
-                if submitted:
-                    RecepcionistaReservaUI._atualizar_status(reserva_op, "Confirmado")
-        elif status_atual == "Confirmado":
-            with st.form("form_checkout"):
-                submitted = st.form_submit_button("Realizar Check-out")
-                if submitted:
-                    RecepcionistaReservaUI._atualizar_status(reserva_op, "Finalizado")
+        # Converter as datas atuais da reserva para datetime.date para usar no date_input
+        try:
+            checkin_atual = dt.datetime.strptime(
+                reserva_op.get_data_checkin(), "%Y-%m-%d"
+            ).date()
+            checkout_atual = dt.datetime.strptime(
+                reserva_op.get_data_checkout(), "%Y-%m-%d"
+            ).date()
+        except (ValueError, TypeError):
+            checkin_atual = dt.datetime.now().date()
+            checkout_atual = dt.datetime.now().date()
+
+        # Formulário para alterar datas
+        with st.form("form_alterar_datas"):
+            st.subheader("Alterar Datas")
+            # Ajustar min_value para permitir datas passadas se a reserva já tiver
+            min_date = min(dt.datetime.now().date(), checkin_atual)
+            estadia = st.date_input(
+                "Período",
+                value=[checkin_atual, checkout_atual],
+                min_value=min_date,
+                format="DD/MM/YYYY",
+            )
+            salvar_alteracoes = st.form_submit_button(
+                "Salvar Alterações de Data", use_container_width=True
+            )
+
+            if salvar_alteracoes:
+                try:
+                    # Preparar datas
+                    if len(estadia) == 2:
+                        data_checkin_str = estadia[0].strftime("%Y-%m-%d")
+                        data_checkout_str = estadia[1].strftime("%Y-%m-%d")
+                    else:
+                        # Se não selecionou duas datas, usar as atuais
+                        data_checkin_str = reserva_op.get_data_checkin()
+                        data_checkout_str = reserva_op.get_data_checkout()
+
+                    # Atualizar reserva mantendo o status atual
+                    View.reserva_atualizar(
+                        reserva_op.get_id_reserva(),
+                        reserva_op.get_id_hospede(),
+                        reserva_op.get_id_quarto(),
+                        data_checkin_str,
+                        data_checkout_str,
+                        status_atual,
+                    )
+
+                    st.success("Datas atualizadas com sucesso!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Erro: {e}")
+
+        st.divider()
+
+        # Ações de Check-in e Check-out (fora do formulário de datas)
+        st.subheader("Ações")
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if status_atual == "Pendente":
+                if st.button("Realizar Check-in", use_container_width=True):
+                    try:
+                        # Garantir que as datas sejam strings
+                        data_checkin = reserva_op.get_data_checkin()
+                        data_checkout = reserva_op.get_data_checkout()
+
+                        if isinstance(data_checkin, dt.datetime):
+                            data_checkin = data_checkin.strftime("%Y-%m-%d")
+                        if isinstance(data_checkout, dt.datetime):
+                            data_checkout = data_checkout.strftime("%Y-%m-%d")
+
+                        View.reserva_atualizar(
+                            reserva_op.get_id_reserva(),
+                            reserva_op.get_id_hospede(),
+                            reserva_op.get_id_quarto(),
+                            data_checkin,
+                            data_checkout,
+                            "Confirmado",
+                        )
+                        st.success("Check-in realizado com sucesso!")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erro: {e}")
+            else:
+                if status_atual == "Confirmado":
+                    st.info("Check-in já realizado")
+                else:
+                    st.info("Reserva finalizada")
+
+        with col2:
+            if status_atual == "Confirmado":
+                if st.button("Realizar Check-out", use_container_width=True):
+                    try:
+                        # Garantir que as datas sejam strings
+                        data_checkin = reserva_op.get_data_checkin()
+                        data_checkout = reserva_op.get_data_checkout()
+
+                        if isinstance(data_checkin, dt.datetime):
+                            data_checkin = data_checkin.strftime("%Y-%m-%d")
+                        if isinstance(data_checkout, dt.datetime):
+                            data_checkout = data_checkout.strftime("%Y-%m-%d")
+
+                        View.reserva_atualizar(
+                            reserva_op.get_id_reserva(),
+                            reserva_op.get_id_hospede(),
+                            reserva_op.get_id_quarto(),
+                            data_checkin,
+                            data_checkout,
+                            "Finalizado",
+                        )
+                        st.success("Check-out realizado com sucesso!")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Erro: {e}")
+            else:
+                if status_atual == "Pendente":
+                    st.info("Faça o check-in primeiro")
+                else:
+                    st.info("Check-out já realizado")
 
     @staticmethod
     def excluir():
@@ -187,20 +322,3 @@ class RecepcionistaReservaUI:
                     st.rerun()
                 except Exception as e:
                     st.error(f"Erro: {e}")
-
-    @staticmethod
-    def _atualizar_status(reserva, novo_status):
-        try:
-            View.reserva_atualizar(
-                reserva.get_id_reserva(),
-                reserva.get_id_hospede(),
-                reserva.get_id_quarto(),
-                dt.datetime.strptime(reserva.get_data_checkin(), "%Y-%m-%d"),
-                dt.datetime.strptime(reserva.get_data_checkout(), "%Y-%m-%d"),
-                novo_status,
-            )
-            st.success(f"Status alterado para {novo_status}!")
-            time.sleep(1)
-            st.rerun()
-        except Exception as e:
-            st.error(f"Erro ao mudar status: {e}")

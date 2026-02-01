@@ -34,13 +34,18 @@ class Reserva:
         self.__id_quarto = id_quarto
 
     def set_data_checkin(self, data_checkin: datetime | str) -> None:
+        # Se for string, converter para datetime
         if isinstance(data_checkin, str):
             try:
                 data_checkin = datetime.strptime(data_checkin, "%Y-%m-%d")
             except ValueError as e:
                 raise ValueError(f"Data de Check-In inválida. {e}")
+        # Se já for datetime, usar diretamente
+        elif not isinstance(data_checkin, datetime):
+            raise ValueError("Data de Check-In deve ser string ou datetime.")
 
-        if data_checkin < datetime.strptime("2026-01-01", "%Y-%m-%d"):
+        data_minima = datetime.strptime("2026-01-01", "%Y-%m-%d")
+        if data_checkin < data_minima:
             raise ValueError("Data de Check-In não pode ser antes de 2026.")
 
         if hasattr(self, '_Reserva__data_checkout') and self.__data_checkout:
@@ -50,13 +55,18 @@ class Reserva:
         self.__data_checkin = data_checkin
 
     def set_data_checkout(self, data_checkout: datetime | str) -> None:
+        # Se for string, converter para datetime
         if isinstance(data_checkout, str):
             try:
                 data_checkout = datetime.strptime(data_checkout, "%Y-%m-%d")
             except ValueError as e:
                 raise ValueError(f"Data de Check-Out inválida. {e}")
+        # Se já for datetime, usar diretamente
+        elif not isinstance(data_checkout, datetime):
+            raise ValueError("Data de Check-Out deve ser string ou datetime.")
 
-        if data_checkout < datetime.strptime("2026-01-01", "%Y-%m-%d"):
+        data_minima = datetime.strptime("2026-01-01", "%Y-%m-%d")
+        if data_checkout < data_minima:
             raise ValueError("Data de Check-Out não pode ser antes de 2026.")
         
         if self.__data_checkin and data_checkout <= self.__data_checkin:

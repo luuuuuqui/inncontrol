@@ -33,7 +33,7 @@ class View:
                     "id": u.get_id_usuario(),
                     "nome": u.get_nome(),
                     "email": u.get_email(),
-                    "tipo": u.get_tipo_perfil() 
+                    "tipo": u.get_tipo_perfil(),
                 }
         return None
 
@@ -98,7 +98,7 @@ class View:
     @staticmethod
     def hospede_listar_id(id):
         return HospedeDAO.listar_id(id)
-    
+
     @staticmethod
     def hospede_listar_por_usuario(id_usuario):
         return HospedeDAO.listar_por_usuario(id_usuario)
@@ -199,10 +199,16 @@ class View:
     def _validar_disponibilidade(
         id_quarto, data_in_str, data_out_str, ignorar_id_reserva=None
     ):
+        # Converter para string se for datetime
+        if isinstance(data_in_str, dt):
+            data_in_str = data_in_str.strftime("%Y-%m-%d")
+        if isinstance(data_out_str, dt):
+            data_out_str = data_out_str.strftime("%Y-%m-%d")
+
         try:
             nova_in = dt.strptime(data_in_str, "%Y-%m-%d")
             nova_out = dt.strptime(data_out_str, "%Y-%m-%d")
-        except ValueError:
+        except (ValueError, TypeError):
             raise ValueError("Formato de data inválido. Use AAAA-MM-DD.")
 
         if nova_in >= nova_out:
@@ -216,8 +222,17 @@ class View:
                 continue
 
             if r.get_id_quarto() == id_quarto and r.get_status() != "Cancelada":
-                existente_in = dt.strptime(r.get_data_checkin(), "%Y-%m-%d")
-                existente_out = dt.strptime(r.get_data_checkout(), "%Y-%m-%d")
+                # Garantir que get_data_checkin/checkout retornem string
+                checkin_existente = r.get_data_checkin()
+                checkout_existente = r.get_data_checkout()
+
+                if isinstance(checkin_existente, dt):
+                    checkin_existente = checkin_existente.strftime("%Y-%m-%d")
+                if isinstance(checkout_existente, dt):
+                    checkout_existente = checkout_existente.strftime("%Y-%m-%d")
+
+                existente_in = dt.strptime(checkin_existente, "%Y-%m-%d")
+                existente_out = dt.strptime(checkout_existente, "%Y-%m-%d")
 
                 # lógica de sobreposição de datas:
                 # (checkinA < checkoutB) e (checkoutA > checkinB)
@@ -241,14 +256,14 @@ class View:
     @staticmethod
     def reserva_listar_id(id):
         return ReservaDAO.listar_id(id)
-    
+
     @staticmethod
     def reservas_listar_hospede(id_hospede) -> list[dict]:
         """
         Retorna uma lista de dicionários com os dados das reservas do hóspede,
         formatada exatamente como o front-end (perfilhospedeui.py) espera.
         """
-        
+
         id_usuario_logado = View.hospede_listar_id(id_hospede).get_id_usuario()
 
         hospede = View.hospede_listar_por_usuario(id_usuario_logado)
@@ -339,8 +354,17 @@ class View:
 
         valor_diaria = Decimal(tipo_quarto.get_valor_diaria())
 
-        checkin = dt.strptime(reserva.get_data_checkin(), "%Y-%m-%d")
-        checkout = dt.strptime(reserva.get_data_checkout(), "%Y-%m-%d")
+        # Garantir que as datas sejam strings antes de usar strptime
+        checkin_str = reserva.get_data_checkin()
+        checkout_str = reserva.get_data_checkout()
+
+        if isinstance(checkin_str, dt):
+            checkin_str = checkin_str.strftime("%Y-%m-%d")
+        if isinstance(checkout_str, dt):
+            checkout_str = checkout_str.strftime("%Y-%m-%d")
+
+        checkin = dt.strptime(checkin_str, "%Y-%m-%d")
+        checkout = dt.strptime(checkout_str, "%Y-%m-%d")
 
         dias = Decimal(abs((checkin - checkout).days))
 
