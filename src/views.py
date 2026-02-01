@@ -199,7 +199,6 @@ class View:
     def _validar_disponibilidade(
         id_quarto, data_in_str, data_out_str, ignorar_id_reserva=None
     ):
-        # Converter para string se for datetime
         if isinstance(data_in_str, dt):
             data_in_str = data_in_str.strftime("%Y-%m-%d")
         if isinstance(data_out_str, dt):
@@ -222,7 +221,6 @@ class View:
                 continue
 
             if r.get_id_quarto() == id_quarto and r.get_status() != "Cancelada":
-                # Garantir que get_data_checkin/checkout retornem string
                 checkin_existente = r.get_data_checkin()
                 checkout_existente = r.get_data_checkout()
 
@@ -259,11 +257,6 @@ class View:
 
     @staticmethod
     def reservas_listar_hospede(id_hospede) -> list[dict]:
-        """
-        Retorna uma lista de dicionários com os dados das reservas do hóspede,
-        formatada exatamente como o front-end (perfilhospedeui.py) espera.
-        """
-
         id_usuario_logado = View.hospede_listar_id(id_hospede).get_id_usuario()
 
         hospede = View.hospede_listar_por_usuario(id_usuario_logado)
@@ -275,7 +268,6 @@ class View:
         lista_formatada = []
 
         for r in reservas_hospede:
-            # Busca objetos relacionados
             usuario = View.usuario_listar_id(id_usuario_logado)
             nome_hospede = usuario.get_nome() if usuario else "N/A"
             quarto = QuartoDAO.listar_id(r.get_id_quarto())
@@ -283,7 +275,6 @@ class View:
                 TipoQuartoDAO.listar_id(quarto.get_id_quarto_tipo()) if quarto else None
             )
 
-            # Verifica Pagamento
             pagamento = PagamentoDAO.listar_reserva(r.get_id_reserva())
             reserva_paga = False
             tipo_pagamento = "Pendente"
@@ -354,7 +345,6 @@ class View:
 
         valor_diaria = Decimal(tipo_quarto.get_valor_diaria())
 
-        # Garantir que as datas sejam strings antes de usar strptime
         checkin_str = reserva.get_data_checkin()
         checkout_str = reserva.get_data_checkout()
 

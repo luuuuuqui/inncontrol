@@ -89,7 +89,6 @@ class RecepcionistaHospedeUI:
             st.info("Nenhum hóspede cadastrado para editar.")
             return
 
-        # Filtrar apenas hóspedes com usuários do tipo "Hóspede"
         hospedes_validos = []
         for h in hospedes:
             usuario = View.usuario_listar_id(h.get_id_usuario())
@@ -106,13 +105,11 @@ class RecepcionistaHospedeUI:
             format_func=lambda h: RecepcionistaHospedeUI._formatar_hospede_resumo(h),
         )
 
-        # Buscar dados do usuário associado
         usuario = View.usuario_listar_id(op.get_id_usuario())
         if not usuario:
             st.error("Usuário associado não encontrado.")
             return
 
-        # Validar que é do tipo Hóspede
         if usuario.get_tipo_perfil().lower() != "hóspede":
             st.error(
                 "Apenas usuários do tipo 'Hóspede' podem ser editados por recepcionistas."
@@ -122,7 +119,7 @@ class RecepcionistaHospedeUI:
         with st.form("form_editar_hospede"):
             st.subheader("Editar Dados do Hóspede")
             st.info(
-                "⚠️ A senha não pode ser alterada por recepcionistas. Para alterar a senha, contate o administrador."
+                "A senha não pode ser alterada por recepcionistas. Para alterar a senha, contate o administrador."
             )
 
             col1, col2 = st.columns(2)
@@ -140,17 +137,15 @@ class RecepcionistaHospedeUI:
                     )
                 else:
                     try:
-                        # Atualizar dados do usuário (sem senha)
                         View.usuario_atualizar(
                             usuario.get_id_usuario(),
                             novo_nome,
                             novo_fone,
                             novo_email,
-                            usuario.get_tipo_perfil(),  # Manter o tipo de perfil
-                            usuario.get_id_perfil(),  # Manter o ID do perfil
+                            usuario.get_tipo_perfil(),
+                            usuario.get_id_perfil(),
                         )
 
-                        # Atualizar dados do hóspede
                         View.hospede_atualizar(
                             op.get_id_hospede(),
                             op.get_id_usuario(),

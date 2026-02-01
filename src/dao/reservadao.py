@@ -39,7 +39,6 @@ class ReservaDAO(DAO):
             data_checkout,
             status,
         ) in rows:
-            # Garantir que as datas sejam strings
             if isinstance(data_checkin, datetime):
                 data_checkin = data_checkin.strftime("%Y-%m-%d")
             elif data_checkin is not None:
@@ -68,7 +67,6 @@ class ReservaDAO(DAO):
         row = cursor.fetchone()
         if row:
             id_reserva, id_hospede, id_quarto, data_checkin, data_checkout, status = row
-            # Garantir que as datas sejam strings
             if isinstance(data_checkin, datetime):
                 data_checkin = data_checkin.strftime("%Y-%m-%d")
             elif data_checkin is not None:
@@ -96,7 +94,6 @@ class ReservaDAO(DAO):
 
         objs = []
         for (id, id_hosp, id_q, d_in, d_out, status) in rows:
-            # Garantir que as datas sejam strings
             if isinstance(d_in, datetime):
                 d_in = d_in.strftime("%Y-%m-%d")
             elif d_in is not None:

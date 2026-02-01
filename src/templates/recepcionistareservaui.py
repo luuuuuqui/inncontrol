@@ -135,7 +135,6 @@ class RecepcionistaReservaUI:
             if submitted:
                 if len(estadia) == 2:
                     try:
-                        # Converter datetime.date para string no formato esperado
                         data_checkin_str = estadia[0].strftime("%Y-%m-%d")
                         data_checkout_str = estadia[1].strftime("%Y-%m-%d")
 
@@ -170,7 +169,6 @@ class RecepcionistaReservaUI:
 
         status_atual = reserva_op.get_status()
 
-        # Converter as datas atuais da reserva para datetime.date para usar no date_input
         try:
             checkin_atual = dt.datetime.strptime(
                 reserva_op.get_data_checkin(), "%Y-%m-%d"
@@ -182,10 +180,8 @@ class RecepcionistaReservaUI:
             checkin_atual = dt.datetime.now().date()
             checkout_atual = dt.datetime.now().date()
 
-        # Formulário para alterar datas
         with st.form("form_alterar_datas"):
             st.subheader("Alterar Datas")
-            # Ajustar min_value para permitir datas passadas se a reserva já tiver
             min_date = min(dt.datetime.now().date(), checkin_atual)
             estadia = st.date_input(
                 "Período",
@@ -199,16 +195,13 @@ class RecepcionistaReservaUI:
 
             if salvar_alteracoes:
                 try:
-                    # Preparar datas
                     if len(estadia) == 2:
                         data_checkin_str = estadia[0].strftime("%Y-%m-%d")
                         data_checkout_str = estadia[1].strftime("%Y-%m-%d")
                     else:
-                        # Se não selecionou duas datas, usar as atuais
                         data_checkin_str = reserva_op.get_data_checkin()
                         data_checkout_str = reserva_op.get_data_checkout()
 
-                    # Atualizar reserva mantendo o status atual
                     View.reserva_atualizar(
                         reserva_op.get_id_reserva(),
                         reserva_op.get_id_hospede(),
@@ -226,7 +219,6 @@ class RecepcionistaReservaUI:
 
         st.divider()
 
-        # Ações de Check-in e Check-out (fora do formulário de datas)
         st.subheader("Ações")
         col1, col2 = st.columns(2)
 
@@ -234,7 +226,6 @@ class RecepcionistaReservaUI:
             if status_atual == "Pendente":
                 if st.button("Realizar Check-in", use_container_width=True):
                     try:
-                        # Garantir que as datas sejam strings
                         data_checkin = reserva_op.get_data_checkin()
                         data_checkout = reserva_op.get_data_checkout()
 
@@ -266,7 +257,6 @@ class RecepcionistaReservaUI:
             if status_atual == "Confirmado":
                 if st.button("Realizar Check-out", use_container_width=True):
                     try:
-                        # Garantir que as datas sejam strings
                         data_checkin = reserva_op.get_data_checkin()
                         data_checkout = reserva_op.get_data_checkout()
 
