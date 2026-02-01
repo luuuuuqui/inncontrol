@@ -12,11 +12,8 @@ from templates.manterreservaUI import ManterReservaUI as ReservaUI
 from templates.manterpagamentoUI import ManterPagamentoUI as PagamentoUI
 from templates.manterconsumoUI import ManterConsumoUI as ConsumoUI
 from templates.manteradicionalUI import ManterAdicionalUI as AdicionalUI
+from templates.manterrelatoriosui import RelatoriosUI
 
-# relatórios
-from templates.relatorios.kimi import RelatoriosKimiUI as RelatoriosKimiUI
-from templates.relatorios.claude import RelatoriosClaudeUI as RelatoriosClaudeUI
-from templates.relatorios.claude2 import RelatoriosUI as RelatoriosClaude2UI
 
 # recepcionista
 # (nenhum por enquanto)
@@ -53,9 +50,7 @@ class IndexUI:
                 "Pagamento",
                 "Consumo",
                 "Adicional",
-                "Relatórios (Kimi)",
-                "Relatórios (Claude2)",
-                "Relatórios (Claude)",
+                "Relatórios",
             ],
         )
         match op:
@@ -75,12 +70,8 @@ class IndexUI:
                 ConsumoUI.main()
             case "Adicional":
                 AdicionalUI.main()
-            case "Relatórios (Kimi)":
-                RelatoriosKimiUI.main()
-            case "Relatórios (Claude2)":
-                RelatoriosClaude2UI.main()
-            case "Relatórios (Claude)":
-                RelatoriosClaudeUI.main()
+            case "Relatórios":
+                RelatoriosUI.main()
             case _:
                 st.error("Opção inválida.")
 
