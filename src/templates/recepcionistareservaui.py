@@ -75,7 +75,7 @@ class RecepcionistaReservaUI:
                     "Check-Out": checkout.strftime("%d/%m/%Y"),
                     "Diárias": f"{diarias} diária{'s' if diarias != 1 else ''}",
                     "Total": f"R$ {total_diarias:.2f}".replace(".", ","),
-                    "Status": rd["status"]
+                    "Status": rd["status"],
                 }
             )
 
@@ -95,16 +95,20 @@ class RecepcionistaReservaUI:
             col1, col2 = st.columns(2)
             with col1:
                 hospede_selecionado = st.selectbox(
-                    "Hóspede", hospedes, format_func=lambda h: f"ID {h.get_id_hospede()}"
+                    "Hóspede",
+                    hospedes,
+                    format_func=lambda h: f"#{h.get_id_hospede()} - {View.usuario_listar_id(h.get_id_usuario()).get_nome()}",
                 )
             with col2:
                 quarto_selecionado = st.selectbox(
                     "Quarto",
                     quartos,
-                    format_func=lambda q: f"{q.get_numero()} - {q.get_bloco()}",
+                    format_func=lambda q: f"{q.get_bloco()} - {q.get_numero()} - {View.tipoquarto_listar_id(q.get_id_quarto_tipo()).get_nome()}",
                 )
 
-            estadia = st.date_input("Período", min_value=dt.datetime.now(), value=[])
+            estadia = st.date_input(
+                "Período", min_value=dt.datetime.now(), format="DD/MM/YYYY", value=[]
+            )
 
             submitted = st.form_submit_button("Confirmar Reserva")
 
@@ -169,7 +173,9 @@ class RecepcionistaReservaUI:
         )
 
         with st.form("form_cancelar_reserva"):
-            submitted = st.form_submit_button("Cancelar/Excluir Reserva", type="primary")
+            submitted = st.form_submit_button(
+                "Cancelar/Excluir Reserva", type="primary"
+            )
 
             if submitted:
                 try:
