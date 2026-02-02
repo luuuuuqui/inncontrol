@@ -1,26 +1,29 @@
-# CDU18 – Listar Serviços da Reserva
+# CDU17 – Registrar Serviço Consumido
 
-**Descrição:** Permite visualizar detalhadamente todos os produtos e serviços adicionais que foram lançados como consumo em uma reserva específica.
+**Descrição:** Permite registrar os serviços adicionais consumidos pelo hóspede durante a estadia, vinculando-os à reserva.
 
-**Ator Primário:** Administrador e Recepcionista.
+**Ator Primário:** Administrador.
 
 **Pré-condições:** 
-- O usuário deve estar logado no sistema.
-- Devem existir registros de consumo vinculados a reservas.
+- O administrador deve estar logado no sistema.
+- Deve existir uma reserva em andamento.
 
 **Pós-condições:** 
-- Os detalhes do consumo (item, quantidade e reserva vinculada) são exibidos para conferência.
+- O serviço consumido é registrado na reserva.
 
 ## Fluxo Principal
 
-1. O usuário acessa a opção "Consumo" no menu lateral.
-2. O sistema exibe por padrão a aba "Listar".
-3. O sistema recupera todos os registros de consumo do banco de dados.
-4. O sistema exibe uma tabela com as colunas: Identificador, Reserva, Adicional, Quantidade e Data.
-5. O usuário identifica os serviços vinculados à reserva desejada através da coluna "Reserva".
+1. O administrador acessa a opção Registrar Serviço Consumido no sistema.
+2. O sistema exibe a lista de reservas em andamento.
+3. O administrador seleciona a reserva do hóspede.
+4. O sistema exibe os serviços adicionais disponíveis.
+5. O administrador seleciona o serviço consumido e informa a quantidade.
+6. O sistema registra o serviço na reserva.
+7. O sistema atualiza o valor total da estadia.
+8. O sistema exibe uma mensagem de sucesso.
 
 ## Fluxos de Exceção
 
-- **FE1 – Nenhum serviço registrado:** Se não houver nenhum lançamento de consumo no sistema, a tabela será exibida vazia ou com a mensagem "Nenhum consumo cadastrado.".
+- **FE1 – Reserva inválida:** Se a reserva não estiver em andamento, o sistema impedirá o registro do serviço.
 
-- **FE2 – Erro na recuperação de dados:** Caso ocorra uma falha na conexão com o banco de dados ao tentar listar os serviços, o sistema exibirá uma mensagem de erro técnica.
+- **FE2 – Serviço não selecionado:** Se nenhum serviço for selecionado, o sistema exibirá uma mensagem solicitando a correção.

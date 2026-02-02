@@ -1,28 +1,29 @@
-# CDU12 – Realizar Check-in
+# CDU12 – Cancelar Reserva
 
-**Descrição:** Permite confirmar a entrada do hóspede no hotel, alterando o status da reserva para indicar que a estadia está em curso.
+**Descrição:** Permite que o usuário realize o cancelamento de uma reserva existente no sistema.
 
-**Ator Primário:** Administrador e Recepcionista.
+**Ator Primário:** Administrador ou Hóspede.
 
 **Pré-condições:** 
 - O usuário deve estar logado no sistema.
-- Deve existir uma reserva cadastrada para o hóspede.
+- Deve existir uma reserva cadastrada vinculada ao usuário ou acessível pelo administrador.
 
 **Pós-condições:** 
-- O status da reserva é atualizado para refletir o início da estadia.
+- O status da reserva é alterado para "Cancelado" no banco de dados.
 
 ## Fluxo Principal
 
-1. O usuário acessa a opção "Reserva" no menu lateral.
-2. O sistema exibe o painel de gerenciamento e o usuário seleciona a aba "Atualizar".
-3. O usuário seleciona a reserva correspondente ao hóspede na lista de seleção.
-4. O usuário altera o status da reserva para "Em andamento" (ou status equivalente).
-5. O usuário confirma a operação clicando no botão "Salvar Alterações".
-6. O sistema valida os dados e a persistência da informação.
-7. O sistema exibe uma mensagem de sucesso confirmando a operação.
+1. O usuário acessa a opção de gerenciamento de reservas ou seu perfil pessoal.
+2. O sistema exibe a lista de reservas disponíveis.
+3. O usuário seleciona a reserva que deseja cancelar.
+4. O usuário solicita o cancelamento da reserva selecionada.
+5. O sistema solicita a confirmação da operação.
+6. O usuário confirma o cancelamento.
+7. O sistema atualiza o status da reserva para cancelado.
+8. O sistema exibe uma mensagem de sucesso confirmando a operação.
 
 ## Fluxos de Exceção
 
-- **FE1 – Reserva não encontrada:** Se a reserva selecionada não puder ser carregada para atualização, o sistema exibirá uma mensagem de erro informando que o registro não foi encontrado.
+- **FE1 – Reserva já cancelada:** Se o usuário tentar cancelar uma reserva que já está cancelada, o sistema informará que a operação já foi realizada.
 
-- **FE2 – Erro na validação de datas:** Se as datas da reserva forem inconsistentes ou houver conflito de disponibilidade ao tentar salvar, o sistema impedirá a atualização e exibirá uma mensagem explicativa.
+- **FE2 – Desistência do usuário:** Se o usuário não confirmar a operação, o sistema mantém a reserva como estava e retorna à tela anterior.

@@ -1,27 +1,26 @@
-# CDU20 – Pedir Serviços Adicionais
+# CDU20 – Pesquisar Hóspede
 
-**Descrição:** Permite que o hóspede, através de seu próprio acesso, solicite itens de consumo (como frigobar ou lavanderia) para sua estadia atual.
+**Descrição:** Permite pesquisar um hóspede cadastrado no sistema utilizando o nome como critério.
 
-**Ator Primário:** Hóspede.
+**Ator Primário:** Administrador.
 
 **Pré-condições:** 
-- O hóspede deve estar logado no sistema.
-- Deve existir uma reserva ativa vinculada a este hóspede.
+- O usuário deve estar logado no sistema.
 
 **Pós-condições:** 
-- O serviço solicitado é registrado e o valor é somado à conta da reserva.
+- Os dados do hóspede pesquisado são exibidos.
 
 ## Fluxo Principal
 
-1. O hóspede acessa o sistema e seleciona a opção "Consumo" (ou Pedir Serviços) no menu lateral.
-2. O sistema exibe o formulário de solicitação.
-3. O hóspede seleciona o serviço desejado na lista de itens disponíveis.
-4. O hóspede informa a quantidade e confirma a solicitação.
-5. O sistema registra o pedido no banco de dados, vinculando-o à reserva ativa.
-6. O sistema exibe uma mensagem de sucesso confirmando a operação.
+1. O administrador acessa a opção Pesquisar Hóspede no sistema.
+2. O sistema exibe o campo de pesquisa.
+3. O administrador informa o nome do hóspede.
+4. O administrador confirma a pesquisa.
+5. O sistema busca o hóspede no banco de dados.
+6. O sistema exibe os dados do hóspede encontrado (Nome, E-mail, Telefone e Endereço).
 
 ## Fluxos de Exceção
 
-- **FE1 – Reserva inexistente ou inativa:** Se o sistema não identificar uma reserva ativa para o usuário logado, exibirá uma mensagem informando que não é possível solicitar serviços.
+- **FE1 – Hóspede não encontrado:** Se não existir hóspede com o nome informado, o sistema exibirá uma mensagem informando que não foram encontrados resultados.
 
-- **FE2 – Serviço indisponível:** Se o item selecionado não estiver cadastrado ou ativo no sistema, o pedido não será concluído.
+- **FE2 – Dados inválidos:** Se o campo de pesquisa for enviado vazio ou com caracteres inválidos, o sistema exibirá uma mensagem de erro e solicitará a correção.

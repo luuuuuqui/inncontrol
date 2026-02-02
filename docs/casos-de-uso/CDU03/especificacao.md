@@ -16,14 +16,14 @@
 1. O administrador acessa a opção "Quarto" no menu lateral.
 2. O sistema exibe abas para as operações: Listar, Inserir, Atualizar, Excluir.
 3. O administrador seleciona uma aba conforme a ação desejada.
-4. O administrador preenche os campos necessários (como Bloco e Número) ou seleciona o quarto na lista.
+4. O administrador preenche os campos necessários ou seleciona o quarto na lista.
 5. O administrador clica no botão correspondente à ação (Inserir, Salvar Alterações ou Excluir).
 6. O sistema valida os dados fornecidos.
-7. O sistema executa a operação solicitada.
+7. O sistema executa a operação no banco de dados.
 8. O sistema exibe uma mensagem de sucesso e atualiza a lista de quartos.
 
 ## Fluxos de Exceção
 
-- **FE1 – Dados inválidos:** Se o administrador não informar o bloco ou deixar campos obrigatórios vazios, o sistema exibirá uma mensagem de erro solicitando a informação.
+- **FE1 – Dados inválidos:** Se o administrador não informar o bloco ou deixar campos obrigatórios vazios, o sistema exibirá uma mensagem de erro.
 
-- **FE2 – Dados repetidos:** Se o administrador tentar inserir ou atualizar um quarto com número e bloco que já existem no sistema, o sistema exibirá uma mensagem de erro informando o conflito.
+- **FE2 – Dados repetidos:** Se o administrador tentar inserir ou atualizar um quarto com número e bloco já existentes, o sistema exibirá uma mensagem de erro informando o conflito.
