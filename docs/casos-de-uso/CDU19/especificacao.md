@@ -1,26 +1,26 @@
-# CDU19 – Relatório de Serviços Mais Consumidos
+# CDU19 – Histórico de Estadias
 
-**Descrição:** Permite gerar um relatório com os serviços adicionais mais consumidos pelos hóspedes em um determinado período.
+**Descrição:** Permite visualizar detalhadamente todas as estadias passadas e atuais de um hóspede no sistema, incluindo períodos e valores.
 
-**Ator Primário:** Administrador.
+**Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
-- O administrador deve estar logado no sistema.
+- O usuário deve estar logado no sistema.
+- O hóspede deve possuir pelo menos uma reserva (ativa ou finalizada) no banco de dados.
 
 **Pós-condições:** 
-- O relatório de serviços mais consumidos é exibido.
+- O histórico completo de movimentações do hóspede é exibido para consulta.
 
 ## Fluxo Principal
 
-1. O administrador acessa a opção Relatório de Serviços Mais Consumidos no sistema.
-2. O sistema exibe o formulário para seleção do período.
-3. O administrador informa o período desejado.
-4. O administrador solicita a geração do relatório.
-5. O sistema processa os dados de serviços consumidos.
-6. O sistema exibe o relatório com os serviços mais consumidos.
+1. O usuário acessa a opção de consultas ou relatórios de estadias no menu lateral.
+2. O sistema exibe o painel de histórico.
+3. O usuário seleciona o hóspede desejado através de uma lista ou campo de pesquisa.
+4. O sistema recupera todas as reservas vinculadas àquele hóspede no banco de dados.
+5. O sistema exibe a lista cronológica contendo informações como: Quarto, Data de Entrada, Data de Saída, Status e Valor Total.
 
 ## Fluxos de Exceção
 
-- **FE1 – Período inválido:** Se o período informado for inválido, o sistema exibirá uma mensagem de erro e solicitará a correção.
+- **FE1 – Hóspede não selecionado:** Se o usuário tentar realizar a busca sem definir um hóspede, o sistema solicitará a seleção obrigatória.
 
-- **FE2 – Nenhum dado encontrado:** Se não houver registros de serviços consumidos no período informado, o sistema exibirá uma mensagem informando a ausência de dados.
+- **FE2 – Nenhum histórico encontrado:** Se o hóspede selecionado não possuir registros de reserva, o sistema exibirá a mensagem "Nenhum histórico disponível para este hóspede.".

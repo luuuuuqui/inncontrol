@@ -1,35 +1,37 @@
 # CDU06 – Manter Reserva
 
-**Descrição:** Permite que o administrador gerencie as reservas no sistema, incluindo listar, inserir, atualizar e excluir reservas.
+**Descrição:** Permite que o administrador gerencie as reservas no sistema, podendo listar, cadastrar, atualizar e excluir reservas.
 
 **Ator Primário:** Administrador.
 
-**Pré-condições:** - O usuário deve estar logado como administrador no sistema.
+**Pré-condições:** 
+- O administrador deve estar logado no sistema.
 - Devem existir hóspedes e quartos cadastrados para criar reservas.
 
-**Pós-condições:** - As reservas estarão atualizadas no banco de dados conforme as operações realizadas.
+**Pós-condições:** 
+- As reservas são registradas, alteradas ou removidas conforme a ação executada.
 
 ## Fluxo Principal
 
-1. O administrador acessa a interface de gestão de reservas.
-2. O sistema exibe a aba "Listar" com todas as reservas cadastradas (ID, Hóspede, Quarto, Check-in, Check-out, Total e Status).
-3. O administrador seleciona a aba correspondente para Inserir, Atualizar ou Excluir.
-4. O administrador preenche os dados necessários ou seleciona a reserva na lista.
-5. O administrador clica no botão correspondente à ação.
-6. O sistema valida os dados fornecidos e a disponibilidade do quarto.
-7. O sistema executa a operação no banco de dados.
-8. O sistema exibe uma mensagem de sucesso e recarrega a interface.
+1. O administrador acessa a opção "Reserva" no menu lateral.
+2. O sistema exibe as abas: Listar, Inserir, Atualizar e Excluir.
+3. O sistema exibe na aba "Listar" todas as reservas com informações de hóspede, quarto, período, total e status.
+4. O administrador seleciona a aba correspondente à operação desejada.
+5. O administrador seleciona o hóspede, o quarto, o período de estadia e o status inicial.
+6. O administrador clica no botão correspondente à ação (Inserir Reserva, Salvar Alterações ou Excluir Reserva).
+7. O sistema valida os dados, verificando se o quarto está disponível no período selecionado.
+8. O sistema executa a operação e exibe uma mensagem de sucesso, atualizando a lista de reservas.
 
 ## Fluxos de Exceção
 
-- **FE1 – Hóspedes ou quartos insuficientes:** Se não houver hóspedes ou quartos cadastrados, o sistema exibirá uma mensagem de erro informando a necessidade desses cadastros prévios.
+- **FE1 – Hóspedes ou quartos insuficientes:** Se não houver hóspedes ou quartos cadastrados, o sistema exibe uma mensagem de erro informando a necessidade desses cadastros.
 
-- **FE2 – Campos obrigatórios não preenchidos:** Se hóspede, quarto ou datas não forem informados, o sistema impedirá a inserção da reserva.
+- **FE2 – Campos obrigatórios não preenchidos:** Se o administrador tentar confirmar a reserva sem selecionar o hóspede, quarto ou o período completo, o sistema impedirá a ação.
 
-- **FE3 – Quarto indisponível:** Se o quarto selecionado já possuir uma reserva no período informado, o sistema exibirá uma mensagem de indisponibilidade.
+- **FE3 – Quarto indisponível:** Se houver sobreposição de datas com outra reserva ativa para o mesmo quarto, o sistema exibirá a mensagem "Quarto indisponível!" informando o período ocupado.
 
-- **FE4 – Datas inválidas:** Se as datas forem anteriores ao ano atual, se a data de saída for anterior à entrada ou se o formato estiver incorreto, o sistema exibirá uma mensagem de erro específica.
+- **FE4 – Datas inválidas:** Se a data de check-in for igual ou posterior à de check-out, ou se as datas forem anteriores a 2026, o sistema exibirá uma mensagem de erro específica.
 
-- **FE5 – Status vazio:** Se o status da reserva não for selecionado ou estiver vazio, o sistema impedirá a gravação e informará o erro.
+- **FE5 – Status vazio:** Se o status da reserva não for informado, o sistema impedirá a gravação informando que o campo não pode ser vazio.
 
-- **FE6 – Erro inesperado:** Em caso de falha sistêmica ou de banco de dados, o sistema exibirá uma mensagem detalhando o erro ocorrido.
+- **FE6 – Erro inesperado:** Caso ocorra uma falha durante o processamento, o sistema exibirá uma mensagem detalhando o erro.

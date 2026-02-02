@@ -1,27 +1,23 @@
-# CDU15 – Cadastrar Hóspede
+# CDU15 – Listar Hóspedes
 
-**Descrição:** Permite cadastrar os dados de um hóspede no sistema para utilização em reservas e estadias.
+**Descrição:** Permite visualizar a lista de todos os hóspedes registrados no sistema, facilitando a consulta de dados de contato e endereço vinculado.
 
-**Ator Primário:** Administrador.
+**Ator Primário:** Administrador e Recepcionista.
 
 **Pré-condições:** 
 - O usuário deve estar logado no sistema.
 
 **Pós-condições:** 
-- O hóspede é cadastrado no sistema.
+- A lista de hóspedes é exibida para consulta.
 
 ## Fluxo Principal
 
-1. O administrador acessa a opção Cadastrar Hóspede no sistema.
-2. O sistema exibe o formulário de cadastro de hóspede.
-3. O administrador informa os dados do hóspede (nome, e-mail, telefone e endereço).
-4. O administrador confirma o cadastro.
-5. O sistema valida os dados informados.
-6. O sistema salva o hóspede no banco de dados.
-7. O sistema exibe uma mensagem de sucesso.
+1. O usuário acessa a opção "Hóspede" no menu lateral.
+2. O sistema exibe por padrão a aba "Listar" com a relação de hóspedes.
+3. O sistema recupera os registros de hóspedes, incluindo as informações do usuário vinculado (Nome e E-mail) e o endereço cadastrado.
+4. O sistema exibe uma tabela contendo as colunas: ID, Nome, E-mail e Endereço.
+5. O usuário pode utilizar o campo de pesquisa para filtrar a lista por nome em tempo real.
 
 ## Fluxos de Exceção
 
-- **FE1 – Dados inválidos:** Se o administrador informar dados inválidos ou deixar campos obrigatórios em branco, o sistema exibirá uma mensagem de erro e solicitará a correção.
-
-- **FE2 – Hóspede já cadastrado:** Se o e-mail informado já estiver vinculado a um hóspede existente, o sistema exibirá uma mensagem informando o conflito.
+- **FE1 – Nenhum hóspede encontrado:** Se não houver hóspedes cadastrados no sistema, será exibida a mensagem "Nenhum hóspede cadastrado.".
