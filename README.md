@@ -10,30 +10,30 @@ Desenvolvido como projeto final da disciplina de **Programação Orientada a Obj
 
 ## Integrantes do Grupo
 
-- [Lucas Gabriel da Silva Duarte](https://github.com/luuuuuqui)
-- [João Gustavo Alves da Silva](https://github.com/JGustavo123)
-- [José Luan Ribeiro Vieira](https://github.com/luanzxy)
-- [Winnicius da Silva Faustino de Alcântara](https://github.com/winsilv16)
+* [Lucas Gabriel da Silva Duarte](https://github.com/luuuuuqui)
+* [João Gustavo Alves da Silva](https://github.com/JGustavo123)
+* [José Luan Ribeiro Vieira](https://github.com/luanzxy)
+* [Winnicius da Silva Faustino de Alcântara](https://github.com/winsilv16)
 
 ## Objetivo do Sistema
 
 Centralizar e automatizar a gestão de estabelecimentos hoteleiros, permitindo:
 
-- Controle eficiente de reservas e disponibilidade
-- Gestão de check-in e check-out
-- Registro de hóspedes e histórico de estadias
-- Controle de serviços adicionais consumidos
-- Geração de relatórios gerenciais com gráficos
-- Diferentes perfis de acesso (Administrador, Recepcionista, Hóspede)
+* Controle eficiente de reservas e disponibilidade
+* Gestão de check-in e check-out
+* Registro de hóspedes e histórico de estadias
+* Controle de serviços adicionais consumidos
+* Geração de relatórios gerenciais com gráficos
+* Diferentes níveis de acesso (Administrador, Recepcionista, Hóspede)
 
 ## Tecnologias Utilizadas
 
-- **Linguagem:** Python 3.x
-- **Framework Web:** Streamlit
-- **Banco de Dados:** SQLite3
-- **Arquitetura:** MVC (Model-View-Controller) em camadas
-- **Controle de Versão:** Git/GitHub
-- **Diagramas UML:** LucidChart e Astah
+* **Linguagem:** Python 3.x
+* **Framework Web:** Streamlit
+* **Banco de Dados:** SQLite3
+* **Arquitetura:** MVC (Model-View-Controller) em camadas
+* **Controle de Versão:** Git/GitHub
+* **Diagramas UML:** LucidChart e Astah
 
 ## Bibliotecas Utilizadas
 
@@ -137,9 +137,9 @@ inncontrol/
 
 Toda a documentação técnica e diagramas UML estão disponíveis na pasta [`docs/`](docs/):
 
-- [Documento de Visão](docs/visao-do-produto/visaodoproduto.pdf)
-- [Casos de Uso](docs/casos-de-uso/)
-- [Diagramas UML](docs/diagrama-de-classes/)
+* [Documento de Visão](docs/visao-do-produto/visaodoproduto.pdf)
+* [Casos de Uso](docs/casos-de-uso/)
+* [Diagramas UML](docs/diagrama-de-classes/)
 
 ## Licença
 
