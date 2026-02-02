@@ -507,3 +507,113 @@ class View:
     def adicional_excluir(id_adicional):
         a = Adicional(id_adicional, "a", 0.01)
         AdicionalDAO.excluir(a)
+
+    # OUTRAS FUNÇÕES
+    @staticmethod
+    def consultar_disponibilidade_quarto(id_quarto, data_checkin, data_checkout):
+        """
+        Consulta se um quarto específico está disponível no período.
+        Retorna dict com 'disponivel' (bool) e dados do conflito se houver.
+        """
+        try:
+            View._validar_disponibilidade(id_quarto, data_checkin, data_checkout)
+            return {"disponivel": True, "conflito": None}
+        except ValueError as e:
+            msg = str(e)
+            conflito = None
+            # Extrai datas da mensagem de erro existente: "de YYYY-MM-DD a YYYY-MM-DD"
+            import re
+
+            datas = re.findall(r"\d{4}-\d{2}-\d{2}", msg)
+            if len(datas) >= 2:
+                conflito = {"checkin": datas[0], "checkout": datas[1]}
+            return {"disponivel": False, "conflito": conflito, "mensagem": msg}
+
+    @staticmethod
+    def listar_quartos_disponiveis_por_tipo(id_tipo, data_checkin, data_checkout):
+        """
+        Retorna lista de objetos Quarto disponíveis do tipo especificado no período.
+        """
+        todos_quartos = QuartoDAO.listar()
+        quartos_do_tipo = [
+            q for q in todos_quartos if q.get_id_quarto_tipo() == id_tipo
+        ]
+
+        disponiveis = []
+        for quarto in quartos_do_tipo:
+            try:
+                View._validar_disponibilidade(
+                    quarto.get_id_quarto(), data_checkin, data_checkout
+                )
+                disponiveis.append(quarto)
+            except ValueError:
+                continue  # Quarto ocupado, não inclui na lista
+
+        return disponiveis
+
+    @staticmethod
+    def quarto_verificar_disponibilidade(id_quarto, data_in_str, data_out_str):
+        """
+        Verifica se um quarto está disponível no período.
+        Retorna True se disponível, False se ocupado.
+        """
+        # CORREÇÃO: Usamos hasattr para detectar se é data ou datetime e converter para string
+        if hasattr(data_in_str, "strftime"):
+            data_in_str = data_in_str.strftime("%Y-%m-%d")
+
+        if hasattr(data_out_str, "strftime"):
+            data_out_str = data_out_str.strftime("%Y-%m-%d")
+
+        try:
+            # Agora garantimos que data_in_str é string, então strptime vai funcionar
+            nova_in = dt.strptime(data_in_str, "%Y-%m-%d")
+            nova_out = dt.strptime(data_out_str, "%Y-%m-%d")
+        except (ValueError, TypeError):
+            # Se a conversão falhar ou o tipo for inválido
+            return False
+
+        if nova_in >= nova_out:
+            return False
+
+        reservas = ReservaDAO.listar()
+        for r in reservas:
+            if r.get_id_quarto() == id_quarto and r.get_status() != "Cancelada":
+                checkin_existente = r.get_data_checkin()
+                checkout_existente = r.get_data_checkout()
+
+                # Normalização das datas do banco para datetime
+                if hasattr(checkin_existente, "strftime"):
+                    checkin_existente = checkin_existente.strftime("%Y-%m-%d")
+                if hasattr(checkout_existente, "strftime"):
+                    checkout_existente = checkout_existente.strftime("%Y-%m-%d")
+
+                # Converte para objeto datetime para comparação matemática
+                checkin_dt = dt.strptime(checkin_existente, "%Y-%m-%d")
+                checkout_dt = dt.strptime(checkout_existente, "%Y-%m-%d")
+
+                # Lógica de colisão: (NovaInicio < FimExistente) E (NovaFim > InicioExistente)
+                if nova_in < checkout_dt and nova_out > checkin_dt:
+                    return False  # Ocupado
+
+        return True  # Disponível
+
+    @staticmethod
+    def quarto_listar_disponiveis_tipo(id_tipo_quarto, data_in, data_out):
+        """
+        Retorna uma lista de objetos Quarto daquele tipo que estão livres no período.
+        """
+        todos_quartos = QuartoDAO.listar()
+        # Filtra apenas quartos do tipo solicitado
+        quartos_do_tipo = [
+            q for q in todos_quartos if q.get_id_quarto_tipo() == id_tipo_quarto
+        ]
+
+        disponiveis = []
+        for quarto in quartos_do_tipo:
+            # Reutiliza o método acima para verificar cada quarto
+            if View.quarto_verificar_disponibilidade(
+                quarto.get_id_quarto(), data_in, data_out
+            ):
+                disponiveis.append(quarto)
+
+        return disponiveis

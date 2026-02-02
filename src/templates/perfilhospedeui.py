@@ -236,6 +236,7 @@ class PerfilHospedeUI:
                 qtd = st.number_input(
                     "Qtd",
                     min_value=1,
+                    step=1,  # Adicionado step para habilitar os botões + e -
                     value=1,
                     key=f"qtd_{reserva_id}",
                     label_visibility="collapsed",
@@ -373,5 +374,3 @@ class PerfilHospedeUI:
         return f"R$ {v:,.2f}".replace(",", "@").replace(".", ",").replace("@", ".")
 
 
-if __name__ == "__main__":
-    PerfilHospedeUI.main()

@@ -10,8 +10,14 @@ class RecepcionistaReservaUI:
     @staticmethod
     def main():
         st.header("Gestão de Reservas")
-        tab1, tab2, tab3, tab4 = st.tabs(
-            ["Painel de Reservas", "Nova Reserva", "Alterar/Check-in/out", "Cancelar"]
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(
+            [
+                "Painel de Reservas",
+                "Nova Reserva",
+                "Alterar/Check-in/out",
+                "Cancelar",
+                "Consultar Disponibilidade",
+            ]
         )
 
         with tab1:
@@ -19,9 +25,11 @@ class RecepcionistaReservaUI:
         with tab2:
             RecepcionistaReservaUI.inserir()
         with tab3:
-            RecepcionistaReservaUI.atualizar()
+            RecepcionistaReservaUI.consultar_disponibilidade()
         with tab4:
             RecepcionistaReservaUI.excluir()
+        with tab5:
+            RecepcionistaReservaUI.atualizar()
 
     @staticmethod
     def listar():
@@ -312,3 +320,98 @@ class RecepcionistaReservaUI:
                     st.rerun()
                 except Exception as e:
                     st.error(f"Erro: {e}")
+
+    @staticmethod
+    def consultar_disponibilidade():
+        st.subheader("Verificar Disponibilidade")
+
+        tipo_busca = st.radio(
+            "Modo de Consulta:",
+            ["Por Quarto Específico", "Por Tipo de Quarto"],
+            horizontal=True,
+        )
+
+        # Seleção de Datas Comum
+        col_dates, col_dummy = st.columns([1, 1])
+        with col_dates:
+            estadia = st.date_input(
+                "Período Desejado",
+                min_value=dt.datetime.now(),
+                format="DD/MM/YYYY",
+                value=[],
+                key="data_consulta_disp",
+            )
+
+        if len(estadia) == 2:
+            data_in, data_out = estadia
+
+        if tipo_busca == "Por Quarto Específico":
+            quartos = View.quarto_listar()
+            if not quartos:
+                st.warning("Nenhum quarto cadastrado.")
+                return
+
+            def formatar_quarto(q):
+                tipo = View.tipoquarto_listar_id(q.get_id_quarto_tipo())
+                nome_tipo = tipo.get_nome() if tipo else "N/A"
+                return f"Bloco {q.get_bloco()} - Nº {q.get_numero()} ({nome_tipo})"
+
+            quarto_selecionado = st.selectbox(
+                "Selecione o Quarto:", quartos, format_func=formatar_quarto
+            )
+
+            desativar = not (len(estadia) == 2 and quarto_selecionado)
+            if st.button("Verificar Status", type="primary", disabled=desativar):
+                disponivel = View.quarto_verificar_disponibilidade(
+                    quarto_selecionado.get_id_quarto(), data_in, data_out
+                )
+
+                st.divider()
+                if disponivel:
+                    st.success(
+                        f"✅ O Quarto {quarto_selecionado.get_numero()} está **DISPONÍVEL** para este período."
+                    )
+                else:
+                    st.error(
+                        f"⛔ O Quarto {quarto_selecionado.get_numero()} está **OCUPADO** neste período."
+                    )
+
+        else:  # Por Tipo de Quarto
+            tipos = View.tipoquarto_listar()
+            if not tipos:
+                st.warning("Nenhum tipo de quarto cadastrado.")
+                return
+
+            tipo_selecionado = st.selectbox(
+                "Selecione o Tipo de Quarto:", tipos, format_func=lambda t: t.get_nome()
+            )
+
+            desativar = not (len(estadia) == 2 and tipo_selecionado)
+            if st.button("Buscar Quartos Disponíveis", disabled=desativar):
+                quartos_livres = View.quarto_listar_disponiveis_tipo(
+                    tipo_selecionado.get_id_tipoquarto(), data_in, data_out
+                )
+
+                if not quartos_livres:
+                    st.warning(
+                        f"Não há quartos do tipo **{tipo_selecionado.get_nome()}** disponíveis para este período."
+                    )
+                else:
+                    st.success(f"{len(quartos_livres)} quarto(s) encontrado(s).")
+
+                    lista_exibicao = []
+                    for q in quartos_livres:
+                        lista_exibicao.append(
+                            {
+                                "Número": q.get_numero(),
+                                "Bloco": q.get_bloco(),
+                                "Tipo": tipo_selecionado.get_nome(),
+                                "Diária (R$)": f"{float(tipo_selecionado.get_valor_diaria()):.2f}",
+                            }
+                        )
+
+                    st.dataframe(
+                        pd.DataFrame(lista_exibicao),
+                        use_container_width=True,
+                        hide_index=True,
+                    )
