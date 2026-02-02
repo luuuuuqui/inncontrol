@@ -47,6 +47,16 @@ class UsuarioDAO(DAO):
         return obj
 
     @classmethod
+    def listar_email(cls, email):
+        cls.abrir()
+        sql = "SELECT * FROM usuario WHERE email = ?"
+        cursor = cls.execute(sql, (email,))
+        row = cursor.fetchone()
+        obj = Usuario(*row) if row else None
+        cls.fechar()
+        return obj
+    
+    @classmethod
     def atualizar(cls, obj):
         cls.abrir()
         sql = """

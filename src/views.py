@@ -26,15 +26,14 @@ class View:
     # Autenticação (Login)
     @staticmethod
     def usuario_autenticar(email, senha):
-        usuarios = UsuarioDAO.listar()
-        for u in usuarios:
-            if u.get_email() == email and u.get_senha() == senha:
-                return {
-                    "id": u.get_id_usuario(),
-                    "nome": u.get_nome(),
-                    "email": u.get_email(),
-                    "tipo": u.get_tipo_perfil(),
-                }
+        usuario = UsuarioDAO.listar_email(email)
+        if usuario and usuario.get_senha() == senha:
+            return {
+                "id": usuario.get_id_usuario(),
+                "nome": usuario.get_nome(),
+                "email": usuario.get_email(),
+                "tipo": usuario.get_tipo_perfil(),
+            }
         return None
 
     # Usuário
