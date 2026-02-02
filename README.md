@@ -35,6 +35,104 @@ Centralizar e automatizar a gestão de estabelecimentos hoteleiros, permitindo:
 - **Controle de Versão:** Git/GitHub
 - **Diagramas UML:** LucidChart e Astah
 
+## Bibliotecas Utilizadas
+
+### Bibliotecas Obrigatórias
+
+* **streamlit** (≥1.28.0): Framework web para criação da interface do sistema
+* **pandas** (≥2.0.0): Manipulação e análise de dados para relatórios e tabelas
+
+### Bibliotecas Opcionais (Funcionalidades Avançadas)
+
+As seguintes bibliotecas são opcionais, mas recomendadas para aproveitar todas as funcionalidades do sistema:
+
+* **fpdf2** (≥2.7.0): Geração de relatórios em PDF (módulo de Relatórios Gerenciais)
+* **plotly** (≥5.17.0): Criação de gráficos interativos nos dashboards de relatórios
+* **openpyxl** (≥3.1.0): Exportação de dados para arquivos Excel (.xlsx)
+
+> **Nota:** O sistema funciona sem as bibliotecas opcionais, mas algumas funcionalidades estarão desabilitadas (como exportação de PDF/Excel e gráficos interativos).
+
+## Instalação
+
+### Pré-requisitos
+
+* Python 3.8 ou superior
+* pip (gerenciador de pacotes Python)
+
+### Passo a Passo
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/seu-usuario/inncontrol.git
+   cd inncontrol
+   ```
+
+2. **Crie um ambiente virtual (recomendado):**
+
+   **Windows:**
+
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+   **Linux/Mac:**
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Instale as dependências:**
+
+   **Instalação básica (apenas bibliotecas obrigatórias):**
+
+   ```bash
+   pip install streamlit pandas
+   ```
+
+   **Instalação completa (com todas as funcionalidades):**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   Ou instale manualmente:
+
+   ```bash
+   pip install streamlit pandas fpdf2 plotly openpyxl
+   ```
+
+## Como Executar
+
+1. **Navegue até a pasta do projeto:**
+   ```bash
+   cd src
+   ```
+
+2. **Execute o sistema:**
+   ```bash
+   streamlit run index.py
+   ```
+
+3. **Acesse o sistema:**
+   * O Streamlit abrirá automaticamente no navegador
+   * Se não abrir, acesse: `http://localhost:8501`
+
+## Estrutura do Projeto
+
+```
+inncontrol/
+├── src/
+│   ├── dao/              # Camada de acesso a dados
+│   ├── models/           # Modelos de dados
+│   ├── templates/        # Interfaces de usuário (UI)
+│   ├── index.py         # Arquivo principal
+│   └── views.py         # Camada de lógica de negócio
+├── requirements.txt      # Dependências do projeto
+└── README.md            # Este arquivo
+```
+
 ## Documentação
 
 Toda a documentação técnica e diagramas UML estão disponíveis na pasta [`docs/`](docs/):
