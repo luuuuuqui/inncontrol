@@ -1,4 +1,4 @@
-# CDU04 – Listar Quartos
+# CDU04 – Gerenciar Quartos
 
 **Descrição:** Permite visualizar todos os quartos cadastrados no sistema.
 

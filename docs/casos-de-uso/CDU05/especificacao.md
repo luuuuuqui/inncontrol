@@ -1,4 +1,4 @@
-# CDU05 – Manter Tipo de Quarto
+# CDU05 – Gerenciar Tipo de Quarto
 
 **Descrição:** Permite que o administrador gerencie os tipos de quarto no sistema, podendo listar, cadastrar, atualizar e excluir tipos de quarto.
 
