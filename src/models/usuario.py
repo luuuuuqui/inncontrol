@@ -7,7 +7,6 @@ class Usuario:
         email: str,
         senha: str,
         tipo_perfil: str,
-        id_perfil: int,
     ) -> None:
         self.set_id_usuario(id_usuario)
         self.set_nome(nome)
@@ -15,7 +14,6 @@ class Usuario:
         self.set_email(email)
         self.set_senha(senha)
         self.set_tipo_perfil(tipo_perfil)
-        self.set_id_perfil(id_perfil)
 
     def set_id_usuario(self, id_usuario: int) -> None:
         if id_usuario < 0:
@@ -45,11 +43,6 @@ class Usuario:
             raise ValueError("O tipo do usuário não pode ser vazio.")
         self.__tipo_perfil = tipo_perfil
 
-    def set_id_perfil(self, id_perfil: int) -> None:
-        if id_perfil < 0:
-            raise ValueError("O tipo do usuário não pode ser vazio.")
-        self.__id_perfil = id_perfil
-
     def get_id_usuario(self):
         return self.__id
 
@@ -68,9 +61,6 @@ class Usuario:
     def get_tipo_perfil(self):
         return self.__tipo_perfil
 
-    def get_id_perfil(self):
-        return self.__id_perfil
-
     def to_dict(self) -> dict:
         return {
             "ID": self.get_id_usuario(),
@@ -78,7 +68,6 @@ class Usuario:
             "fone": self.get_fone(),
             "email": self.get_email(),
             "perfil_tipo": self.get_tipo_perfil(),
-            "perfil_id": self.get_id_perfil(),
         }
 
     def __str__(self) -> str:

@@ -1,4 +1,4 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st  # pyright: ignore[reportMissingImports]
 import pandas as pd
 from views import View
 import time
@@ -56,18 +56,12 @@ class ManterUsuarioUI:
             "Tipo de Perfil:", tipos_perfil, key="sb_inserir_perfil"
         )
 
-        id_perfil = st.number_input(
-            "ID Externo do Perfil (Opcional):", min_value=0, step=1, value=0
-        )
-
         if st.button("Inserir"):
             if not (nome and email and senha):
                 st.error("Nome, Email e Senha são obrigatórios.")
             else:
                 try:
-                    View.usuario_inserir(
-                        nome, fone, email, senha, tipo_perfil, id_perfil
-                    )
+                    View.usuario_inserir(nome, fone, email, senha, tipo_perfil)
                     st.success("Usuário inserido!")
                     time.sleep(1)
                     st.rerun()
@@ -101,9 +95,6 @@ class ManterUsuarioUI:
         novo_tipo = st.selectbox(
             "Tipo de Perfil:", tipos_perfil, index=idx_perfil, key="sb_atualizar_perfil"
         )
-        novo_id_perfil = st.number_input(
-            "ID Externo:", min_value=0, step=1, value=op.get_id_perfil()
-        )
 
         if st.button("Salvar Alterações"):
             try:
@@ -113,7 +104,6 @@ class ManterUsuarioUI:
                     novo_fone,
                     novo_email,
                     novo_tipo,
-                    novo_id_perfil,
                 )
                 st.success("Usuário atualizado!")
                 time.sleep(1)

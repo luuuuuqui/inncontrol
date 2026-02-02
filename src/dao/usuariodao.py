@@ -7,8 +7,8 @@ class UsuarioDAO(DAO):
     def inserir(cls, obj):
         cls.abrir()
         sql = """
-            INSERT INTO usuario (nome, fone, email, senha, perfil_tipo, perfil_id)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO usuario (nome, fone, email, senha, perfil_tipo)
+            VALUES (?, ?, ?, ?, ?)
         """
         cls.execute(
             sql,
@@ -18,7 +18,6 @@ class UsuarioDAO(DAO):
                 obj.get_email(),
                 obj.get_senha(),
                 obj.get_tipo_perfil(),
-                obj.get_id_perfil(),
             ),
         )
         cls.fechar()
@@ -30,8 +29,8 @@ class UsuarioDAO(DAO):
         cursor = cls.execute(sql)
         rows = cursor.fetchall()
         objs = [
-            Usuario(idusuario, nome, fone, email, senha, tipoperfil, idperfil)
-            for (idusuario, nome, fone, email, senha, tipoperfil, idperfil) in rows
+            Usuario(idusuario, nome, fone, email, senha, tipoperfil)
+            for (idusuario, nome, fone, email, senha, tipoperfil) in rows
         ]
 
         return objs
@@ -55,13 +54,13 @@ class UsuarioDAO(DAO):
         obj = Usuario(*row) if row else None
         cls.fechar()
         return obj
-    
+
     @classmethod
     def atualizar(cls, obj):
         cls.abrir()
         sql = """
             UPDATE usuario
-            SET nome=?, fone=?, email=?, perfil_tipo=?, perfil_id=?
+            SET nome=?, fone=?, email=?, perfil_tipo=?
             WHERE id=?
         """
         cls.execute(
@@ -71,7 +70,6 @@ class UsuarioDAO(DAO):
                 obj.get_fone(),
                 obj.get_email(),
                 obj.get_tipo_perfil(),
-                obj.get_id_perfil(),
                 obj.get_id_usuario(),
             ),
         )

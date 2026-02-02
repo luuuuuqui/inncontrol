@@ -39,8 +39,7 @@ class Database:
             fone TEXT,
             email TEXT NOT NULL UNIQUE,
             senha TEXT NOT NULL,
-            perfil_tipo TEXT NOT NULL,
-            perfil_id INTEGER NOT NULL
+            perfil_tipo TEXT NOT NULL
         );
         """
         )

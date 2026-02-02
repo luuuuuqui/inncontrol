@@ -38,13 +38,13 @@ class View:
 
     # Usuário
     @staticmethod
-    def usuario_inserir(nome, fone, email, senha, tipoperfil, idperfil):
+    def usuario_inserir(nome, fone, email, senha, tipoperfil):
         usuarios = UsuarioDAO.listar()
         for u in usuarios:
             if u.get_email() == email:
                 raise ValueError(f"O email '{email}' já está em uso.")
 
-        u = Usuario(0, nome, fone, email, senha, tipoperfil, idperfil)
+        u = Usuario(0, nome, fone, email, senha, tipoperfil)
         UsuarioDAO.inserir(u)
 
     @staticmethod
@@ -58,13 +58,13 @@ class View:
         return UsuarioDAO.listar_id(id)
 
     @staticmethod
-    def usuario_atualizar(id, nome, fone, email, tipoperfil, idperfil):
+    def usuario_atualizar(id, nome, fone, email, tipoperfil):
         usuarios = UsuarioDAO.listar()
         for u in usuarios:
             if u.get_email() == email and u.get_id_usuario() != id:
                 raise ValueError(f"O email '{email}' já pertence a outro usuário.")
 
-        u = Usuario(id, nome, fone, email, "********", tipoperfil, idperfil)
+        u = Usuario(id, nome, fone, email, "********", tipoperfil)
         UsuarioDAO.atualizar(u)
 
     @staticmethod
