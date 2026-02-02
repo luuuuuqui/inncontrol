@@ -63,7 +63,7 @@ class RecepcionistaHospedeUI:
                     st.error("Preencha todos os campos obrigatórios.")
                 else:
                     try:
-                        View.usuario_inserir(nome, fone, email, senha, "Hóspede", 0)
+                        View.usuario_inserir(nome, fone, email, senha, "Hóspede")
 
                         todos_usuarios = View.usuario_listar()
                         novo_usuario = next(
@@ -105,6 +105,11 @@ class RecepcionistaHospedeUI:
             format_func=lambda h: RecepcionistaHospedeUI._formatar_hospede_resumo(h),
         )
 
+        if op is None:
+            return
+
+        assert op is not None  # Type narrowing for type checker
+
         usuario = View.usuario_listar_id(op.get_id_usuario())
         if not usuario:
             st.error("Usuário associado não encontrado.")
@@ -143,7 +148,6 @@ class RecepcionistaHospedeUI:
                             novo_fone,
                             novo_email,
                             usuario.get_tipo_perfil(),
-                            usuario.get_id_perfil(),
                         )
 
                         View.hospede_atualizar(

@@ -1,4 +1,4 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st  # pyright: ignore[reportMissingImports]
 import pandas as pd
 from datetime import datetime
 from decimal import Decimal
@@ -45,7 +45,7 @@ class ManterConsumoUI:
             try:
                 data_obj = datetime.strptime(cd["data_consumo"], "%Y-%m-%d %H:%M:%S")
                 data_fmt = data_obj.strftime("%d/%m/%Y %H:%M")
-            except:
+            except Exception:
                 data_fmt = str(cd["data_consumo"])
 
             dic_consumos.append(
@@ -84,6 +84,12 @@ class ManterConsumoUI:
         hora = col2.time_input("Hora:", value=datetime.now().time())
 
         if st.button("Inserir Consumo"):
+            if adicional_selecionado is None:
+                st.error("Selecione um adicional.")
+                return
+
+            assert adicional_selecionado is not None  # Type narrowing for type checker
+
             data_hora = datetime.combine(data, hora)
             try:
                 View.consumo_inserir(
@@ -111,9 +117,14 @@ class ManterConsumoUI:
             format_func=lambda c: ManterConsumoUI._formatar_consumo_resumo(c),
         )
 
+        if op is None:
+            return
+
+        assert op is not None  # Type narrowing for type checker
+
         try:
             dt_atual = datetime.strptime(op.get_data_consumo(), "%Y-%m-%d %H:%M:%S")
-        except:
+        except Exception:
             dt_atual = datetime.now()
 
         adicionais = View.adicional_listar()
@@ -142,6 +153,12 @@ class ManterConsumoUI:
         nova_hora = col2.time_input("Hora:", value=dt_atual.time())
 
         if st.button("Salvar Alterações"):
+            if novo_adicional is None:
+                st.error("Selecione um adicional.")
+                return
+
+            assert novo_adicional is not None  # Type narrowing for type checker
+
             nova_dt_full = datetime.combine(nova_data, nova_hora)
             try:
                 View.consumo_atualizar(
@@ -169,6 +186,11 @@ class ManterConsumoUI:
             consumos,
             format_func=lambda c: ManterConsumoUI._formatar_consumo_resumo(c),
         )
+
+        if op is None:
+            return
+
+        assert op is not None  # Type narrowing for type checker
 
         if st.button("Excluir"):
             try:

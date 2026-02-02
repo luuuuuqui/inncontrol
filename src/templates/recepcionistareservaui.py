@@ -175,6 +175,10 @@ class RecepcionistaReservaUI:
             format_func=lambda r: f"Reserva #{r.get_id_reserva()} - Status: {r.get_status()}",
         )
 
+        if reserva_op is None:
+            return
+
+        assert reserva_op is not None  # Type narrowing for type checker
         status_atual = reserva_op.get_status()
 
         try:
@@ -307,6 +311,11 @@ class RecepcionistaReservaUI:
             format_func=lambda r: f"#{r.get_id_reserva()} ({r.get_status()})",
         )
 
+        if reserva_op is None:
+            return
+
+        assert reserva_op is not None  # Type narrowing for type checker
+
         with st.form("form_cancelar_reserva"):
             submitted = st.form_submit_button(
                 "Cancelar/Excluir Reserva", type="primary"
@@ -342,6 +351,8 @@ class RecepcionistaReservaUI:
                 key="data_consulta_disp",
             )
 
+        data_in = None
+        data_out = None
         if len(estadia) == 2:
             data_in, data_out = estadia
 
@@ -362,6 +373,10 @@ class RecepcionistaReservaUI:
 
             desativar = not (len(estadia) == 2 and quarto_selecionado)
             if st.button("Verificar Status", type="primary", disabled=desativar):
+                if data_in is None or data_out is None:
+                    st.error("Selecione o período desejado.")
+                    return
+                assert data_in is not None and data_out is not None  # Type narrowing
                 disponivel = View.quarto_verificar_disponibilidade(
                     quarto_selecionado.get_id_quarto(), data_in, data_out
                 )
@@ -388,6 +403,10 @@ class RecepcionistaReservaUI:
 
             desativar = not (len(estadia) == 2 and tipo_selecionado)
             if st.button("Buscar Quartos Disponíveis", disabled=desativar):
+                if data_in is None or data_out is None:
+                    st.error("Selecione o período desejado.")
+                    return
+                assert data_in is not None and data_out is not None  # Type narrowing
                 quartos_livres = View.quarto_listar_disponiveis_tipo(
                     tipo_selecionado.get_id_tipoquarto(), data_in, data_out
                 )

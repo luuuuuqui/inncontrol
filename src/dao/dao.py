@@ -5,7 +5,7 @@ import os
 class DAO:
     conn = None
     basedirectory = os.path.dirname(os.path.abspath(__file__))
-    pathdb = os.path.join(basedirectory, "inncontrol.db")
+    pathdb = os.path.join(basedirectory, "inncontrol.db")  # type: ignore[arg-type]
 
     @classmethod
     def abrir(cls):

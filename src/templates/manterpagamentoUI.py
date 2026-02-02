@@ -123,6 +123,12 @@ class ManterPagamentoUI:
         )
 
         if st.button("Registrar Pagamento", key="btn_ins_pagamento"):
+            if reserva_selecionada is None:
+                st.error("Selecione uma reserva para registrar o pagamento.")
+                return
+
+            assert reserva_selecionada is not None  # Type narrowing for type checker
+
             try:
                 View.pagamento_registrar(
                     reserva_selecionada.get_id_reserva(),
@@ -152,6 +158,11 @@ class ManterPagamentoUI:
             format_func=lambda p: ManterPagamentoUI._formatar_resumo_pagamento(p),
             key="upd_select_pagamento",
         )
+
+        if pagamento_op is None:
+            return
+
+        assert pagamento_op is not None  # Type narrowing for type checker
 
         try:
             data_atual = dt.datetime.strptime(
@@ -235,6 +246,11 @@ class ManterPagamentoUI:
             format_func=lambda p: ManterPagamentoUI._formatar_resumo_pagamento(p),
             key="del_select_pagamento",
         )
+
+        if pagamento_op is None:
+            return
+
+        assert pagamento_op is not None  # Type narrowing for type checker
 
         valor_obj = Decimal(pagamento_op.get_valor_total())
         st.warning(f"Tem certeza que deseja excluir o pagamento de R$ {valor_obj:.2f}?")

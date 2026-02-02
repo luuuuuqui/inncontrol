@@ -32,7 +32,7 @@ class AbrirContaUI:
                         # 1. Criação do Usuário Genérico
                         # Tipo fixo "Hóspede" conforme regra de negócio
                         # ID Perfil 0 (padrão quando não especificado)
-                        View.usuario_inserir(nome, fone, email, senha, "Hóspede", 0)
+                        View.usuario_inserir(nome, fone, email, senha, "Hóspede")
 
                         # 2. Recuperação do ID (Padrão existente no projeto)
                         # Busca o usuário recém-criado pelo e-mail para obter o ID gerado pelo banco

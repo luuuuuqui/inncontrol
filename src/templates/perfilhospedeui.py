@@ -44,7 +44,6 @@ class PerfilHospedeUI:
                             novo_fone,
                             novo_email,
                             usuario.get_tipo_perfil(),
-                            usuario.get_id_perfil(),
                         )
 
                         if hospede and novo_endereco:
@@ -372,5 +371,3 @@ class PerfilHospedeUI:
         except Exception:
             v = 0.0
         return f"R$ {v:,.2f}".replace(",", "@").replace(".", ",").replace("@", ".")
-
-

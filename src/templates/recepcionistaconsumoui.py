@@ -48,6 +48,14 @@ class RecepcionistaConsumoUI:
             submitted = st.form_submit_button("Lançar na Conta")
 
             if submitted:
+                if reserva is None or item is None:
+                    st.error("Selecione uma reserva e um item para lançar o consumo.")
+                    return
+
+                assert (
+                    reserva is not None and item is not None
+                )  # Type narrowing for type checker
+
                 try:
                     View.consumo_inserir(
                         reserva.get_id_reserva(),

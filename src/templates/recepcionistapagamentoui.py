@@ -47,7 +47,7 @@ class RecepcionistaPagamentoUI:
                 data_pag = dt.datetime.strptime(
                     p.get_data_pagamento(), "%Y-%m-%d"
                 ).strftime("%d/%m/%Y")
-            except:
+            except Exception:
                 data_pag = p.get_data_pagamento()
 
             dic_pagamentos.append(
@@ -120,9 +120,19 @@ class RecepcionistaPagamentoUI:
                 key="ins_status_pagamento",
             )
 
-            submitted = st.form_submit_button("Registrar Pagamento", key="btn_ins_pagamento")
+            submitted = st.form_submit_button(
+                "Registrar Pagamento", key="btn_ins_pagamento"
+            )
 
             if submitted:
+                if reserva_selecionada is None:
+                    st.error("Selecione uma reserva para registrar o pagamento.")
+                    return
+
+                assert (
+                    reserva_selecionada is not None
+                )  # Type narrowing for type checker
+
                 try:
                     View.pagamento_registrar(
                         reserva_selecionada.get_id_reserva(),
@@ -153,6 +163,11 @@ class RecepcionistaPagamentoUI:
             key="rec_upd_pag",
         )
 
+        if pagamento_op is None:
+            return
+
+        assert pagamento_op is not None  # Type narrowing for type checker
+
         lista_formas = [
             "Pix",
             "Cartão de Crédito",
@@ -177,7 +192,7 @@ class RecepcionistaPagamentoUI:
             data_atual = dt.datetime.strptime(
                 pagamento_op.get_data_pagamento(), "%Y-%m-%d"
             ).date()
-        except:
+        except Exception:
             data_atual = dt.date.today()
 
         with st.form("form_upd_pagamento"):

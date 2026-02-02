@@ -256,7 +256,10 @@ class View:
 
     @staticmethod
     def reservas_listar_hospede(id_hospede) -> list[dict]:
-        id_usuario_logado = View.hospede_listar_id(id_hospede).get_id_usuario()
+        hospede = View.hospede_listar_id(id_hospede)
+        if not hospede:
+            return []
+        id_usuario_logado = hospede.get_id_usuario()
 
         hospede = View.hospede_listar_por_usuario(id_usuario_logado)
         if not hospede:

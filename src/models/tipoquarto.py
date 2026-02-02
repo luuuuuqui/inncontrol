@@ -1,4 +1,5 @@
 from decimal import Decimal, ROUND_HALF_UP
+from typing import Union
 
 
 class TipoQuarto:
@@ -38,24 +39,29 @@ class TipoQuarto:
             )
         self.__capacidade = capacidade
 
-    def set_valor_diaria(self, valor_diaria: Decimal) -> None:
+    def set_valor_diaria(self, valor_diaria: Union[Decimal, str, float]) -> None:
+        # Convert to string first for processing
         if isinstance(valor_diaria, float):
-            valor_diaria = str(valor_diaria)
+            valor_str = str(valor_diaria)
+        elif isinstance(valor_diaria, str):
+            valor_str = valor_diaria.strip().replace(",", ".")
+        elif isinstance(valor_diaria, Decimal):
+            valor_str = str(valor_diaria)
+        else:
+            raise ValueError(f"Tipo inválido para valor_diaria: {type(valor_diaria)}")
 
-        if isinstance(valor_diaria, str):
-            valor_diaria = valor_diaria.strip()
-            valor_diaria = valor_diaria.replace(',', '.')
-        
-        if not isinstance(valor_diaria, Decimal):
-            try:
-                valor_diaria = Decimal(valor_diaria)
-            except Exception:
-                raise ValueError(f"Valor inválido: {valor_diaria}")
+        # Convert string to Decimal
+        try:
+            valor_decimal = Decimal(valor_str)
+        except Exception:
+            raise ValueError(f"Valor inválido: {valor_diaria}")
 
-        if valor_diaria < 0:
-            raise ValueError("Valor do adicional não pode ser negativo.")
-        
-        self.__valor_diaria = valor_diaria.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+        if valor_decimal < 0:
+            raise ValueError("Valor da diária não pode ser negativo.")
+
+        self.__valor_diaria = valor_decimal.quantize(
+            Decimal("0.00"), rounding=ROUND_HALF_UP
+        )
 
     def get_id_tipoquarto(self) -> int:
         return self.__id_tipoquarto

@@ -10,10 +10,11 @@ try:
     FPDF_AVAILABLE = True
 except ImportError:
     FPDF_AVAILABLE = False
+    FPDF = None  # type: ignore[assignment]
 
 
 try:
-    import openpyxl
+    import openpyxl  # noqa: F401
 
     EXCEL_AVAILABLE = True
 except ImportError:
@@ -26,6 +27,8 @@ try:
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
+    px = None  # type: ignore[assignment]
+    go = None  # type: ignore[assignment]
 
 
 class RelatoriosUI:
@@ -206,7 +209,7 @@ class RelatoriosUI:
             with c_chart1:
                 st.markdown("##### Receita por Quarto")
                 df_quarto = df.groupby("quarto")["valor_total"].sum().reset_index()
-                if PLOTLY_AVAILABLE:
+                if PLOTLY_AVAILABLE and px is not None:
                     fig_pie = px.pie(
                         df_quarto, values="valor_total", names="quarto", hole=0.4
                     )
@@ -217,7 +220,7 @@ class RelatoriosUI:
 
             with c_chart2:
                 st.markdown("##### Duração da Estadia (Distribuição)")
-                if PLOTLY_AVAILABLE:
+                if PLOTLY_AVAILABLE and px is not None:
                     fig_hist = px.histogram(
                         df,
                         x="estadia_dias",
@@ -248,7 +251,7 @@ class RelatoriosUI:
         )
         df_diario.columns = ["Data", "Receita", "Qtd Reservas"]
 
-        if PLOTLY_AVAILABLE:
+        if PLOTLY_AVAILABLE and go is not None:
             fig = go.Figure()
 
             fig.add_trace(
@@ -379,7 +382,7 @@ class RelatoriosUI:
     @staticmethod
     def _gerar_pdf(dados):
         """Geração de PDF com formatação profissional"""
-        if not FPDF_AVAILABLE:
+        if not FPDF_AVAILABLE or FPDF is None:
             raise ImportError("Biblioteca FPDF não está disponível")
         pdf = FPDF()
         pdf.add_page()
@@ -448,6 +451,9 @@ class RelatoriosUI:
         pdf_bytes = pdf.output(dest="S")
         if isinstance(pdf_bytes, str):
             return pdf_bytes.encode("latin-1")
+        # Ensure we return bytes, not bytearray
+        if isinstance(pdf_bytes, bytearray):
+            return bytes(pdf_bytes)
         return pdf_bytes
 
     @staticmethod
