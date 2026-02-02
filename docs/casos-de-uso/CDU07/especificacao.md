@@ -1,4 +1,4 @@
-# CDU07 – Cadastrar Tipos de Quarto
+# CDU07 – Cadastrar Tipos de QuartoCadastrar Tipos de Quarto
 
 **Descrição:** Permite que o administrador cadastre novos tipos de quarto no sistema, definindo suas características específicas.
 
