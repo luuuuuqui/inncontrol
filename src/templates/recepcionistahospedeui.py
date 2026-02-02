@@ -108,8 +108,6 @@ class RecepcionistaHospedeUI:
         if op is None:
             return
 
-        assert op is not None  # Type narrowing for type checker
-
         usuario = View.usuario_listar_id(op.get_id_usuario())
         if not usuario:
             st.error("Usuário associado não encontrado.")

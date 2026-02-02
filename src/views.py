@@ -231,8 +231,6 @@ class View:
                 existente_in = dt.strptime(checkin_existente, "%Y-%m-%d")
                 existente_out = dt.strptime(checkout_existente, "%Y-%m-%d")
 
-                # lógica de sobreposição de datas:
-                # (checkinA < checkoutB) e (checkoutA > checkinB)
                 if nova_in < existente_out and nova_out > existente_in:
                     raise ValueError(
                         f"Quarto indisponível! Já existe reserva de {r.get_data_checkin()} a {r.get_data_checkout()}."
@@ -523,7 +521,6 @@ class View:
         except ValueError as e:
             msg = str(e)
             conflito = None
-            # Extrai datas da mensagem de erro existente: "de YYYY-MM-DD a YYYY-MM-DD"
             import re
 
             datas = re.findall(r"\d{4}-\d{2}-\d{2}", msg)
@@ -549,7 +546,7 @@ class View:
                 )
                 disponiveis.append(quarto)
             except ValueError:
-                continue  # Quarto ocupado, não inclui na lista
+                continue
 
         return disponiveis
 
@@ -559,7 +556,6 @@ class View:
         Verifica se um quarto está disponível no período.
         Retorna True se disponível, False se ocupado.
         """
-        # CORREÇÃO: Usamos hasattr para detectar se é data ou datetime e converter para string
         if hasattr(data_in_str, "strftime"):
             data_in_str = data_in_str.strftime("%Y-%m-%d")
 
@@ -567,11 +563,9 @@ class View:
             data_out_str = data_out_str.strftime("%Y-%m-%d")
 
         try:
-            # Agora garantimos que data_in_str é string, então strptime vai funcionar
             nova_in = dt.strptime(data_in_str, "%Y-%m-%d")
             nova_out = dt.strptime(data_out_str, "%Y-%m-%d")
         except (ValueError, TypeError):
-            # Se a conversão falhar ou o tipo for inválido
             return False
 
         if nova_in >= nova_out:
@@ -583,21 +577,18 @@ class View:
                 checkin_existente = r.get_data_checkin()
                 checkout_existente = r.get_data_checkout()
 
-                # Normalização das datas do banco para datetime
                 if hasattr(checkin_existente, "strftime"):
                     checkin_existente = checkin_existente.strftime("%Y-%m-%d")
                 if hasattr(checkout_existente, "strftime"):
                     checkout_existente = checkout_existente.strftime("%Y-%m-%d")
 
-                # Converte para objeto datetime para comparação matemática
                 checkin_dt = dt.strptime(checkin_existente, "%Y-%m-%d")
                 checkout_dt = dt.strptime(checkout_existente, "%Y-%m-%d")
 
-                # Lógica de colisão: (NovaInicio < FimExistente) E (NovaFim > InicioExistente)
                 if nova_in < checkout_dt and nova_out > checkin_dt:
-                    return False  # Ocupado
+                    return False
 
-        return True  # Disponível
+        return True
 
     @staticmethod
     def quarto_listar_disponiveis_tipo(id_tipo_quarto, data_in, data_out):
@@ -605,14 +596,12 @@ class View:
         Retorna uma lista de objetos Quarto daquele tipo que estão livres no período.
         """
         todos_quartos = QuartoDAO.listar()
-        # Filtra apenas quartos do tipo solicitado
         quartos_do_tipo = [
             q for q in todos_quartos if q.get_id_quarto_tipo() == id_tipo_quarto
         ]
 
         disponiveis = []
         for quarto in quartos_do_tipo:
-            # Reutiliza o método acima para verificar cada quarto
             if View.quarto_verificar_disponibilidade(
                 quarto.get_id_quarto(), data_in, data_out
             ):

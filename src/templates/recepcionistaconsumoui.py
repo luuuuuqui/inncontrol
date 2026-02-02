@@ -52,10 +52,6 @@ class RecepcionistaConsumoUI:
                     st.error("Selecione uma reserva e um item para lançar o consumo.")
                     return
 
-                assert (
-                    reserva is not None and item is not None
-                )  # Type narrowing for type checker
-
                 try:
                     View.consumo_inserir(
                         reserva.get_id_reserva(),

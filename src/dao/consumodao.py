@@ -10,7 +10,15 @@ class ConsumoDAO(DAO):
             INSERT INTO consumo (id_reserva, id_adicional, quantidade, data_consumo)
             VALUES (?, ?, ?, ?)
         """
-        cls.execute(sql, (obj.get_id_reserva(), obj.get_id_adicional(), obj.get_quantidade(), obj.get_data_consumo()))
+        cls.execute(
+            sql,
+            (
+                obj.get_id_reserva(),
+                obj.get_id_adicional(),
+                obj.get_quantidade(),
+                obj.get_data_consumo(),
+            ),
+        )
         cls.fechar()
 
     @classmethod
@@ -42,7 +50,6 @@ class ConsumoDAO(DAO):
         sql = "SELECT * FROM consumo WHERE id_reserva = ?"
         cursor = cls.execute(sql, (id_reserva,))
         rows = cursor.fetchall()
-        # Importante: certifique-se de importar o model Consumo no topo do arquivo
         objs = [
             Consumo(id_consumo, id_reserva, id_adicional, quantidade, data_consumo)
             for (id_consumo, id_reserva, id_adicional, quantidade, data_consumo) in rows
@@ -59,7 +66,14 @@ class ConsumoDAO(DAO):
             WHERE id=?
         """
         cls.execute(
-            sql, (obj.get_id_reserva(), obj.get_id_adicional(), obj.get_quantidade(), obj.get_data_consumo(), obj.get_id_consumo())
+            sql,
+            (
+                obj.get_id_reserva(),
+                obj.get_id_adicional(),
+                obj.get_quantidade(),
+                obj.get_data_consumo(),
+                obj.get_id_consumo(),
+            ),
         )
 
     @classmethod

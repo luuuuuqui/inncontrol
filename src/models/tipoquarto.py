@@ -40,7 +40,6 @@ class TipoQuarto:
         self.__capacidade = capacidade
 
     def set_valor_diaria(self, valor_diaria: Union[Decimal, str, float]) -> None:
-        # Convert to string first for processing
         if isinstance(valor_diaria, float):
             valor_str = str(valor_diaria)
         elif isinstance(valor_diaria, str):
@@ -50,7 +49,6 @@ class TipoQuarto:
         else:
             raise ValueError(f"Tipo inválido para valor_diaria: {type(valor_diaria)}")
 
-        # Convert string to Decimal
         try:
             valor_decimal = Decimal(valor_str)
         except Exception:

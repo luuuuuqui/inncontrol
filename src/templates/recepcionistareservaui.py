@@ -178,7 +178,6 @@ class RecepcionistaReservaUI:
         if reserva_op is None:
             return
 
-        assert reserva_op is not None  # Type narrowing for type checker
         status_atual = reserva_op.get_status()
 
         try:
@@ -314,8 +313,6 @@ class RecepcionistaReservaUI:
         if reserva_op is None:
             return
 
-        assert reserva_op is not None  # Type narrowing for type checker
-
         with st.form("form_cancelar_reserva"):
             submitted = st.form_submit_button(
                 "Cancelar/Excluir Reserva", type="primary"
@@ -340,7 +337,6 @@ class RecepcionistaReservaUI:
             horizontal=True,
         )
 
-        # Seleção de Datas Comum
         col_dates, col_dummy = st.columns([1, 1])
         with col_dates:
             estadia = st.date_input(
@@ -376,7 +372,6 @@ class RecepcionistaReservaUI:
                 if data_in is None or data_out is None:
                     st.error("Selecione o período desejado.")
                     return
-                assert data_in is not None and data_out is not None  # Type narrowing
                 disponivel = View.quarto_verificar_disponibilidade(
                     quarto_selecionado.get_id_quarto(), data_in, data_out
                 )
@@ -391,7 +386,7 @@ class RecepcionistaReservaUI:
                         f"⛔ O Quarto {quarto_selecionado.get_numero()} está **OCUPADO** neste período."
                     )
 
-        else:  # Por Tipo de Quarto
+        else:
             tipos = View.tipoquarto_listar()
             if not tipos:
                 st.warning("Nenhum tipo de quarto cadastrado.")
@@ -406,7 +401,6 @@ class RecepcionistaReservaUI:
                 if data_in is None or data_out is None:
                     st.error("Selecione o período desejado.")
                     return
-                assert data_in is not None and data_out is not None  # Type narrowing
                 quartos_livres = View.quarto_listar_disponiveis_tipo(
                     tipo_selecionado.get_id_tipoquarto(), data_in, data_out
                 )

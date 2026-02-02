@@ -1,4 +1,4 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 from views import View
 import time
@@ -127,10 +127,6 @@ class ManterReservaUI:
                 st.error("Selecione um hóspede e um quarto.")
                 return
 
-            assert (
-                hospede_selecionado is not None and quarto_selecionado is not None
-            )  # Type narrowing
-
             try:
                 View.reserva_inserir(
                     hospede_selecionado.get_id_hospede(),
@@ -161,8 +157,6 @@ class ManterReservaUI:
 
         if reserva_op is None:
             return
-
-        assert reserva_op is not None  # Type narrowing for type checker
 
         hospedes = View.hospede_listar()
         quartos = View.quarto_listar()
@@ -225,10 +219,6 @@ class ManterReservaUI:
                 st.error("Selecione um hóspede e um quarto.")
                 return
 
-            assert (
-                novo_hospede is not None and novo_quarto is not None
-            )  # Type narrowing
-
             try:
                 View.reserva_atualizar(
                     reserva_op.get_id_reserva(),
@@ -260,8 +250,6 @@ class ManterReservaUI:
 
         if reserva_op is None:
             return
-
-        assert reserva_op is not None  # Type narrowing for type checker
 
         if st.button("Excluir Reserva", type="primary"):
             try:

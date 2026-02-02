@@ -1,4 +1,4 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 import datetime as dt
 import time
 from views import View
@@ -235,7 +235,7 @@ class PerfilHospedeUI:
                 qtd = st.number_input(
                     "Qtd",
                     min_value=1,
-                    step=1,  # Adicionado step para habilitar os botões + e -
+                    step=1,
                     value=1,
                     key=f"qtd_{reserva_id}",
                     label_visibility="collapsed",

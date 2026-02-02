@@ -1,4 +1,4 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 from views import View
 import time

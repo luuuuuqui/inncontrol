@@ -1,8 +1,9 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 from views import View
 from datetime import datetime, timedelta, date
 from io import BytesIO
+import importlib.util
 
 try:
     from fpdf import FPDF
@@ -10,15 +11,10 @@ try:
     FPDF_AVAILABLE = True
 except ImportError:
     FPDF_AVAILABLE = False
-    FPDF = None  # type: ignore[assignment]
+    FPDF = None
 
 
-try:
-    import openpyxl  # noqa: F401
-
-    EXCEL_AVAILABLE = True
-except ImportError:
-    EXCEL_AVAILABLE = False
+EXCEL_AVAILABLE = importlib.util.find_spec("openpyxl") is not None
 
 try:
     import plotly.express as px
@@ -27,8 +23,8 @@ try:
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-    px = None  # type: ignore[assignment]
-    go = None  # type: ignore[assignment]
+    px = None
+    go = None
 
 
 class RelatoriosUI:
@@ -451,7 +447,6 @@ class RelatoriosUI:
         pdf_bytes = pdf.output(dest="S")
         if isinstance(pdf_bytes, str):
             return pdf_bytes.encode("latin-1")
-        # Ensure we return bytes, not bytearray
         if isinstance(pdf_bytes, bytearray):
             return bytes(pdf_bytes)
         return pdf_bytes
@@ -460,7 +455,8 @@ class RelatoriosUI:
     def _gerar_excel(dados):
         """Gera arquivo Excel com múltiplas abas"""
         output = BytesIO()
-        with pd.ExcelWriter(output, engine="openpyxl") as writer:  # type: ignore[arg-type]
+        writer = pd.ExcelWriter(output, engine="openpyxl")  # type: ignore
+        with writer:
             dados["df_reservas"].to_excel(
                 writer, index=False, sheet_name="Base de Dados"
             )

@@ -1,5 +1,5 @@
 import time
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 
 from dao.database import Database
 

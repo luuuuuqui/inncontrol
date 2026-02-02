@@ -129,10 +129,6 @@ class RecepcionistaPagamentoUI:
                     st.error("Selecione uma reserva para registrar o pagamento.")
                     return
 
-                assert (
-                    reserva_selecionada is not None
-                )  # Type narrowing for type checker
-
                 try:
                     View.pagamento_registrar(
                         reserva_selecionada.get_id_reserva(),
@@ -165,8 +161,6 @@ class RecepcionistaPagamentoUI:
 
         if pagamento_op is None:
             return
-
-        assert pagamento_op is not None  # Type narrowing for type checker
 
         lista_formas = [
             "Pix",

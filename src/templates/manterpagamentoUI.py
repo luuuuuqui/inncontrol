@@ -1,4 +1,4 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 from views import View
 import time
@@ -84,7 +84,6 @@ class ManterPagamentoUI:
 
         if reserva_selecionada:
             try:
-                # O método de cálculo da view já retorna Decimal, então aqui costuma ser seguro
                 valor_previsto = View.reserva_calcular_pagamento(
                     reserva_selecionada.get_id_reserva()
                 )
@@ -127,8 +126,6 @@ class ManterPagamentoUI:
                 st.error("Selecione uma reserva para registrar o pagamento.")
                 return
 
-            assert reserva_selecionada is not None  # Type narrowing for type checker
-
             try:
                 View.pagamento_registrar(
                     reserva_selecionada.get_id_reserva(),
@@ -161,8 +158,6 @@ class ManterPagamentoUI:
 
         if pagamento_op is None:
             return
-
-        assert pagamento_op is not None  # Type narrowing for type checker
 
         try:
             data_atual = dt.datetime.strptime(
@@ -249,8 +244,6 @@ class ManterPagamentoUI:
 
         if pagamento_op is None:
             return
-
-        assert pagamento_op is not None  # Type narrowing for type checker
 
         valor_obj = Decimal(pagamento_op.get_valor_total())
         st.warning(f"Tem certeza que deseja excluir o pagamento de R$ {valor_obj:.2f}?")

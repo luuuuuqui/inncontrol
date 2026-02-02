@@ -1,4 +1,4 @@
-import streamlit as st  # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 from datetime import datetime
 from decimal import Decimal
@@ -88,8 +88,6 @@ class ManterConsumoUI:
                 st.error("Selecione um adicional.")
                 return
 
-            assert adicional_selecionado is not None  # Type narrowing for type checker
-
             data_hora = datetime.combine(data, hora)
             try:
                 View.consumo_inserir(
@@ -120,8 +118,6 @@ class ManterConsumoUI:
         if op is None:
             return
 
-        assert op is not None  # Type narrowing for type checker
-
         try:
             dt_atual = datetime.strptime(op.get_data_consumo(), "%Y-%m-%d %H:%M:%S")
         except Exception:
@@ -132,7 +128,6 @@ class ManterConsumoUI:
             adicionais, op.get_id_adicional(), lambda a: a.get_id_adicional()
         )
 
-        # Campos
         novo_reserva = st.number_input(
             "ID Reserva:", value=op.get_id_reserva(), min_value=1
         )
@@ -156,8 +151,6 @@ class ManterConsumoUI:
             if novo_adicional is None:
                 st.error("Selecione um adicional.")
                 return
-
-            assert novo_adicional is not None  # Type narrowing for type checker
 
             nova_dt_full = datetime.combine(nova_data, nova_hora)
             try:
@@ -190,8 +183,6 @@ class ManterConsumoUI:
         if op is None:
             return
 
-        assert op is not None  # Type narrowing for type checker
-
         if st.button("Excluir"):
             try:
                 View.consumo_excluir(op.get_id_consumo())
@@ -201,7 +192,6 @@ class ManterConsumoUI:
             except Exception as e:
                 st.error(f"Erro: {e}")
 
-    # --- Helpers ---
     @staticmethod
     def _formatar_consumo_resumo(c):
         a = View.adicional_listar_id(c.get_id_adicional())

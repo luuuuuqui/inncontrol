@@ -1,6 +1,7 @@
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st
 import time
 from views import View
+
 
 class LoginUI:
     @staticmethod
@@ -20,12 +21,15 @@ class LoginUI:
                     usuario_encontrado = View.usuario_autenticar(email, senha)
 
                     if usuario_encontrado:
-                        # armazena dados do usuário na sessão
                         st.session_state["usuario_id"] = usuario_encontrado["id"]
                         st.session_state["usuario_nome"] = usuario_encontrado["nome"]
                         st.session_state["usuario_tipo"] = usuario_encontrado["tipo"]
-                        st.session_state["usuario_primeiro_nome"] = usuario_encontrado["nome"].split()[0]
-                        st.session_state["usuario_sobrenome"] = usuario_encontrado["nome"].split()[-1]
+                        st.session_state["usuario_primeiro_nome"] = usuario_encontrado[
+                            "nome"
+                        ].split()[0]
+                        st.session_state["usuario_sobrenome"] = usuario_encontrado[
+                            "nome"
+                        ].split()[-1]
 
                         primeiro_nome = st.session_state["usuario_primeiro_nome"]
                         tipo_formatado = usuario_encontrado["tipo"].lower()
