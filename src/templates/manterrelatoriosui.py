@@ -12,7 +12,12 @@ except ImportError:
     FPDF_AVAILABLE = False
 
 
-EXCEL_AVAILABLE = False
+try:
+    import openpyxl
+
+    EXCEL_AVAILABLE = True
+except ImportError:
+    EXCEL_AVAILABLE = False
 
 try:
     import plotly.express as px
