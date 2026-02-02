@@ -69,12 +69,12 @@ class View:
 
     @staticmethod
     def usuario_atualizar_senha(id, senha):
-        u = Usuario(id, "a", "a", "a", senha, "a", 0)
+        u = Usuario(id, "*", "*", "*", senha, "*")
         UsuarioDAO.atualizar_senha(u)
 
     @staticmethod
     def usuario_excluir(id: int):
-        u = Usuario(id, "a", "a", "a", "a", "a", 0)
+        u = Usuario(id, "*", "*", "*", "*", "*")
         UsuarioDAO.excluir(u)
 
     # Hóspede
@@ -153,7 +153,7 @@ class View:
 
     @staticmethod
     def tipoquarto_excluir(id_tipoquarto):
-        tq = TipoQuarto(id_tipoquarto, "a", "a", 1, Decimal(0.01))
+        tq = TipoQuarto(id_tipoquarto, "*", "*", 1, Decimal(0.01))
         TipoQuartoDAO.excluir(tq)
 
     # Quarto
@@ -190,7 +190,7 @@ class View:
 
     @staticmethod
     def quarto_excluir(id_quarto):
-        q = Quarto(id_quarto, 0, "a", 0)
+        q = Quarto(id_quarto, 0, "*", 0)
         QuartoDAO.excluir(q)
 
     # Reserva
@@ -385,7 +385,7 @@ class View:
 
     @staticmethod
     def reserva_excluir(id_reserva):
-        r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "a")
+        r = Reserva(id_reserva, 0, 0, "2026-01-01", "2026-01-02", "*")
         ReservaDAO.excluir(r)
 
     # Pagamento
@@ -426,12 +426,12 @@ class View:
     @staticmethod
     def pagamento_valor_atualizar(id_pagamento, id_reserva):
         valor_total = View.reserva_calcular_pagamento(id_reserva)
-        p = Pagamento(id_pagamento, id_reserva, "2000-01-01", valor_total, "a", "a")
+        p = Pagamento(id_pagamento, id_reserva, "2000-01-01", valor_total, "*", "*")
         PagamentoDAO.atualizar_valor(p)
 
     @staticmethod
     def pagamento_excluir(id_pagamento):
-        p = Pagamento(id_pagamento, 0, "2026-01-01", Decimal(0.01), "a", "a")
+        p = Pagamento(id_pagamento, 0, "2026-01-01", Decimal(0.01), "*", "*")
         PagamentoDAO.excluir(p)
 
     # Consumo
@@ -504,7 +504,7 @@ class View:
 
     @staticmethod
     def adicional_excluir(id_adicional):
-        a = Adicional(id_adicional, "a", 0.01)
+        a = Adicional(id_adicional, "*", 0.01)
         AdicionalDAO.excluir(a)
 
     # OUTRAS FUNÇÕES
