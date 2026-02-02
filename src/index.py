@@ -29,6 +29,7 @@ from templates.perfilhospedeui import PerfilHospedeUI
 
 # visitante
 from templates.loginUI import LoginUI
+from templates.abrircontaUI import AbrirContaUI
 
 
 class IndexUI:
@@ -39,9 +40,7 @@ class IndexUI:
             case "Entrar no Sistema":
                 LoginUI.main()
             case "Abrir Conta":
-                st.info(
-                    "Hey, essa funcionalidade ainda não está disponível! Fique à vontade para entrar em contato com a recepção para abrir uma conta."
-                )
+                AbrirContaUI.main()
 
     @staticmethod
     def menu_admin():
@@ -85,14 +84,7 @@ class IndexUI:
     def menu_recepcionista():
         op = st.sidebar.selectbox(
             "Menu",
-            [
-                "Consulta",
-                "Adicional",
-                "Consumo",
-                "Reserva",
-                "Hospede",
-                "Pagamento"
-            ],
+            ["Consulta", "Adicional", "Consumo", "Reserva", "Hospede", "Pagamento"],
         )
         match op:
             case "Consulta":
