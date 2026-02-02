@@ -151,9 +151,7 @@ class IndexUI:
     @staticmethod
     def main():
         # garantir que as tabelas existam
-        Database.abrir()
         Database.criar_tabelas()
-        Database.fechar()
 
         IndexUI.sidebar()
 

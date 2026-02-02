@@ -30,6 +30,8 @@ class Database:
 
     @classmethod
     def criar_tabelas(cls):
+        cls.abrir()
+
         # criar a tabela usuário
         cls.execute(
             """
@@ -138,3 +140,5 @@ class Database:
         );
         """
         )
+        
+        cls.fechar()
