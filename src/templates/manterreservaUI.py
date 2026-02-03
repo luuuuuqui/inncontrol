@@ -113,6 +113,7 @@ class ManterReservaUI:
 
         if len(estadia) == 2:
             checkin, checkout = estadia
+            checkin, checkout = dt.datetime.strftime(checkin, "%Y-%m-%d"), dt.datetime.strftime(checkout, "%Y-%m-%d")
         else:
             checkin, checkout = None, None
 
