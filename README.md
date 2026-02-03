@@ -62,6 +62,7 @@ As seguintes bibliotecas são opcionais, mas recomendadas para aproveitar todas 
 ### Passo a Passo
 
 1. **Clone o repositório:**
+
    ```bash
    git clone https://github.com/seu-usuario/inncontrol.git
    cd inncontrol
@@ -106,11 +107,13 @@ As seguintes bibliotecas são opcionais, mas recomendadas para aproveitar todas 
 ## Como Executar
 
 1. **Navegue até a pasta do projeto:**
+
    ```bash
    cd src
    ```
 
 2. **Execute o sistema:**
+
    ```bash
    streamlit run index.py
    ```
@@ -121,7 +124,7 @@ As seguintes bibliotecas são opcionais, mas recomendadas para aproveitar todas 
 
 ## Estrutura do Projeto
 
-```
+```text
 inncontrol/
 ├── src/
 │   ├── dao/              # Camada de acesso a dados
