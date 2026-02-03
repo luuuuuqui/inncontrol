@@ -39,6 +39,9 @@ class View:
     # Usuário
     @staticmethod
     def usuario_inserir(nome, fone, email, senha, tipoperfil):
+        if not nome or not email or not senha:
+            raise ValueError("Nome, email e senha são obrigatórios.")
+
         usuarios = UsuarioDAO.listar()
         for u in usuarios:
             if u.get_email() == email:
@@ -59,6 +62,9 @@ class View:
 
     @staticmethod
     def usuario_atualizar(id, nome, fone, email, tipoperfil):
+        if not nome or not email:
+            raise ValueError("Nome e email não podem ficar vazios.")
+
         usuarios = UsuarioDAO.listar()
         for u in usuarios:
             if u.get_email() == email and u.get_id_usuario() != id:
@@ -69,6 +75,9 @@ class View:
 
     @staticmethod
     def usuario_atualizar_senha(id, senha):
+        if not senha or len(senha) < 3:
+            raise ValueError("A senha deve ter pelo menos 3 caracteres.")
+            
         u = Usuario(id, "*", "*", "*", senha, "*")
         UsuarioDAO.atualizar_senha(u)
 
@@ -120,6 +129,13 @@ class View:
     # Tipo de Quarto
     @staticmethod
     def tipoquarto_inserir(nome, descricao, capacidade, valor_diaria):
+        # Validação adicionada
+        if int(capacidade) <= 0:
+            raise ValueError("A capacidade deve ser maior que zero.")
+        
+        if float(valor_diaria) <= 0:
+            raise ValueError("O valor da diária deve ser maior que zero.")
+
         tipos = TipoQuartoDAO.listar()
         for t in tipos:
             if t.get_nome().lower() == nome.lower():
@@ -140,6 +156,13 @@ class View:
 
     @staticmethod
     def tipoquarto_atualizar(id_tipoquarto, nome, descricao, capacidade, valor_diaria):
+        # Validação adicionada
+        if int(capacidade) <= 0:
+            raise ValueError("A capacidade deve ser maior que zero.")
+        
+        if float(valor_diaria) <= 0:
+            raise ValueError("O valor da diária deve ser maior que zero.")
+
         tipos = TipoQuartoDAO.listar()
         for t in tipos:
             if (
@@ -159,6 +182,9 @@ class View:
     # Quarto
     @staticmethod
     def quarto_inserir(id_tipo, bloco, numero):
+        if int(numero) <= 0:
+            raise ValueError("O número do quarto deve ser positivo.")
+
         quartos = QuartoDAO.listar()
         for q in quartos:
             if q.get_bloco() == bloco and q.get_numero() == numero:
@@ -179,6 +205,9 @@ class View:
 
     @staticmethod
     def quarto_atualizar(id_quarto, id_tipo, bloco, numero):
+        if int(numero) <= 0:
+            raise ValueError("O número do quarto deve ser positivo.")
+
         quartos = QuartoDAO.listar()
         for q in quartos:
             mesmo_bloco_num = q.get_bloco() == bloco and q.get_numero() == numero
@@ -208,6 +237,11 @@ class View:
             nova_out = dt.strptime(data_out_str, "%Y-%m-%d")
         except (ValueError, TypeError):
             raise ValueError("Formato de data inválido. Use AAAA-MM-DD.")
+
+        # Validação de data retroativa
+        # Opcional: Descomentar se não quiser permitir reservas no passado
+        if nova_in.date() < dt.now().date():
+            raise ValueError("A data de check-in não pode ser no passado.")
 
         if nova_in >= nova_out:
             raise ValueError(
@@ -399,6 +433,10 @@ class View:
             )
 
         valor_total = View.reserva_calcular_pagamento(id_reserva)
+        # Check adicional de segurança, embora o valor venha do cálculo
+        if valor_total <= 0:
+            raise ValueError("O valor total do pagamento deve ser maior que zero.")
+
         p = Pagamento(
             0, id_reserva, data_pagamento, valor_total, forma_pagamento, status
         )
@@ -472,6 +510,10 @@ class View:
     # Adicional
     @staticmethod
     def adicional_inserir(descricao, valor):
+        # Validação adicionada
+        if float(valor) <= 0:
+            raise ValueError("O valor do adicional deve ser maior que zero.")
+
         adicionais = AdicionalDAO.listar()
         for a in adicionais:
             if a.get_descricao().lower() == descricao.lower():
@@ -492,6 +534,10 @@ class View:
 
     @staticmethod
     def adicional_atualizar(id_adicional, descricao, valor):
+        # Validação adicionada
+        if float(valor) <= 0:
+            raise ValueError("O valor do adicional deve ser maior que zero.")
+
         adicionais = AdicionalDAO.listar()
         for a in adicionais:
             if (
